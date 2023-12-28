@@ -1,15 +1,14 @@
-﻿using System;
+﻿using MusicShop.Model.BaseModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MusicShop.Model.BaseModel;
 
 namespace MusicShop.Model.SearchObjects
 {
-    public class GenericNameSearchObject : BaseSearchObject
+    public class GearSearchObject : ProductSearchObject
     {
-        public string? Name { get; set; }
-
+        public int? GearCategoryId { get; set; }
     }
 }

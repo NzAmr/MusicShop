@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Model.BaseModel
 {
-    public class BaseProduct : BaseClassModel
+    public abstract class BaseProduct : BaseClassModel
     {
         public string? ProductNumber { get; set; }
         public int? ProductImageId { get; set; }

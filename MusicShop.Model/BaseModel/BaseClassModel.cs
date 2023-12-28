@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Model.BaseModel
 {
-    public class BaseClassModel
+    public abstract class BaseClassModel
     {
         public int Id { get; set; }
     }

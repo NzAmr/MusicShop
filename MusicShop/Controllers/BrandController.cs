@@ -9,16 +9,16 @@ namespace MusicShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class BrandController : BaseCRUDController<Brand, GenericNameSearchObject, BrandUpsertRequest, BrandUpsertRequest>
+    public class BrandController : BaseCRUDController<Brand, NameSearchObject, NameUpsertRequest, NameUpsertRequest>
     {
         public BrandController(IBrandService service) : base(service) {}
 
-        public override ActionResult<Brand> Insert([FromBody] BrandUpsertRequest insert)
+        public override ActionResult<Brand> Insert([FromBody] NameUpsertRequest insert)
         {
             return base.Insert(insert);
         }
 
-        public override ActionResult<Brand> Update(int id, [FromBody] BrandUpsertRequest update)
+        public override ActionResult<Brand> Update(int id, [FromBody] NameUpsertRequest update)
         {
             return base.Update(id, update);
         }

@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Services.Implementations
 {
-    public class BrandService : BaseCRUDService<Model.Brand, Database.Brand, GenericNameSearchObject, BrandUpsertRequest, BrandUpsertRequest>, IBrandService
+    public class BrandService : BaseCRUDService<Model.Brand, Database.Brand, NameSearchObject, NameUpsertRequest, NameUpsertRequest>, IBrandService
     {
         public BrandService(MusicShopDBContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
-        public override IQueryable<Database.Brand> AddFilter(IQueryable<Database.Brand> query, GenericNameSearchObject? search = null)
+        public override IQueryable<Database.Brand> AddFilter(IQueryable<Database.Brand> query, NameSearchObject? search = null)
         {
             var filteredQuery = base.AddFilter(query, search);
 

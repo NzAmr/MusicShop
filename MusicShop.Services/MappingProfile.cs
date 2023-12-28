@@ -17,12 +17,22 @@ namespace MusicShop.Services
             CreateMap<Database.Guitar, Model.Guitar>();
             CreateMap<GuitarInsertRequest, Database.Guitar>();
 
-            CreateMap<BrandUpsertRequest, Database.Brand>();
+            CreateMap<NameUpsertRequest, Database.Brand>();
 
             CreateMap<Database.Amplifier, Model.Amplifier>();
             CreateMap<AmplifierInsertRequest, Database.Amplifier>();
+
+            CreateMap<Database.Bass, Model.Bass>();
+            CreateMap<BassUpsertRequest, Database.Bass>();
+
+            CreateMap<Database.Synthesizer, Model.Synthesizer>();
+            CreateMap<SynthesizerUpsertRequest, Database.Synthesizer>();
                
-            
+            CreateMap<Database.GearCategory, Model.GearCategory>();
+            CreateMap<NameUpsertRequest,Database.GearCategory>();
+
+            CreateMap<Database.Gear ,  Model.Gear>();  
+            CreateMap<GearUpsertRequest, Database.Gear>();
         }
     }
 }

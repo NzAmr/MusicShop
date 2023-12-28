@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Model.Requests
 {
-    public class BrandUpsertRequest
+    public class NameUpsertRequest
     {
         public string Name { get; set; }
     }

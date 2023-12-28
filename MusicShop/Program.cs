@@ -18,6 +18,10 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddTransient<IBrandService, BrandService>();
 builder.Services.AddTransient<IGuitarService, GuitarService>();
 builder.Services.AddTransient<IAmplifierService, AmplifierServivce>();
+builder.Services.AddTransient<IBassService, BassService>();
+builder.Services.AddTransient<ISynthesizerService, SynthesizerService>();
+builder.Services.AddTransient<IGearCategoryService, GearCategoryService>();
+builder.Services.AddTransient<IGearService, GearService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MusicShopDBContext>(options =>

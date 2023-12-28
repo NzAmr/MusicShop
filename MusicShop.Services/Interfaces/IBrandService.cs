@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Services.Interfaces
 {
-    public interface IBrandService : ICRUDService<Model.Brand, GenericNameSearchObject, BrandUpsertRequest, BrandUpsertRequest>
+    public interface IBrandService : ICRUDService<Model.Brand, NameSearchObject, NameUpsertRequest, NameUpsertRequest>
     {
         
     }
