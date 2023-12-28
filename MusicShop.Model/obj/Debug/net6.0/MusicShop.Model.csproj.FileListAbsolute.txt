@@ -1,0 +1,11 @@
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\bin\Debug\net6.0\MusicShop.Model.deps.json
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\bin\Debug\net6.0\MusicShop.Model.dll
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\bin\Debug\net6.0\MusicShop.Model.pdb
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.AssemblyInfoInputs.cache
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.AssemblyInfo.cs
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.csproj.CoreCompileInputs.cache
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.dll
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\refint\MusicShop.Model.dll
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.pdb
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\ref\MusicShop.Model.dll

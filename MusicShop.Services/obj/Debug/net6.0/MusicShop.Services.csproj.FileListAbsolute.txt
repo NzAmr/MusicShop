@@ -1,0 +1,17 @@
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\bin\Debug\net6.0\MusicShop.Services.deps.json
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\bin\Debug\net6.0\MusicShop.Services.runtimeconfig.json
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\bin\Debug\net6.0\MusicShop.Services.dll
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\bin\Debug\net6.0\MusicShop.Services.pdb
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\bin\Debug\net6.0\MusicShop.Model.dll
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\bin\Debug\net6.0\MusicShop.Model.pdb
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.csproj.AssemblyReference.cache
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.AssemblyInfoInputs.cache
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.AssemblyInfo.cs
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.csproj.CoreCompileInputs.cache
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.csproj.CopyComplete
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.dll
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\refint\MusicShop.Services.dll
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.pdb
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\MusicShop.Services.genruntimeconfig.cache
+C:\Users\amar_\source\repos\MusicShop\MusicShop.Services\obj\Debug\net6.0\ref\MusicShop.Services.dll
