@@ -33,6 +33,12 @@ namespace MusicShop.Services
 
             CreateMap<Database.Gear ,  Model.Gear>();  
             CreateMap<GearUpsertRequest, Database.Gear>();
+
+            CreateMap<Database.ShippingInfo, Model.ShippingInfo>();
+            CreateMap<ShippingInfoUpsertRequest, Database.ShippingInfo>();
+
+            CreateMap<Database.Employee, Model.Employee>();
+            CreateMap<EmployeeUpsertRequest, Database.Employee>();  
         }
     }
 }
