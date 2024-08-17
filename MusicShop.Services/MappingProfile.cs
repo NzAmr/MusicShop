@@ -39,6 +39,9 @@ namespace MusicShop.Services
 
             CreateMap<Database.Employee, Model.Employee>();
             CreateMap<EmployeeUpsertRequest, Database.Employee>();  
+
+            CreateMap<Database.GuitarType, Model.GuitarType>();
+            CreateMap<NameUpsertRequest, Database.GuitarType>();
         }
     }
 }

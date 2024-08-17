@@ -44,6 +44,8 @@ builder.Services.AddTransient<IGearService, GearService>();
 builder.Services.AddTransient<IShippingInfoService, ShippingInfoService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
+builder.Services.AddTransient<IGuitarTypeService, GuitarTypeService>();
+builder.Services.AddTransient<IProductImageService, ProductImageService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MusicShopDBContext>(options =>

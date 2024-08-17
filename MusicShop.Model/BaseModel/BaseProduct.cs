@@ -16,5 +16,6 @@ namespace MusicShop.Model.BaseModel
         public string? Description { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public byte[]? ProductImage { get; set; }
     }
 }

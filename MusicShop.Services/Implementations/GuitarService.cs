@@ -16,5 +16,31 @@ namespace MusicShop.Services.Implementations
         public GuitarService(MusicShopDBContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public override IQueryable<Guitar> AddFilter(IQueryable<Guitar> query, GuitarSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+
+            if(search.BrandId != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.BrandId == search.BrandId);
+            }
+            if(search.GuitarTypeId != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.GuitarTypeId == search.GuitarTypeId);
+            }
+            if(search.Model != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Model.ToLower().Contains(search.Model.ToLower()));
+            }
+
+            return filteredQuery;
+        }
+        public override void BeforeInsert(GuitarInsertRequest insert, Guitar entity)
+        {
+            entity.ProductImage = Convert.FromBase64String(insert.Image);
+            entity.CreatedAt = DateTime.Now;
+            entity.UpdatedAt = DateTime.Now;
+        }
     }
 }

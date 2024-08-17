@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MusicShop.Services.Database
 {
-    public partial class GuitarType
+    public partial class GuitarType : BaseEntity
     {
         public GuitarType()
         {
@@ -11,7 +11,6 @@ namespace MusicShop.Services.Database
             Guitars = new HashSet<Guitar>();
         }
 
-        public int Id { get; set; }
         public string? Name { get; set; }
 
         public virtual ICollection<Bass> Basses { get; set; }

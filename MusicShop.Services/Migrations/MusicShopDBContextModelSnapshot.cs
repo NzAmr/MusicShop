@@ -240,6 +240,9 @@ namespace MusicShop.Services.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<byte[]>("ProductImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<int?>("ProductImageId")
                         .HasColumnType("int");
 
@@ -449,13 +452,11 @@ namespace MusicShop.Services.Migrations
                         .WithMany("Products")
                         .HasForeignKey("BrandId");
 
-                    b.HasOne("MusicShop.Services.Database.ProductImage", "ProductImage")
+                    b.HasOne("MusicShop.Services.Database.ProductImage", null)
                         .WithMany("Products")
                         .HasForeignKey("ProductImageId");
 
                     b.Navigation("Brand");
-
-                    b.Navigation("ProductImage");
                 });
 
             modelBuilder.Entity("MusicShop.Services.Database.StudioReservation", b =>

@@ -21,7 +21,7 @@ namespace MusicShop.Services.Database
         public DateTime? UpdatedAt { get; set; }
 
         public virtual Brand? Brand { get; set; }
-        public virtual ProductImage? ProductImage { get; set; }
+        public virtual byte[]? ProductImage { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
