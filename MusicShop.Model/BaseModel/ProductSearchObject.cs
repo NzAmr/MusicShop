@@ -8,11 +8,10 @@ namespace MusicShop.Model.BaseModel
 {
     public class ProductSearchObject : BaseSearchObject
     {
-        public string? ProductNumber { get; set; }
-        public int? ProductImageId { get; set; }
         public int? BrandId { get; set; }
         public string? Model { get; set; }
-        public decimal? Price { get; set; }
+        public decimal? PriceFrom { get; set; }
+        public decimal? PriceTo { get; set; }
         public string? Description { get; set; }
     }
 }

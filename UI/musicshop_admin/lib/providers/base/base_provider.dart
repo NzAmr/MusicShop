@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:musicshop_admin/utils/util.dart';
 
 import '../generic/search_result.dart';
@@ -33,8 +31,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     if (isValidResponse(response)) {
       try {
         List<dynamic> dataList = jsonDecode(response.body);
-        //print("Response: ${response.request} ${response.statusCode}, ${response.body}");
-
         List<T> resultList = dataList.map((item) => fromJson(item)).toList();
         return resultList;
       } catch (e) {
@@ -94,11 +90,26 @@ abstract class BaseProvider<T> with ChangeNotifier {
     }
   }
 
+  Future<T?> delete(int id) async {
+    var url = "$_baseUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.delete(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      return null;
+    }
+  }
+
   T fromJson(data) {
     throw Exception("Method not implemented");
   }
 
-  bool isValidResponse(Response response) {
+  bool isValidResponse(http.Response response) {
     if (response.statusCode < 299) {
       return true;
     } else if (response.statusCode == 401) {

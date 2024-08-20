@@ -9,7 +9,7 @@ namespace MusicShop.Model.BaseModel
     public class ProductUpsertRequest
     {
         public string? ProductNumber { get; set; }
-        //public int? ProductImageId { get; set; }
+        public string? Image { get; set; }
         public int? BrandId { get; set; }
         public string? Model { get; set; }
         public decimal? Price { get; set; }

@@ -13,7 +13,7 @@ namespace MusicShop.Model.Requests
         public string? Pickups { get; set; }
         public string? PickupConfiguration { get; set; }
         public int? Frets { get; set; }
-
+        public string? Image { get; set; }
         public int? BrandId { get; set; }
 
         public decimal? Price { get; set; }

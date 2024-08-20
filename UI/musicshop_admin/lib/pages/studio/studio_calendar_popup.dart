@@ -1,4 +1,4 @@
-import 'dart:math'; // Import for Random class
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -80,8 +80,17 @@ class _CalendarPopupState extends State<CalendarPopup> {
           maxWidth: MediaQuery.of(context).size.width * 0.9,
         ),
         child: SfCalendar(
-          view: CalendarView.workWeek,
+          view: CalendarView.week,
           dataSource: _AppointmentDataSource(appointments),
+          timeSlotViewSettings: TimeSlotViewSettings(
+            startHour: 7,
+            endHour: 21,
+            timeInterval: Duration(minutes: 60),
+            timeIntervalHeight: 50,
+          ),
+          headerStyle: CalendarHeaderStyle(
+            textStyle: TextStyle(color: Colors.black),
+          ),
         ),
       ),
     );

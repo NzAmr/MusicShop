@@ -74,108 +74,148 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
     }
   }
 
+  bool _isAcousticGuitar() {
+    return _guitarTypes
+            .firstWhere(
+              (type) => type.id == _selectedGuitarTypeId,
+              orElse: () => GuitarType(name: 'Unknown'),
+            )
+            .name ==
+        'Acoustic';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Add Guitar')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                DropdownButtonFormField<int>(
-                  value: _brands.isNotEmpty ? _selectedBrandId : null,
-                  hint: Text('Select Brand'),
-                  items: _brands.map((brand) {
-                    return DropdownMenuItem<int>(
-                      value: brand.id,
-                      child: Text(brand.name ?? 'Unknown Brand'),
-                    );
-                  }).toList(),
-                  onChanged: (int? value) {
-                    setState(() {
-                      _selectedBrandId = value;
-                    });
-                  },
-                  validator: (value) =>
-                      value == null ? 'Please select a brand' : null,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButtonFormField<int>(
+                      value: _brands.isNotEmpty ? _selectedBrandId : null,
+                      hint: Text('Select Brand'),
+                      items: _brands.map((brand) {
+                        return DropdownMenuItem<int>(
+                          value: brand.id,
+                          child: Text(brand.name ?? 'Unknown Brand'),
+                        );
+                      }).toList(),
+                      onChanged: (int? value) {
+                        setState(() {
+                          _selectedBrandId = value;
+                        });
+                      },
+                      validator: (value) =>
+                          value == null ? 'Please select a brand' : null,
+                    ),
+                    SizedBox(height: 16),
+                    DropdownButtonFormField<int>(
+                      value: _guitarTypes.isNotEmpty
+                          ? _selectedGuitarTypeId
+                          : null,
+                      hint: Text('Select Guitar Type'),
+                      items: _guitarTypes.map((type) {
+                        return DropdownMenuItem<int>(
+                          value: type.id,
+                          child: Text(type.name ?? 'Unknown Type'),
+                        );
+                      }).toList(),
+                      onChanged: (int? value) {
+                        setState(() {
+                          _selectedGuitarTypeId = value;
+                        });
+                      },
+                      validator: (value) =>
+                          value == null ? 'Please select a guitar type' : null,
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Model'),
+                      onChanged: (value) {
+                        _model = value;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Pickups'),
+                      onChanged: (value) {
+                        _pickups = value;
+                      },
+                      enabled: !_isAcousticGuitar(),
+                      validator: (value) => _isAcousticGuitar() && value != null
+                          ? 'Pickups are not applicable for Acoustic guitars'
+                          : null,
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration:
+                          InputDecoration(labelText: 'Pickup Configuration'),
+                      onChanged: (value) {
+                        _pickupConfiguration = value;
+                      },
+                      enabled: !_isAcousticGuitar(),
+                      validator: (value) => _isAcousticGuitar() && value != null
+                          ? 'Pickup Configuration is not applicable for Acoustic guitars'
+                          : null,
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Description'),
+                      onChanged: (value) {
+                        _description = value;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Frets'),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        _frets = int.tryParse(value);
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Price'),
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) {
+                        _price = double.tryParse(value);
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    _imageFile == null
+                        ? Text('No image selected.')
+                        : Image.file(
+                            _imageFile!,
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.cover,
+                          ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      child: Text('Pick Image'),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _submitForm();
+                        }
+                      },
+                      child: Text('Submit'),
+                    ),
+                  ],
                 ),
-                DropdownButtonFormField<int>(
-                  value: _guitarTypes.isNotEmpty ? _selectedGuitarTypeId : null,
-                  hint: Text('Select Guitar Type'),
-                  items: _guitarTypes.map((type) {
-                    return DropdownMenuItem<int>(
-                      value: type.id,
-                      child: Text(type.name ?? 'Unknown Type'),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGuitarTypeId = value;
-                    });
-                  },
-                  validator: (value) =>
-                      value == null ? 'Please select a guitar type' : null,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Model'),
-                  onChanged: (value) {
-                    _model = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Pickups'),
-                  onChanged: (value) {
-                    _pickups = value;
-                  },
-                ),
-                TextFormField(
-                  decoration:
-                      InputDecoration(labelText: 'Pickup Configuration'),
-                  onChanged: (value) {
-                    _pickupConfiguration = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Description'),
-                  onChanged: (value) {
-                    _description = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Frets'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    _frets = int.tryParse(value);
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Price'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  onChanged: (value) {
-                    _price = double.tryParse(value);
-                  },
-                ),
-                SizedBox(height: 20),
-                _imageFile == null
-                    ? Text('No image selected.')
-                    : Image.file(_imageFile!),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text('Pick Image'),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _submitForm();
-                    }
-                  },
-                  child: Text('Submit'),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -189,8 +229,8 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
     final request = GuitarInsertRequest()
       ..guitarTypeId = _selectedGuitarTypeId
       ..brandId = _selectedBrandId
-      ..pickups = _pickups
-      ..pickupConfiguration = _pickupConfiguration
+      ..pickups = _isAcousticGuitar() ? null : _pickups
+      ..pickupConfiguration = _isAcousticGuitar() ? null : _pickupConfiguration
       ..description = _description
       ..frets = _frets
       ..price = _price
@@ -198,7 +238,6 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
       ..image = _base64Image;
 
     try {
-      //print(request.model);
       await guitarProvider.insert(request);
       Navigator.pop(context);
     } catch (e) {

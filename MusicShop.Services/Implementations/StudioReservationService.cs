@@ -46,7 +46,7 @@ namespace MusicShop.Services.Implementations
         private void ValidateReservationDate(Database.StudioReservation entity)
         {
             var now = DateTime.Now;
-            var minimumAdvanceTime = now.AddHours(2); 
+            var minimumAdvanceTime = now.AddHours(2);
 
             if (entity.TimeFrom == null || entity.TimeTo == null)
             {
@@ -55,6 +55,20 @@ namespace MusicShop.Services.Implementations
 
             var timeFrom = entity.TimeFrom.Value;
             var timeTo = entity.TimeTo.Value;
+
+            var allowedStartTime = new TimeSpan(8, 0, 0);
+            var allowedEndTime = new TimeSpan(20, 0, 0);
+
+
+            var timeFromPart = timeFrom.TimeOfDay;
+            var timeToPart = timeTo.TimeOfDay;
+
+
+            if (timeFromPart < allowedStartTime || timeToPart > allowedEndTime)
+            {
+                throw new ArgumentException($"Reservation must be between {allowedStartTime} o'clock and {allowedEndTime} o'clock.");
+            }
+
 
             if (timeFrom < minimumAdvanceTime)
             {
@@ -66,6 +80,7 @@ namespace MusicShop.Services.Implementations
                 throw new ArgumentException("End time must be after the start time.");
             }
         }
+
 
     }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:musicshop_admin/models/bass/bass.dart';
 import 'package:musicshop_admin/providers/product/amplifier_provider.dart';
+import 'package:musicshop_admin/providers/product/bass_provider.dart';
 import 'package:musicshop_admin/providers/product/brand_provider.dart';
 import 'package:musicshop_admin/providers/product/gear_category_provider.dart';
 import 'package:musicshop_admin/providers/product/gear_provider.dart';
 import 'package:musicshop_admin/providers/product/guitar_provider.dart';
 import 'package:musicshop_admin/providers/product/guitar_type_provider.dart';
+import 'package:musicshop_admin/providers/product/synthesizer_provider.dart';
 import 'package:musicshop_admin/providers/studio/studio_reservation_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +27,8 @@ class ApiProvider extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GearProvider()),
         ChangeNotifierProvider(create: (_) => AmplifierProvider()),
         ChangeNotifierProvider(create: (_) => StudioReservationProvider()),
+        ChangeNotifierProvider(create: (_) => BassProvider()),
+        ChangeNotifierProvider(create: (_) => SynthesizerProvider()),
       ],
       child: child,
     );

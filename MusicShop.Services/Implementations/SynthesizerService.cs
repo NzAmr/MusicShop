@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MusicShop.Model.Requests;
 using MusicShop.Model.SearchObjects;
 using MusicShop.Services.Database;
 using MusicShop.Services.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MusicShop.Services.Implementations
 {
@@ -15,6 +13,71 @@ namespace MusicShop.Services.Implementations
     {
         public SynthesizerService(MusicShopDBContext context, IMapper mapper) : base(context, mapper)
         {
+        }
+
+        public override void BeforeInsert(SynthesizerUpsertRequest insert, Synthesizer entity)
+        {
+            entity.ProductImage = Convert.FromBase64String(insert.Image);
+            entity.CreatedAt = DateTime.Now;
+            entity.UpdatedAt = DateTime.Now;
+        }
+
+        public override IQueryable<Synthesizer> AddInclude(IQueryable<Synthesizer> query, SynthesizerSearchObject? search = null)
+        {
+            query = query.Include(x => x.Brand);
+
+            return query;
+        }
+
+        public override IQueryable<Synthesizer> AddFilter(IQueryable<Synthesizer> query, SynthesizerSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+
+            if (search.BrandId != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.BrandId == search.BrandId);
+            }
+
+            if (search.Model != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Model.ToLower().Contains(search.Model.ToLower()));
+            }
+
+            if (search.PriceFrom != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price > search.PriceFrom);
+            }
+            if (search.PriceTo != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price < search.PriceTo);
+            }
+
+            if (search.Description != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Description.ToLower().Contains(search.Description.ToLower()));
+            }
+
+            if (search.KeyboardSize != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.KeyboardSize == search.KeyboardSize);
+            }
+
+            if (search.WeighedKeys != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.WeighedKeys == search.WeighedKeys);
+            }
+
+            if (search.Polyphony != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Polyphony == search.Polyphony);
+            }
+
+            if (search.NumberOfPresets != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.NumberOfPresets == search.NumberOfPresets);
+            }
+
+            return filteredQuery;
         }
     }
 }

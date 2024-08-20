@@ -16,7 +16,8 @@ namespace MusicShop.Model.SearchObjects
         public string? ProductNumber { get; set; }
         public int? ProductImageId { get; set; }
         public int? BrandId { get; set; }
-        public decimal? Price { get; set; }
+        public decimal? PriceFrom { get; set; }
+        public decimal? PriceTo { get; set; }
         public string? Description { get; set; }
 
     }

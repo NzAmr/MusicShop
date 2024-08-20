@@ -18,6 +18,7 @@ namespace MusicShop.Services
 
             CreateMap<Database.Guitar, Model.Guitar>();
             CreateMap<GuitarInsertRequest, Database.Guitar>();
+            CreateMap<GuitarUpdateRequest, Database.Guitar>();
 
             CreateMap<Database.Amplifier, Model.Amplifier>();
             CreateMap<AmplifierInsertRequest, Database.Amplifier>();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:musicshop_admin/pages/amplifier/amplifier_add_page.dart';
 import 'package:musicshop_admin/pages/auth/login_page.dart';
+import 'package:musicshop_admin/pages/bass/bass_add_page.dart';
 import 'package:musicshop_admin/pages/brand/brand_add_page.dart';
 import 'package:musicshop_admin/pages/gear/gear_add_page.dart';
 import 'package:musicshop_admin/pages/gear_category/gear_category_add_page.dart';
@@ -8,6 +9,7 @@ import 'package:musicshop_admin/pages/guitar/guitar_add_page.dart';
 import 'package:musicshop_admin/pages/guitar/guitar_search_page.dart';
 import 'package:musicshop_admin/pages/guitar_type/guitar_type_add_page.dart';
 import 'package:musicshop_admin/pages/studio/studio_reservation_add_page.dart';
+import 'package:musicshop_admin/pages/synthesizer/synthesizer_add_page.dart';
 import 'package:musicshop_admin/providers/api_provider.dart';
 
 void main() {
@@ -146,6 +148,27 @@ class MyHomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => AddGuitarPage()),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Add Bass',
+                    style: TextStyle(color: colorScheme.onSurface)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddBassPage()),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Add Synthesizer',
+                    style: TextStyle(color: colorScheme.onSurface)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddSynthesizerPage()),
                   );
                 },
               ),

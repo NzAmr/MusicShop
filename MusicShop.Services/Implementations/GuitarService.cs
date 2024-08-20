@@ -29,21 +29,53 @@ namespace MusicShop.Services.Implementations
         {
             var filteredQuery = base.AddFilter(query, search);
 
-            if(search.BrandId != null)
+            if (search.BrandId != null)
             {
                 filteredQuery = filteredQuery.Where(x => x.BrandId == search.BrandId);
             }
-            if(search.GuitarTypeId != null)
+
+            if (search.GuitarTypeId != null)
             {
                 filteredQuery = filteredQuery.Where(x => x.GuitarTypeId == search.GuitarTypeId);
             }
-            if(search.Model != null)
+
+            if (search.Model != null)
             {
                 filteredQuery = filteredQuery.Where(x => x.Model.ToLower().Contains(search.Model.ToLower()));
             }
 
+            if (search.PriceFrom != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price > search.PriceFrom);
+            }
+            if (search.PriceTo != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price < search.PriceTo);
+            }
+
+            if (search.Description != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Description.ToLower().Contains(search.Description.ToLower()));
+            }
+
+            if (search.Pickups != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Pickups.ToLower().Contains(search.Pickups.ToLower()));
+            }
+
+            if (search.PickupConfiguration != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.PickupConfiguration.ToLower().Contains(search.PickupConfiguration.ToLower()));
+            }
+
+            if (search.Frets != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Frets == search.Frets);
+            }
+
             return filteredQuery;
         }
+
         public override void BeforeInsert(GuitarInsertRequest insert, Guitar entity)
         {
             entity.ProductImage = Convert.FromBase64String(insert.Image);

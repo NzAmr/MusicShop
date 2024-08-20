@@ -1,15 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'name_upsert_request.dart';
+part of 'name_insert_request.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-NameUpsertRequest _$NameUpsertRequestFromJson(Map<String, dynamic> json) =>
-    NameUpsertRequest()..name = json['name'] as String?;
+NameInsertRequest _$NameInsertRequestFromJson(Map<String, dynamic> json) =>
+    NameInsertRequest()..name = json['name'] as String?;
 
-Map<String, dynamic> _$NameUpsertRequestToJson(NameUpsertRequest instance) =>
+Map<String, dynamic> _$NameInsertRequestToJson(NameInsertRequest instance) =>
     <String, dynamic>{
       'name': instance.name,
     };

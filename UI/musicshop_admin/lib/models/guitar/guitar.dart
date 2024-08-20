@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicshop_admin/models/Abstract/product.dart';
+
 import 'package:musicshop_admin/models/brand/brand.dart';
 import 'package:musicshop_admin/models/guitar_type/guitar_type.dart';
 
@@ -19,7 +19,7 @@ class Guitar {
   String? description;
   DateTime? covariant;
   DateTime? updatedAt;
-  String? image;
+  String? productImage;
 
   Guitar();
 

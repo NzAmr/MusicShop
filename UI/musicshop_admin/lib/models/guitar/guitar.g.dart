@@ -27,7 +27,7 @@ Guitar _$GuitarFromJson(Map<String, dynamic> json) => Guitar()
   ..updatedAt = json['updatedAt'] == null
       ? null
       : DateTime.parse(json['updatedAt'] as String)
-  ..image = json['image'] as String?;
+  ..productImage = json['productImage'] as String?;
 
 Map<String, dynamic> _$GuitarToJson(Guitar instance) => <String, dynamic>{
       'id': instance.id,
@@ -42,5 +42,5 @@ Map<String, dynamic> _$GuitarToJson(Guitar instance) => <String, dynamic>{
       'description': instance.description,
       'covariant': instance.covariant?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
-      'image': instance.image,
+      'productImage': instance.productImage,
     };

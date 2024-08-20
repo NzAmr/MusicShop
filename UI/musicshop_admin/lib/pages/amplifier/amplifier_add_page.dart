@@ -71,104 +71,122 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
       appBar: AppBar(title: Text('Add Amplifier')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                DropdownButtonFormField<int>(
-                  value: _brands.isNotEmpty ? _selectedBrandId : null,
-                  hint: Text('Select Brand'),
-                  items: _brands.map((brand) {
-                    return DropdownMenuItem<int>(
-                      value: brand.id,
-                      child: Text(brand.name ?? 'Unknown Brand'),
-                    );
-                  }).toList(),
-                  onChanged: (int? value) {
-                    setState(() {
-                      _selectedBrandId = value;
-                    });
-                  },
-                  validator: (value) =>
-                      value == null ? 'Please select a brand' : null,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Column(
+                  children: [
+                    DropdownButtonFormField<int>(
+                      value: _brands.isNotEmpty ? _selectedBrandId : null,
+                      hint: Text('Select Brand'),
+                      items: _brands.map((brand) {
+                        return DropdownMenuItem<int>(
+                          value: brand.id,
+                          child: Text(brand.name ?? 'Unknown Brand'),
+                        );
+                      }).toList(),
+                      onChanged: (int? value) {
+                        setState(() {
+                          _selectedBrandId = value;
+                        });
+                      },
+                      validator: (value) =>
+                          value == null ? 'Please select a brand' : null,
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Model'),
+                      onChanged: (value) {
+                        _model = value;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Price'),
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) {
+                        _price = double.tryParse(value);
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Description'),
+                      onChanged: (value) {
+                        _description = value;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Voltage'),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        _voltage = int.tryParse(value);
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Power Rating'),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        _powerRating = int.tryParse(value);
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    CheckboxListTile(
+                      title: Text('Headphone Jack'),
+                      value: _headphoneJack,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _headphoneJack = value;
+                        });
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: Text('USB Jack'),
+                      value: _usbJack,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _usbJack = value;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration:
+                          InputDecoration(labelText: 'Number of Presets'),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        _numberOfPresets = int.tryParse(value);
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    _imageFile == null
+                        ? Text('No image selected.')
+                        : SizedBox(
+                            width: 200,
+                            height: 150,
+                            child: Image.file(_imageFile!, fit: BoxFit.cover),
+                          ),
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      child: Text('Pick Image'),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _submitForm();
+                        }
+                      },
+                      child: Text('Submit'),
+                    ),
+                  ],
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Model'),
-                  onChanged: (value) {
-                    _model = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Price'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  onChanged: (value) {
-                    _price = double.tryParse(value);
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Description'),
-                  onChanged: (value) {
-                    _description = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Voltage'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    _voltage = int.tryParse(value);
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Power Rating'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    _powerRating = int.tryParse(value);
-                  },
-                ),
-                CheckboxListTile(
-                  title: Text('Headphone Jack'),
-                  value: _headphoneJack,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _headphoneJack = value;
-                    });
-                  },
-                ),
-                CheckboxListTile(
-                  title: Text('USB Jack'),
-                  value: _usbJack,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _usbJack = value;
-                    });
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Number of Presets'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    _numberOfPresets = int.tryParse(value);
-                  },
-                ),
-                SizedBox(height: 20),
-                _imageFile == null
-                    ? Text('No image selected.')
-                    : Image.file(_imageFile!),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text('Pick Image'),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _submitForm();
-                    }
-                  },
-                  child: Text('Submit'),
-                ),
-              ],
+              ),
             ),
           ),
         ),

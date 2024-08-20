@@ -77,84 +77,101 @@ class _AddGearPageState extends State<AddGearPage> {
       appBar: AppBar(title: Text('Add Gear')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                DropdownButtonFormField<int>(
-                  value: _brands.isNotEmpty ? _selectedBrandId : null,
-                  hint: Text('Select Brand'),
-                  items: _brands.map((brand) {
-                    return DropdownMenuItem<int>(
-                      value: brand.id,
-                      child: Text(brand.name ?? 'Unknown Brand'),
-                    );
-                  }).toList(),
-                  onChanged: (int? value) {
-                    setState(() {
-                      _selectedBrandId = value;
-                    });
-                  },
-                  validator: (value) =>
-                      value == null ? 'Please select a brand' : null,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButtonFormField<int>(
+                      value: _brands.isNotEmpty ? _selectedBrandId : null,
+                      hint: Text('Select Brand'),
+                      items: _brands.map((brand) {
+                        return DropdownMenuItem<int>(
+                          value: brand.id,
+                          child: Text(brand.name ?? 'Unknown Brand'),
+                        );
+                      }).toList(),
+                      onChanged: (int? value) {
+                        setState(() {
+                          _selectedBrandId = value;
+                        });
+                      },
+                      validator: (value) =>
+                          value == null ? 'Please select a brand' : null,
+                    ),
+                    SizedBox(height: 16),
+                    DropdownButtonFormField<int>(
+                      value: _gearCategories.isNotEmpty
+                          ? _selectedGearCategoryId
+                          : null,
+                      hint: Text('Select Gear Category'),
+                      items: _gearCategories.map((category) {
+                        return DropdownMenuItem<int>(
+                          value: category.id,
+                          child: Text(category.name ?? 'Unknown Category'),
+                        );
+                      }).toList(),
+                      onChanged: (int? value) {
+                        setState(() {
+                          _selectedGearCategoryId = value;
+                        });
+                      },
+                      validator: (value) => value == null
+                          ? 'Please select a gear category'
+                          : null,
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Model'),
+                      onChanged: (value) {
+                        _model = value;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Description'),
+                      onChanged: (value) {
+                        _description = value;
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Price'),
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) {
+                        _price = double.tryParse(value);
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    _imageFile == null
+                        ? Text('No image selected.')
+                        : SizedBox(
+                            width: double.infinity,
+                            height: 200,
+                            child: Image.file(_imageFile!, fit: BoxFit.cover),
+                          ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      child: Text('Pick Image'),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _submitForm();
+                        }
+                      },
+                      child: Text('Submit'),
+                    ),
+                  ],
                 ),
-                DropdownButtonFormField<int>(
-                  value: _gearCategories.isNotEmpty
-                      ? _selectedGearCategoryId
-                      : null,
-                  hint: Text('Select Gear Category'),
-                  items: _gearCategories.map((category) {
-                    return DropdownMenuItem<int>(
-                      value: category.id,
-                      child: Text(category.name ?? 'Unknown Category'),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGearCategoryId = value;
-                    });
-                  },
-                  validator: (value) =>
-                      value == null ? 'Please select a gear category' : null,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Model'),
-                  onChanged: (value) {
-                    _model = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Description'),
-                  onChanged: (value) {
-                    _description = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Price'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  onChanged: (value) {
-                    _price = double.tryParse(value);
-                  },
-                ),
-                SizedBox(height: 20),
-                _imageFile == null
-                    ? Text('No image selected.')
-                    : Image.file(_imageFile!),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text('Pick Image'),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _submitForm();
-                    }
-                  },
-                  child: Text('Submit'),
-                ),
-              ],
+              ),
             ),
           ),
         ),
