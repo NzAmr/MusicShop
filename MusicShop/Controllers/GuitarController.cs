@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MusicShop.Model;
 using MusicShop.Model.Requests;
 using MusicShop.Model.SearchObjects;
@@ -8,6 +9,7 @@ namespace MusicShop.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class GuitarController : BaseCRUDController<Model.Guitar, GuitarSearchObject, GuitarInsertRequest, GuitarUpdateRequest>
     {
         public GuitarController(IGuitarService service) : base(service){ }
@@ -20,7 +22,7 @@ namespace MusicShop.Controllers
         {
             return base.Update(id, update);
         }
-
+      
 
     }
 }

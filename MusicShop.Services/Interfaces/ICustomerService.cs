@@ -10,5 +10,7 @@ namespace MusicShop.Services.Interfaces
 {
     public interface ICustomerService : ICRUDService<Model.Customer, NameSearchObject, CustomerInsertRequest, CustomerUpdateRequest>
     {
+
+        Model.Customer Login(LoginRequest loginRequest);
     }
 }

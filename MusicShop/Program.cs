@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MusicShop;
 using MusicShop.Services;
 using MusicShop.Services.Database;
 using MusicShop.Services.Implementations;
@@ -46,12 +48,13 @@ builder.Services.AddTransient<ICustomerService, CustomerService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IGuitarTypeService, GuitarTypeService>();
 builder.Services.AddTransient<IProductImageService, ProductImageService>();
+builder.Services.AddTransient<IStudioReservationService, StudioReservationService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MusicShopDBContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddAuthentication("BasicAuthentication");
+//builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 var app = builder.Build();
 

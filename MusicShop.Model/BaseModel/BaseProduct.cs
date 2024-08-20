@@ -10,7 +10,7 @@ namespace MusicShop.Model.BaseModel
     {
         public string? ProductNumber { get; set; }
         public int? ProductImageId { get; set; }
-        public int? BrandId { get; set; }
+        public Brand? Brand { get; set; }
         public string? Model { get; set; }
         public decimal? Price { get; set; }
         public string? Description { get; set; }

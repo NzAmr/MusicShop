@@ -42,7 +42,7 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
     List<Guitar> guitars = await _guitarProvider.get(
       filter: {
         'model': _modelFilter,
-        'brand': _selectedBrand,
+        'brandId': _selectedBrand,
         'guitarTypeId': _selectedType,
       },
     );
@@ -163,9 +163,11 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
                     ],
                     rows: _guitars.map((guitar) {
                       return DataRow(cells: [
-                        DataCell(Text(guitar.model ?? '')),
-                        DataCell(Text(guitar.brandId.toString())),
-                        DataCell(Text(guitar.guitarTypeId.toString())),
+                        DataCell(Text(guitar.model ?? 'Error Loading')),
+                        DataCell(Text(guitar.brand?.name ?? 'Error Loading')),
+                        DataCell(
+                          Text(guitar.guitarType?.name ?? 'Error Loading'),
+                        ),
                         DataCell(Text(
                             '\$${guitar.price?.toStringAsFixed(2) ?? 'N/A'}')),
                         DataCell(TextButton(

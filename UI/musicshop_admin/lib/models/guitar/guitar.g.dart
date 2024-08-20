@@ -7,13 +7,17 @@ part of 'guitar.dart';
 // **************************************************************************
 
 Guitar _$GuitarFromJson(Map<String, dynamic> json) => Guitar()
-  ..guitarTypeId = (json['guitarTypeId'] as num?)?.toInt()
+  ..id = (json['id'] as num?)?.toInt()
+  ..guitarType = json['guitarType'] == null
+      ? null
+      : GuitarType.fromJson(json['guitarType'] as Map<String, dynamic>)
   ..pickups = json['pickups'] as String?
   ..pickupConfiguration = json['pickupConfiguration'] as String?
   ..frets = (json['frets'] as num?)?.toInt()
   ..productNumber = json['productNumber'] as String?
-  ..productImageId = (json['productImageId'] as num?)?.toInt()
-  ..brandId = (json['brandId'] as num?)?.toInt()
+  ..brand = json['brand'] == null
+      ? null
+      : Brand.fromJson(json['brand'] as Map<String, dynamic>)
   ..model = json['model'] as String?
   ..price = (json['price'] as num?)?.toDouble()
   ..description = json['description'] as String?
@@ -22,19 +26,21 @@ Guitar _$GuitarFromJson(Map<String, dynamic> json) => Guitar()
       : DateTime.parse(json['covariant'] as String)
   ..updatedAt = json['updatedAt'] == null
       ? null
-      : DateTime.parse(json['updatedAt'] as String);
+      : DateTime.parse(json['updatedAt'] as String)
+  ..image = json['image'] as String?;
 
 Map<String, dynamic> _$GuitarToJson(Guitar instance) => <String, dynamic>{
-      'guitarTypeId': instance.guitarTypeId,
+      'id': instance.id,
+      'guitarType': instance.guitarType,
       'pickups': instance.pickups,
       'pickupConfiguration': instance.pickupConfiguration,
       'frets': instance.frets,
       'productNumber': instance.productNumber,
-      'productImageId': instance.productImageId,
-      'brandId': instance.brandId,
+      'brand': instance.brand,
       'model': instance.model,
       'price': instance.price,
       'description': instance.description,
       'covariant': instance.covariant?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
+      'image': instance.image,
     };

@@ -1,6 +1,25 @@
-import 'package:musicshop_admin/models/Abstract/product.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:musicshop_admin/models/brand/brand.dart';
 import 'package:musicshop_admin/models/gear_category/gear_category.dart';
 
-class Gear extends Product {
+part 'gear.g.dart';
+
+@JsonSerializable()
+class Gear {
+  int? id;
+  String? productNumber;
+  Brand? brand;
+  String? model;
+  double? price;
+  String? description;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   GearCategory? gearCategory;
+  String? image;
+
+  Gear();
+
+  factory Gear.fromJson(Map<String, dynamic> json) => _$GearFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GearToJson(this);
 }

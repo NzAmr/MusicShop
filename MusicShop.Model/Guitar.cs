@@ -9,11 +9,11 @@ namespace MusicShop.Model
 {
     public class Guitar : BaseProduct
     {
-        public int? GuitarTypeId { get; set; }
+
         public string? Pickups { get; set; }
         public string? PickupConfiguration { get; set; }
         public int? Frets { get; set; }
-
+        public virtual GuitarType? GuitarType { get; set; }
 
     }
 }

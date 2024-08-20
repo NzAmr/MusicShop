@@ -10,7 +10,6 @@ namespace MusicShop.Services.Database
         public DateTime? OrderDate { get; set; }
         public decimal? ShippingPrice { get; set; }
         public string? ShippingStatus { get; set; }
-
         public virtual Product? Product { get; set; }
     }
 }

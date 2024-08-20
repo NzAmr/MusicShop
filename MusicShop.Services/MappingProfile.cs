@@ -14,10 +14,10 @@ namespace MusicShop.Services
         public MappingProfile()
         {
             CreateMap<Database.Brand, MusicShop.Model.Brand>();
+            CreateMap<NameUpsertRequest, Database.Brand>();
+
             CreateMap<Database.Guitar, Model.Guitar>();
             CreateMap<GuitarInsertRequest, Database.Guitar>();
-
-            CreateMap<NameUpsertRequest, Database.Brand>();
 
             CreateMap<Database.Amplifier, Model.Amplifier>();
             CreateMap<AmplifierInsertRequest, Database.Amplifier>();
@@ -40,8 +40,14 @@ namespace MusicShop.Services
             CreateMap<Database.Employee, Model.Employee>();
             CreateMap<EmployeeUpsertRequest, Database.Employee>();  
 
+            CreateMap<Database.Customer, Model.Customer>();
+            CreateMap<CustomerInsertRequest, Database.Customer>();
+
             CreateMap<Database.GuitarType, Model.GuitarType>();
             CreateMap<NameUpsertRequest, Database.GuitarType>();
+
+            CreateMap<Database.StudioReservation, Model.StudioReservation>();
+            CreateMap<StudioReservationUpsertRequest, Database.StudioReservation>();
         }
     }
 }

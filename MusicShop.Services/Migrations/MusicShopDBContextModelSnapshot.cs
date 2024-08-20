@@ -322,10 +322,10 @@ namespace MusicShop.Services.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("TimeFrom")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("TimeTo")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 

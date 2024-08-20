@@ -25,7 +25,7 @@ namespace MusicShop
             {
                 return Task.FromResult(AuthenticateResult.Fail("Missing Authorization header"));
             }
-            var userType = AuthenticationHeaderValue.Parse(Request.Headers["X-User-Type"]).ToString();
+            //var userType = AuthenticationHeaderValue.Parse(Request.Headers["X-User-Type"]).ToString();
             var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
 
             var credentialsBytes = Convert.FromBase64String(authHeader.Parameter);

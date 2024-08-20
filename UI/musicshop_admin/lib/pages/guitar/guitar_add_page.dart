@@ -198,7 +198,7 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
       ..image = _base64Image;
 
     try {
-      print(request.model);
+      //print(request.model);
       await guitarProvider.insert(request);
       Navigator.pop(context);
     } catch (e) {

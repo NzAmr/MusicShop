@@ -175,9 +175,9 @@ namespace MusicShop.Services.Database
             {
                 entity.ToTable("StudioReservation");
 
-                entity.Property(e => e.TimeFrom).HasColumnType("date");
+                entity.Property(e => e.TimeFrom).HasColumnType("datetime");
 
-                entity.Property(e => e.TimeTo).HasColumnType("date");
+                entity.Property(e => e.TimeTo).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.StudioReservations)

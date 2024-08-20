@@ -13,6 +13,23 @@ namespace MusicShop.Controllers
     {
         public CustomerController(ICustomerService service) : base(service) {}
 
+        public override ActionResult<Customer> Insert([FromBody] CustomerInsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
 
+        [HttpPost("login")]
+        public ActionResult<Customer> Login([FromBody] LoginRequest request)
+        {
+            try
+            {
+                return Ok((Service as ICustomerService).Login(request));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }
