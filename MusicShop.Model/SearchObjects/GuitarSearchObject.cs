@@ -13,7 +13,6 @@ namespace MusicShop.Model.SearchObjects
         public string? Model { get; set; }
         public decimal? PriceFrom { get; set; }
         public decimal? PriceTo { get; set; }
-        public string? Description { get; set; }
         public int? GuitarTypeId { get; set; }
         public string? Pickups { get; set; }
         public string? PickupConfiguration { get; set; }

@@ -12,6 +12,5 @@ namespace MusicShop.Model.BaseModel
         public string? Model { get; set; }
         public decimal? PriceFrom { get; set; }
         public decimal? PriceTo { get; set; }
-        public string? Description { get; set; }
     }
 }

@@ -4,18 +4,20 @@ import 'package:musicshop_admin/pages/auth/login_page.dart';
 import 'package:musicshop_admin/pages/bass/bass_add_page.dart';
 import 'package:musicshop_admin/pages/brand/brand_add_page.dart';
 import 'package:musicshop_admin/pages/gear/gear_add_page.dart';
+import 'package:musicshop_admin/pages/gear/gear_search_page.dart';
 import 'package:musicshop_admin/pages/gear_category/gear_category_add_page.dart';
 import 'package:musicshop_admin/pages/guitar/guitar_add_page.dart';
 import 'package:musicshop_admin/pages/guitar/guitar_search_page.dart';
 import 'package:musicshop_admin/pages/guitar_type/guitar_type_add_page.dart';
 import 'package:musicshop_admin/pages/studio/studio_reservation_add_page.dart';
 import 'package:musicshop_admin/pages/synthesizer/synthesizer_add_page.dart';
+import 'package:musicshop_admin/pages/synthesizer/synthesizer_search_page.dart';
 import 'package:musicshop_admin/providers/api_provider.dart';
 
 void main() {
   runApp(
-    ApiProvider(
-      child: const MyApp(),
+    const ApiProvider(
+      child: MyApp(),
     ),
   );
 }
@@ -29,34 +31,27 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color.fromARGB(255, 3, 13, 95),
+          seedColor: _darkBlue,
           brightness: Brightness.light,
-          primary: Color.fromARGB(255, 75, 89, 194),
+          primary: _blue,
           onPrimary: Colors.white,
           secondary: Colors.blueAccent,
           onSecondary: Colors.white,
-          surface: const Color.fromARGB(255, 39, 35, 35),
-          onSurface: const Color.fromARGB(255, 228, 226, 226),
+          surface: _darkGray,
+          onSurface: _lightGray,
           error: Colors.red,
           onError: Colors.white,
         ),
         dialogTheme: DialogTheme(
-          backgroundColor:
-              Color.fromARGB(255, 39, 35, 35), // Match your surface color
-          titleTextStyle: TextStyle(
-            color: Color.fromARGB(255, 228, 226, 226), // Match onSurface color
+          backgroundColor: _darkGray,
+          titleTextStyle: const TextStyle(
+            color: _lightGray,
           ),
         ),
         textTheme: TextTheme(
-          bodyLarge: TextStyle(
-              color:
-                  Color.fromARGB(255, 228, 226, 226)), // Ensure body text color
-          bodyMedium: TextStyle(
-              color:
-                  Color.fromARGB(255, 228, 226, 226)), // Ensure body text color
-          titleLarge: TextStyle(
-              color:
-                  Color.fromARGB(255, 228, 226, 226)), // Ensure headline color
+          bodyLarge: _bodyTextStyle,
+          bodyMedium: _bodyTextStyle,
+          titleLarge: _bodyTextStyle,
         ),
         useMaterial3: true,
       ),
@@ -64,6 +59,15 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+const Color _darkBlue = Color.fromARGB(255, 3, 13, 95);
+const Color _blue = Color.fromARGB(255, 75, 89, 194);
+const Color _darkGray = Color.fromARGB(255, 39, 35, 35);
+const Color _lightGray = Color.fromARGB(255, 228, 226, 226);
+
+const TextStyle _bodyTextStyle = TextStyle(
+  color: _lightGray,
+);
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.title});
@@ -199,6 +203,27 @@ class MyHomePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => GuitarSearchPage()),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Search Synthesizers',
+                    style: TextStyle(color: colorScheme.onSurface)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SynthesizerSearchPage()),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Search Gear',
+                    style: TextStyle(color: colorScheme.onSurface)),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GearSearchPage()),
                   );
                 },
               ),

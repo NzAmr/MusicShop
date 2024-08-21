@@ -10,27 +10,27 @@ SynthesizerUpdateRequest _$SynthesizerUpdateRequestFromJson(
         Map<String, dynamic> json) =>
     SynthesizerUpdateRequest()
       ..id = (json['id'] as num?)?.toInt()
-      ..BrandId = (json['BrandId'] as num?)?.toInt()
-      ..Model = json['Model'] as String?
-      ..Price = (json['Price'] as num?)?.toDouble()
-      ..Description = json['Description'] as String?
-      ..KeyboardSize = (json['KeyboardSize'] as num?)?.toInt()
-      ..WeighedKeys = json['WeighedKeys'] as bool?
-      ..Polyphony = (json['Polyphony'] as num?)?.toInt()
-      ..NumberOfPresets = (json['NumberOfPresets'] as num?)?.toInt()
+      ..brandId = (json['brandId'] as num?)?.toInt()
+      ..model = json['model'] as String?
+      ..price = (json['price'] as num?)?.toDouble()
+      ..description = json['description'] as String?
+      ..keyboardSize = (json['keyboardSize'] as num?)?.toInt()
+      ..weighedKeys = json['weighedKeys'] as bool?
+      ..polyphony = (json['polyphony'] as num?)?.toInt()
+      ..numberOfPresets = (json['numberOfPresets'] as num?)?.toInt()
       ..image = json['image'] as String?;
 
 Map<String, dynamic> _$SynthesizerUpdateRequestToJson(
         SynthesizerUpdateRequest instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'BrandId': instance.BrandId,
-      'Model': instance.Model,
-      'Price': instance.Price,
-      'Description': instance.Description,
-      'KeyboardSize': instance.KeyboardSize,
-      'WeighedKeys': instance.WeighedKeys,
-      'Polyphony': instance.Polyphony,
-      'NumberOfPresets': instance.NumberOfPresets,
+      'brandId': instance.brandId,
+      'model': instance.model,
+      'price': instance.price,
+      'description': instance.description,
+      'keyboardSize': instance.keyboardSize,
+      'weighedKeys': instance.weighedKeys,
+      'polyphony': instance.polyphony,
+      'numberOfPresets': instance.numberOfPresets,
       'image': instance.image,
     };

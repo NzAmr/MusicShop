@@ -24,7 +24,7 @@ Gear _$GearFromJson(Map<String, dynamic> json) => Gear()
   ..gearCategory = json['gearCategory'] == null
       ? null
       : GearCategory.fromJson(json['gearCategory'] as Map<String, dynamic>)
-  ..image = json['image'] as String?;
+  ..productImage = json['productImage'] as String?;
 
 Map<String, dynamic> _$GearToJson(Gear instance) => <String, dynamic>{
       'id': instance.id,
@@ -36,5 +36,5 @@ Map<String, dynamic> _$GearToJson(Gear instance) => <String, dynamic>{
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
       'gearCategory': instance.gearCategory,
-      'image': instance.image,
+      'productImage': instance.productImage,
     };

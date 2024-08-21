@@ -53,11 +53,6 @@ namespace MusicShop.Services.Implementations
                 filteredQuery = filteredQuery.Where(x => x.Price < search.PriceTo);
             }
 
-            if (search.Description != null)
-            {
-                filteredQuery = filteredQuery.Where(x => x.Description.ToLower().Contains(search.Description.ToLower()));
-            }
-
             if (search.Pickups != null)
             {
                 filteredQuery = filteredQuery.Where(x => x.Pickups.ToLower().Contains(search.Pickups.ToLower()));

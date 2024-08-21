@@ -20,13 +20,46 @@ namespace MusicShop.Services.Implementations
 
         public override void BeforeInsert(GearUpsertRequest insert, Gear entity)
         {
+            entity.ProductImage = Convert.FromBase64String(insert.Image);
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
         }
         public override IQueryable<Gear> AddInclude(IQueryable<Gear> query, GearSearchObject? search = null)
         {
             query = query.Include(x => x.Brand);
+            query = query.Include(x => x.GearCategory);
             return query;
+        }
+        public override IQueryable<Gear> AddFilter(IQueryable<Gear> query, GearSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+
+            if (search.GearCategoryId != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.GearCategoryId == search.GearCategoryId);
+            }
+
+            if (search.BrandId != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.BrandId == search.BrandId);
+            }
+
+            if (search.Model != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Model.ToLower().Contains(search.Model.ToLower()));
+            }
+
+            if (search.PriceFrom != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price >= search.PriceFrom);
+            }
+
+            if (search.PriceTo != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price <= search.PriceTo);
+            }
+
+            return filteredQuery;
         }
     }
 }

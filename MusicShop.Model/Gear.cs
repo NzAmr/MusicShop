@@ -9,7 +9,7 @@ namespace MusicShop.Model
 {
     public class Gear : BaseProduct 
     {
-        public int? GearCategoryId { get; set; }
+        public GearCategory? GearCategory { get; set; }
 
     }
 }

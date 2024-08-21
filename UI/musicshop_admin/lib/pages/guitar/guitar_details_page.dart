@@ -177,8 +177,7 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
         'Acoustic';
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildImageSection() {
     Uint8List? _imageBytes;
     if (_imageBase64.isNotEmpty) {
       try {
@@ -188,6 +187,25 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
       }
     }
 
+    return GestureDetector(
+      onTap: _pickImage,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: 400,
+          maxHeight: 400,
+        ),
+        child: _imageBytes != null
+            ? Image.memory(
+                _imageBytes,
+                fit: BoxFit.cover,
+              )
+            : Placeholder(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Guitar Details')),
       body: Padding(
@@ -203,21 +221,7 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: _pickImage,
-                          child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: 300,
-                              maxHeight: 300,
-                            ),
-                            child: _imageBytes != null
-                                ? Image.memory(
-                                    _imageBytes,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Placeholder(),
-                          ),
-                        ),
+                        _buildImageSection(),
                         SizedBox(width: 16),
                         SizedBox(
                           width: 500,

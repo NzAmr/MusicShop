@@ -15,7 +15,7 @@ class Gear {
   DateTime? createdAt;
   DateTime? updatedAt;
   GearCategory? gearCategory;
-  String? image;
+  String? productImage;
 
   Gear();
 

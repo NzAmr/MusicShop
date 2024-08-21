@@ -144,20 +144,55 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                       },
                     ),
                     SizedBox(height: 16),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Pickups'),
-                      onChanged: (value) {
-                        _pickups = value;
-                      },
-                      enabled: !_isAcousticGuitar(),
-                      validator: (value) => _isAcousticGuitar() && value != null
-                          ? 'Pickups are not applicable for Acoustic guitars'
-                          : null,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Pickups',
+                            ),
+                            onChanged: (value) {
+                              _pickups = value;
+                            },
+                            enabled: !_isAcousticGuitar(),
+                            validator: (value) => _isAcousticGuitar() &&
+                                    value != null
+                                ? 'Pickups are not applicable for Acoustic guitars'
+                                : null,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Frets',
+                            ),
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              _frets = int.tryParse(value);
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'Price',
+                            ),
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                            onChanged: (value) {
+                              _price = double.tryParse(value);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      decoration:
-                          InputDecoration(labelText: 'Pickup Configuration'),
+                      decoration: InputDecoration(
+                        labelText: 'Pickup Configuration',
+                      ),
                       onChanged: (value) {
                         _pickupConfiguration = value;
                       },
@@ -169,25 +204,9 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                     SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Description'),
+                      maxLines: 5,
                       onChanged: (value) {
                         _description = value;
-                      },
-                    ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Frets'),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        _frets = int.tryParse(value);
-                      },
-                    ),
-                    SizedBox(height: 16),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Price'),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      onChanged: (value) {
-                        _price = double.tryParse(value);
                       },
                     ),
                     SizedBox(height: 20),

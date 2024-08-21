@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:musicshop_admin/models/guitar_type/guitar_type.dart';
+import 'package:musicshop_admin/pages/guitar/guitar_add_page.dart';
 import 'package:musicshop_admin/pages/guitar/guitar_details_page.dart';
 import 'package:musicshop_admin/providers/product/brand_provider.dart';
 import 'package:musicshop_admin/providers/product/guitar_provider.dart';
@@ -21,7 +23,6 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
   String _modelFilter = '';
   double? _priceFrom;
   double? _priceTo;
-  String? _descriptionFilter;
   int? _fretsFilter;
   String? _pickupsFilter;
   String? _pickupConfigurationFilter;
@@ -31,6 +32,7 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
   late GuitarTypeProvider _typeProvider;
 
   bool _isFilterMenuOpen = false;
+  List<Guitar> _guitars = [];
 
   @override
   void initState() {
@@ -57,7 +59,6 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
         'guitarTypeId': _selectedType,
         'priceFrom': _priceFrom,
         'priceTo': _priceTo,
-        'description': _descriptionFilter,
         'frets': _fretsFilter,
         'pickups': _pickupsFilter,
         'pickupConfiguration': _pickupConfigurationFilter,
@@ -69,7 +70,34 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
     });
   }
 
-  List<Guitar> _guitars = [];
+  Future<void> _deleteGuitar(int guitarId) async {
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this guitar?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true) {
+      await _guitarProvider.delete(guitarId);
+      setState(() {
+        _guitars.removeWhere((guitar) => guitar.id == guitarId);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +155,10 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
                           value: _selectedBrand,
                           hint: Text('Brand'),
                           items: [
+                            DropdownMenuItem(
+                              value: null,
+                              child: Text('All Brands'),
+                            ),
                             ...brands.map((brand) {
                               return DropdownMenuItem(
                                 value: brand.id,
@@ -161,6 +193,10 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
                           value: _selectedType,
                           hint: Text('Type'),
                           items: [
+                            DropdownMenuItem(
+                              value: null,
+                              child: Text('All Types'),
+                            ),
                             ...types.map((type) {
                               return DropdownMenuItem(
                                 value: type.id,
@@ -192,7 +228,7 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
                 Expanded(
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5, // Adjusted to fit 4 cards per row
+                      crossAxisCount: 5,
                       crossAxisSpacing: 16.0,
                       mainAxisSpacing: 16.0,
                     ),
@@ -215,29 +251,43 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
                           );
                         },
                         child: Card(
-                          color: const Color.fromARGB(
-                              255, 36, 26, 26), // Adjusted background color
+                          color: const Color.fromARGB(255, 36, 26, 26),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                height: 250, // Fixed height for the image
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(
-                                      255, 255, 255, 255), // Placeholder color
-                                  image: imageBytes != null
-                                      ? DecorationImage(
-                                          image: MemoryImage(
-                                              Uint8List.fromList(imageBytes)),
-                                          fit: BoxFit
-                                              .contain, // Changed to fit: BoxFit.contain
-                                        )
-                                      : null,
-                                ),
-                                child: imageBytes == null
-                                    ? Center(child: Text('No Image'))
-                                    : null,
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    height: 250,
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                      image: imageBytes != null
+                                          ? DecorationImage(
+                                              image: MemoryImage(
+                                                  Uint8List.fromList(
+                                                      imageBytes)),
+                                              fit: BoxFit.contain,
+                                            )
+                                          : null,
+                                    ),
+                                    child: imageBytes == null
+                                        ? Center(child: Text('No Image'))
+                                        : null,
+                                  ),
+                                  Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: IconButton(
+                                      icon:
+                                          Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () {
+                                        _deleteGuitar(guitar.id!);
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -253,7 +303,7 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
                                     Text(guitar.model ?? 'Unknown Model'),
                                     SizedBox(height: 4),
                                     Text(
-                                      '\$${guitar.price?.toStringAsFixed(2) ?? 'N/A'}', // Assuming there's a price field
+                                      '\$${guitar.price?.toStringAsFixed(2) ?? 'N/A'}',
                                       style: TextStyle(color: Colors.green),
                                     ),
                                   ],
@@ -273,114 +323,119 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
               ? Align(
                   alignment: Alignment.centerRight,
                   child: Container(
-                    width: 300,
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: MediaQuery.of(context).size.height * 0.5,
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  decoration:
-                                      InputDecoration(labelText: 'Price From'),
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (value) {
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                        labelText: 'Price From'),
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _priceFrom = double.tryParse(value);
+                                      });
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: TextField(
+                                    decoration:
+                                        InputDecoration(labelText: 'Price To'),
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _priceTo = double.tryParse(value);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 16),
+                            TextField(
+                              decoration: InputDecoration(labelText: 'Frets'),
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  _fretsFilter = int.tryParse(value);
+                                });
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            TextField(
+                              decoration: InputDecoration(labelText: 'Pickups'),
+                              onChanged: (value) {
+                                setState(() {
+                                  _pickupsFilter = value;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            TextField(
+                              decoration: InputDecoration(
+                                  labelText: 'Pickup Configuration'),
+                              onChanged: (value) {
+                                setState(() {
+                                  _pickupConfigurationFilter = value;
+                                });
+                              },
+                            ),
+                            SizedBox(height: 16),
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _search();
                                     setState(() {
-                                      _priceFrom = double.tryParse(value);
+                                      _isFilterMenuOpen = false;
                                     });
                                   },
+                                  child: Text('Add Filters'),
                                 ),
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: TextField(
-                                  decoration:
-                                      InputDecoration(labelText: 'Price To'),
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (value) {
+                                SizedBox(width: 16),
+                                ElevatedButton(
+                                  onPressed: () {
                                     setState(() {
-                                      _priceTo = double.tryParse(value);
+                                      _isFilterMenuOpen = false;
                                     });
                                   },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                  ),
+                                  child: Text('Cancel'),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          TextField(
-                            decoration:
-                                InputDecoration(labelText: 'Description'),
-                            onChanged: (value) {
-                              setState(() {
-                                _descriptionFilter = value;
-                              });
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          TextField(
-                            decoration: InputDecoration(labelText: 'Frets'),
-                            keyboardType: TextInputType.number,
-                            onChanged: (value) {
-                              setState(() {
-                                _fretsFilter = int.tryParse(value);
-                              });
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          TextField(
-                            decoration: InputDecoration(labelText: 'Pickups'),
-                            onChanged: (value) {
-                              setState(() {
-                                _pickupsFilter = value;
-                              });
-                            },
-                          ),
-                          SizedBox(height: 16),
-                          TextField(
-                            decoration: InputDecoration(
-                                labelText: 'Pickup Configuration'),
-                            onChanged: (value) {
-                              setState(() {
-                                _pickupConfigurationFilter = value;
-                              });
-                            },
-                          ),
-                          Spacer(),
-                          Row(
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  _search();
-                                  setState(() {
-                                    _isFilterMenuOpen = false;
-                                  });
-                                },
-                                child: Text('Add Filters'),
-                              ),
-                              SizedBox(width: 16),
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _isFilterMenuOpen = false;
-                                  });
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                ),
-                                child: Text('Cancel'),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 )
               : Container(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddGuitarPage(),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: CupertinoColors.lightBackgroundGray,
       ),
     );
   }
