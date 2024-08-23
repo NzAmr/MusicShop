@@ -41,8 +41,15 @@ namespace MusicShop.Services.Implementations
 
             if (search.Model != null)
             {
-                filteredQuery = filteredQuery.Where(x => x.Model.ToLower().Contains(search.Model.ToLower()));
+                string searchModelLower = search.Model.ToLower();
+
+                filteredQuery = filteredQuery.Where(x =>
+                    x.Model.ToLower().Contains(searchModelLower) ||
+                    (x.Brand != null && x.Brand.Name.ToLower().Contains(searchModelLower)) ||
+                    (x.Brand != null && (x.Brand.Name + " " + x.Model).ToLower().Contains(searchModelLower))
+                );
             }
+
 
             if (search.PriceFrom != null)
             {
@@ -73,9 +80,26 @@ namespace MusicShop.Services.Implementations
 
         public override void BeforeInsert(GuitarInsertRequest insert, Guitar entity)
         {
-            entity.ProductImage = Convert.FromBase64String(insert.Image);
+            entity.Type = nameof(Guitar);
+            //entity.ProductImage = Convert.FromBase64String(insert.ProductImage);
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
+            entity.ProductNumber = GenerateUniqueProductNumber();
+        }
+
+        private string GenerateUniqueProductNumber()
+        {
+            string productNumber;
+            bool isUnique;
+
+            do
+            {
+                productNumber = "PRO" + DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999).ToString();
+                isUnique = !Context.Products.Any(x => x.ProductNumber == productNumber);
+            }
+            while (!isUnique);
+
+            return productNumber;
         }
     }
 }

@@ -25,8 +25,25 @@ namespace MusicShop.Services.Implementations
         }
         public override void BeforeInsert(AmplifierInsertRequest insert, Amplifier entity)
         {
+            entity.Type = nameof(Amplifier);
+            entity.ProductImage = Convert.FromBase64String(insert.ProductImage);
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
+            entity.ProductNumber = GenerateUniqueProductNumber();
+        }
+        private string GenerateUniqueProductNumber()
+        {
+            string productNumber;
+            bool isUnique;
+
+            do
+            {
+                productNumber = "PRO" + DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999).ToString();
+                isUnique = !Context.Products.Any(x => x.ProductNumber == productNumber);
+            }
+            while (!isUnique);
+
+            return productNumber;
         }
     }
 }

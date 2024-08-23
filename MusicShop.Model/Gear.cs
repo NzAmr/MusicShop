@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Model
 {
-    public class Gear : BaseProduct 
+    public class Gear : Product 
     {
         public GearCategory? GearCategory { get; set; }
 

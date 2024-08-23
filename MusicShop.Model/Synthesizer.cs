@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Model
 {
-    public class Synthesizer : BaseProduct
+    public class Synthesizer : Product
     {
         public int? KeyboardSize { get; set; }
         public bool? WeighedKeys { get; set; }

@@ -8,8 +8,7 @@ namespace MusicShop.Model.Requests
 {
     public class GuitarInsertRequest
     {
-        //public string ProductNumber { get; set; }
-        public string? Image { get; set; }
+        public byte[]? ProductImage { get; set; }
         public int BrandId { get; set; }
         public string Model { get; set; }
         public decimal Price { get; set; }

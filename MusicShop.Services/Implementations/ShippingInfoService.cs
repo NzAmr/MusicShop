@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using MusicShop.Model.Requests;
 using MusicShop.Model.SearchObjects;
 using MusicShop.Services.Database;
@@ -17,19 +18,25 @@ namespace MusicShop.Services.Implementations
         {
         }
 
-        public IEnumerable<Model.ShippingInfo> GetByCustomerName(NameSearchObject? search = null)
-        {
-            var customer = Context.Set<Customer>().FirstOrDefault(c => c.FirstName.ToLower().Contains(search.Name.ToLower()));
-            var item = Context.Set<Database.ShippingInfo>().Where(x => x.Id == customer.ShippingInfoId).ToList();
 
-            return Mapper.Map<IEnumerable<Model.ShippingInfo>>(item);
+        public Model.ShippingInfo GetByCustomerId(int id)
+        {
+
+            var item = Context.Set<ShippingInfo>().Include(x => x.Customer)
+                .FirstOrDefault(s => s.CustomerId == id);
+
+            if (item == null)
+            {
+                return null; 
+            }
+
+            return Mapper.Map<Model.ShippingInfo>(item);
         }
-        public IEnumerable<Model.ShippingInfo> GetByCustomerId(int id)
-        {
-            var customer = Context.Set<Customer>().FirstOrDefault(x => x.Id == id);
-            var item = Context.Set<ShippingInfo>().Where(s => s.Id == customer.ShippingInfoId).ToList();
 
-            return Mapper.Map<IEnumerable<Model.ShippingInfo>>(item);
+        public override IQueryable<ShippingInfo> AddInclude(IQueryable<ShippingInfo> query, NameSearchObject? search = null)
+        {
+            query = query.Include(x => x.Customer);
+            return query;
         }
     }
 }

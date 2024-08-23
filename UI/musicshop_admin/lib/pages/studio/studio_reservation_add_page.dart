@@ -1,23 +1,120 @@
 import 'package:flutter/material.dart';
-import 'package:musicshop_admin/models/studio/studio_reservation_insert_request.dart';
+import 'package:musicshop_admin/models/customer/customer.dart';
 import 'package:musicshop_admin/pages/studio/studio_calendar_popup.dart';
+import 'package:musicshop_admin/providers/customer/customer_provider.dart';
+import 'package:musicshop_admin/models/studio/studio_reservation_insert_request.dart';
 import 'package:musicshop_admin/providers/studio/studio_reservation_provider.dart';
 import 'package:provider/provider.dart';
 
 class StudioReservationPage extends StatefulWidget {
   @override
-  _ReservationPageState createState() => _ReservationPageState();
+  _StudioReservationPageState createState() => _StudioReservationPageState();
 }
 
-class _ReservationPageState extends State<StudioReservationPage> {
+class _StudioReservationPageState extends State<StudioReservationPage> {
   DateTime? _fromTime;
   DateTime? _toTime;
   final TextEditingController _durationController = TextEditingController();
+  int? _selectedCustomerId;
+  String? _selectedCustomerName;
+  Future<List<Customer>>? _customersFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _customersFuture =
+        Provider.of<CustomerProvider>(context, listen: false).get();
+  }
+
+  Future<void> _selectCustomer() async {
+    final customers = await _customersFuture;
+
+    if (customers == null) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.5,
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Select Customer',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 4.0,
+                    mainAxisSpacing: 4.0,
+                    childAspectRatio: 2 / 1,
+                  ),
+                  itemCount: customers.length,
+                  itemBuilder: (context, index) {
+                    final customer = customers[index];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedCustomerId = customer.id;
+                          _selectedCustomerName =
+                              '${customer.firstName ?? 'No First Name'} ${customer.lastName ?? 'No Last Name'}';
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: Card(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        margin: const EdgeInsets.all(8.0),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white, width: 1.5),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                customer.username ?? 'No username',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(height: 4.0),
+                              Text(
+                                '${customer.firstName ?? 'No First Name'} ${customer.lastName ?? 'No Last Name'}',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Future<void> _submitReservation() async {
-    if (_fromTime == null || _toTime == null) {
+    if (_fromTime == null || _toTime == null || _selectedCustomerId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select the start time and duration.')),
+        SnackBar(
+            content:
+                Text('Please select the start time, duration, and customer.')),
       );
       return;
     }
@@ -25,7 +122,7 @@ class _ReservationPageState extends State<StudioReservationPage> {
     final request = StudioReservationInsertRequest()
       ..timeFrom = _fromTime
       ..timeTo = _toTime
-      ..customerId = 2;
+      ..customerId = _selectedCustomerId;
 
     try {
       await Provider.of<StudioReservationProvider>(context, listen: false)
@@ -94,15 +191,16 @@ class _ReservationPageState extends State<StudioReservationPage> {
                 titleSmall: TextStyle(color: theme.colorScheme.onSurface),
               ),
               timePickerTheme: TimePickerThemeData(
-                  backgroundColor: theme.colorScheme.surface,
-                  hourMinuteTextColor: theme.colorScheme.onSurface,
-                  hourMinuteColor: theme.colorScheme.surface,
-                  dialBackgroundColor: theme.colorScheme.surface,
-                  dialHandColor: theme.colorScheme.primary,
-                  dialTextColor: theme.colorScheme.onSurface,
-                  helpTextStyle: TextStyle(color: theme.colorScheme.onSurface),
-                  dayPeriodTextColor: theme.colorScheme.onSurface,
-                  dayPeriodColor: theme.colorScheme.primary),
+                backgroundColor: theme.colorScheme.surface,
+                hourMinuteTextColor: theme.colorScheme.onSurface,
+                hourMinuteColor: theme.colorScheme.surface,
+                dialBackgroundColor: theme.colorScheme.surface,
+                dialHandColor: theme.colorScheme.primary,
+                dialTextColor: theme.colorScheme.onSurface,
+                helpTextStyle: TextStyle(color: theme.colorScheme.onSurface),
+                dayPeriodTextColor: theme.colorScheme.onSurface,
+                dayPeriodColor: theme.colorScheme.primary,
+              ),
             ),
             child: child!,
           );
@@ -127,12 +225,14 @@ class _ReservationPageState extends State<StudioReservationPage> {
   void _updateToTime() {
     if (_fromTime != null) {
       final durationHours = int.tryParse(_durationController.text) ?? 0;
-      if (durationHours > 0 && durationHours <= 4) {
+      if (durationHours > 0 && durationHours <= 12) {
         setState(() {
           _toTime = _fromTime!.add(Duration(hours: durationHours));
         });
       } else {
-        _toTime = null;
+        setState(() {
+          _toTime = null;
+        });
       }
     }
   }
@@ -165,7 +265,7 @@ class _ReservationPageState extends State<StudioReservationPage> {
                 controller: _durationController,
                 decoration: InputDecoration(
                   labelText: 'Duration (hours)',
-                  hintText: 'Enter duration (max 4 hours)',
+                  hintText: 'Enter duration (max 12 hours)',
                 ),
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
@@ -180,7 +280,20 @@ class _ReservationPageState extends State<StudioReservationPage> {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
+              if (_selectedCustomerName != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    'Selected User: $_selectedCustomerName',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
               SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _selectCustomer,
+                child: Text('Select Customer'),
+              ),
+              SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _submitReservation,
                 child: Text('Add Reservation'),

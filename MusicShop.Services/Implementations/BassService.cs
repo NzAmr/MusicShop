@@ -66,10 +66,7 @@ namespace MusicShop.Services.Implementations
                 filteredQuery = filteredQuery.Where(x => x.ProductNumber.ToLower().Contains(search.ProductNumber.ToLower()));
             }
 
-            if (search.ProductImageId != null)
-            {
-                filteredQuery = filteredQuery.Where(x => x.ProductImageId == search.ProductImageId);
-            }
+           
 
             return filteredQuery;
         }
@@ -84,9 +81,26 @@ namespace MusicShop.Services.Implementations
 
         public override void BeforeInsert(BassUpsertRequest insert, Bass entity)
         {
-            entity.ProductImage = Convert.FromBase64String(insert.Image);
+            entity.Type = nameof(Bass);
+            //entity.ProductImage = Convert.FromBase64String(insert.ProductImage);
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
+            entity.ProductNumber = GenerateUniqueProductNumber();
+        }
+
+        private string GenerateUniqueProductNumber()
+        {
+            string productNumber;
+            bool isUnique;
+
+            do
+            {
+                productNumber = "PRO" + DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999).ToString();
+                isUnique = !Context.Products.Any(x => x.ProductNumber == productNumber);
+            }
+            while (!isUnique);
+
+            return productNumber;
         }
     }
 }

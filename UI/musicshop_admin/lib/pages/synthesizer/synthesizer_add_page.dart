@@ -200,7 +200,7 @@ class _AddSynthesizerPageState extends State<AddSynthesizerPage> {
       ..WeighedKeys = _weighedKeys
       ..Polyphony = _polyphony
       ..NumberOfPresets = _numberOfPresets
-      ..image = _base64Image;
+      ..productImage = _base64Image;
 
     try {
       await synthesizerProvider.insert(request);

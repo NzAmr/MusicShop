@@ -188,7 +188,7 @@ class _AddGearPageState extends State<AddGearPage> {
       ..description = _description
       ..price = _price
       ..model = _model
-      ..image = _base64Image;
+      ..productImage = _base64Image;
 
     try {
       await gearProvider.insert(request);

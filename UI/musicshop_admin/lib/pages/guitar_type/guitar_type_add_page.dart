@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:musicshop_admin/models/requests/name_insert_request.dart';
-import 'package:musicshop_admin/models/requests/name_update_request.dart';
+import 'package:musicshop_admin/models/requests/name_upsert_request.dart';
 import 'package:musicshop_admin/providers/product/guitar_type_provider.dart';
 import 'package:musicshop_admin/models/guitar_type/guitar_type.dart';
 
@@ -25,7 +24,7 @@ class _AddGuitarTypePageState extends State<AddGuitarTypePage> {
   void _saveGuitarType() async {
     final String guitarTypeName = _nameController.text;
     if (guitarTypeName.isNotEmpty) {
-      final NameInsertRequest request = NameInsertRequest()
+      final NameUpsertRequest request = NameUpsertRequest()
         ..name = guitarTypeName;
 
       try {
@@ -91,8 +90,7 @@ class _AddGuitarTypePageState extends State<AddGuitarTypePage> {
               onPressed: () async {
                 final String newName = _updateController.text;
                 if (newName.isNotEmpty) {
-                  final NameUpdateRequest request = NameUpdateRequest()
-                    ..id = guitarType.id
+                  final NameUpsertRequest request = NameUpsertRequest()
                     ..name = newName;
                   try {
                     await _guitarTypeProvider.update(

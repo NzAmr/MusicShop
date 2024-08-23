@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:musicshop_admin/pages/amplifier/amplifier_add_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:musicshop_admin/pages/amplifier/amplifier_search_page.dart';
 import 'package:musicshop_admin/pages/auth/login_page.dart';
-import 'package:musicshop_admin/pages/bass/bass_add_page.dart';
-import 'package:musicshop_admin/pages/brand/brand_add_page.dart';
-import 'package:musicshop_admin/pages/gear/gear_add_page.dart';
+import 'package:musicshop_admin/pages/customer/customer_manage_page.dart';
 import 'package:musicshop_admin/pages/gear/gear_search_page.dart';
-import 'package:musicshop_admin/pages/gear_category/gear_category_add_page.dart';
-import 'package:musicshop_admin/pages/guitar/guitar_add_page.dart';
 import 'package:musicshop_admin/pages/guitar/guitar_search_page.dart';
-import 'package:musicshop_admin/pages/guitar_type/guitar_type_add_page.dart';
+import 'package:musicshop_admin/pages/order/orders_search_page.dart';
 import 'package:musicshop_admin/pages/studio/studio_reservation_add_page.dart';
-import 'package:musicshop_admin/pages/synthesizer/synthesizer_add_page.dart';
 import 'package:musicshop_admin/pages/synthesizer/synthesizer_search_page.dart';
+import 'package:musicshop_admin/pages/brand/brand_add_page.dart';
+import 'package:musicshop_admin/pages/guitar_type/guitar_type_add_page.dart';
+import 'package:musicshop_admin/pages/gear_category/gear_category_add_page.dart';
 import 'package:musicshop_admin/providers/api_provider.dart';
 
 void main() {
@@ -64,6 +63,9 @@ const Color _darkBlue = Color.fromARGB(255, 3, 13, 95);
 const Color _blue = Color.fromARGB(255, 75, 89, 194);
 const Color _darkGray = Color.fromARGB(255, 39, 35, 35);
 const Color _lightGray = Color.fromARGB(255, 228, 226, 226);
+
+// Slightly lighter gray for tile background
+const Color _tileBackground = Color.fromARGB(255, 100, 100, 100);
 
 const TextStyle _bodyTextStyle = TextStyle(
   color: _lightGray,
@@ -145,107 +147,116 @@ class MyHomePage extends StatelessWidget {
                   );
                 },
               ),
-              ListTile(
-                title: Text('Add Guitar',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddGuitarPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Add Bass',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddBassPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Add Synthesizer',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddSynthesizerPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Add Gear',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddGearPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Add Amplifier',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AddAmplifierPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Search Guitars',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GuitarSearchPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Search Synthesizers',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SynthesizerSearchPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Search Gear',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GearSearchPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: Text('Studio Reservation',
-                    style: TextStyle(color: colorScheme.onSurface)),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => StudioReservationPage()),
-                  );
-                },
-              ),
             ],
           ),
         ),
       ),
-      body: Center(
-        child: Text(
-          'Welcome to the Music Shop Admin!',
-          style: Theme.of(context).textTheme.headlineMedium,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Welcome to the Music Shop Admin!',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ),
+          Expanded(
+            child: GridView.count(
+              crossAxisCount: 4,
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                _buildTile(
+                  context,
+                  'Guitars',
+                  FontAwesomeIcons.guitar,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GuitarSearchPage()),
+                  ),
+                ),
+                _buildTile(
+                  context,
+                  'Amplifiers',
+                  FontAwesomeIcons.volumeHigh,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AmplifierSearchPage()),
+                  ),
+                ),
+                _buildTile(
+                  context,
+                  'Synthesizers',
+                  FontAwesomeIcons.keyboard,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SynthesizerSearchPage()),
+                  ),
+                ),
+                _buildTile(
+                  context,
+                  'Gear',
+                  FontAwesomeIcons.box,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GearSearchPage()),
+                  ),
+                ),
+                _buildTile(
+                  context,
+                  'Studio Reservations',
+                  FontAwesomeIcons.calendar,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StudioReservationPage()),
+                  ),
+                ),
+                _buildTile(
+                  context,
+                  'Customers',
+                  FontAwesomeIcons.user,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ManageCustomersPage()),
+                  ),
+                ),
+                _buildTile(
+                  context,
+                  'Orders',
+                  FontAwesomeIcons.gift,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => OrdersSearchPage()),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTile(
+      BuildContext context, String title, IconData icon, VoidCallback onTap) {
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      color: const Color.fromARGB(255, 0, 0, 0),
+      child: InkWell(
+        onTap: onTap,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon,
+                  size: 50, color: Theme.of(context).colorScheme.primary),
+              Text(title, style: Theme.of(context).textTheme.titleLarge),
+            ],
+          ),
         ),
       ),
     );

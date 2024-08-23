@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:musicshop_admin/models/abstract/product.dart';
+import 'package:musicshop_admin/pages/order/order_details_page.dart';
 import 'package:provider/provider.dart';
 import 'package:musicshop_admin/providers/product/brand_provider.dart';
 import 'package:musicshop_admin/providers/product/guitar_provider.dart';
@@ -133,7 +135,7 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
         ..pickups = pickups
         ..pickupConfiguration = pickupConfiguration
         ..frets = frets
-        ..image = _imageBase64
+        ..productImage = _imageBase64
         ..brandId = _selectedBrandId
         ..guitarTypeId = _selectedGuitarTypeId;
 
@@ -200,6 +202,24 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
                 fit: BoxFit.cover,
               )
             : Placeholder(),
+      ),
+    );
+  }
+
+  void _navigateToOrderDetailsPage() {
+    final product = Product();
+
+    product.id = widget.guitar.id;
+    product.model = widget.guitar.model;
+    product.price = widget.guitar.price;
+    product.description = widget.guitar.description;
+    product.productImage = widget.guitar.productImage;
+    product.brand = new Brand();
+    product.brand?.id = widget.guitar.brand?.id;
+    product.brand?.name = widget.guitar.brand?.name;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OrderDetailsPage(product: product),
       ),
     );
   }
@@ -339,11 +359,23 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: _updateGuitar,
-                          child: Text('Update'),
-                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: _updateGuitar,
+                                child: Text('Update'),
+                              ),
+                              SizedBox(width: 16),
+                              ElevatedButton(
+                                onPressed: _navigateToOrderDetailsPage,
+                                child: Text('Order'),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),

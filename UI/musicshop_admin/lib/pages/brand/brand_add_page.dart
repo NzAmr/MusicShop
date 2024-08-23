@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musicshop_admin/models/brand/brand.dart';
-import 'package:musicshop_admin/models/requests/name_insert_request.dart';
+import 'package:musicshop_admin/models/requests/name_upsert_request.dart';
 import 'package:musicshop_admin/providers/product/brand_provider.dart';
 
 class AddBrandPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _AddBrandPageState extends State<AddBrandPage> {
   void _saveBrand() async {
     final String brandName = _nameController.text;
     if (brandName.isNotEmpty) {
-      final NameInsertRequest request = NameInsertRequest()..name = brandName;
+      final NameUpsertRequest request = NameUpsertRequest()..name = brandName;
 
       try {
         await _brandProvider.insert(request.toJson());
@@ -89,7 +89,7 @@ class _AddBrandPageState extends State<AddBrandPage> {
               onPressed: () async {
                 final String newName = _updateController.text;
                 if (newName.isNotEmpty) {
-                  final NameInsertRequest request = NameInsertRequest()
+                  final NameUpsertRequest request = NameUpsertRequest()
                     ..name = newName;
                   try {
                     await _brandProvider.update(brand.id!, request.toJson());

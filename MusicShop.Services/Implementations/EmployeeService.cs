@@ -43,6 +43,8 @@ namespace MusicShop.Services.Implementations
             entity.PasswordHash = AuthUtils.GenerateHash(salt, insert.Password);
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
+            ShippingInfo shippingInfo = new ShippingInfo();
+
         }
         public Model.Employee Login(LoginRequest request)
         { 

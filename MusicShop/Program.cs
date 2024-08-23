@@ -49,12 +49,14 @@ builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IGuitarTypeService, GuitarTypeService>();
 builder.Services.AddTransient<IProductImageService, ProductImageService>();
 builder.Services.AddTransient<IStudioReservationService, StudioReservationService>();
+builder.Services.AddTransient<IOrderDetailService,OrderDetailsService>();
+builder.Services.AddTransient<IProductService, ProductService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MusicShopDBContext>(options =>
     options.UseSqlServer(connectionString));
 
-//builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 var app = builder.Build();
 

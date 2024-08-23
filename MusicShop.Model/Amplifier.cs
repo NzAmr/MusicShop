@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Model
 {
-    public class Amplifier : BaseProduct
+    public class Amplifier : Product
     {
         public string? ProductNumber { get; set; }
         public int? ProductImageId { get; set; }

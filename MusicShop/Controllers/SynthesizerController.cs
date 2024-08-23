@@ -12,7 +12,21 @@ namespace MusicShop.Controllers
     public class SynthesizerController : BaseCRUDController<Model.Synthesizer, SynthesizerSearchObject, SynthesizerUpsertRequest, SynthesizerUpsertRequest>
     {
         public SynthesizerController(ISynthesizerService service) : base(service) {}
+        [Authorize(Roles = "Employee")]
+        public override ActionResult<Synthesizer> Insert([FromBody] SynthesizerUpsertRequest insert)
+        {
+            return base.Insert(insert);
+        }
+        [Authorize(Roles = "Employee")]
+        public override ActionResult<Synthesizer> Update(int id, [FromBody] SynthesizerUpsertRequest update)
+        {
+            return base.Update(id, update);
+        }
+        [Authorize(Roles = "Employee")]
+        public override ActionResult<Synthesizer> Delete(int id)
+        {
+            return base.Delete(id);
+        }
 
-        
     }
 }

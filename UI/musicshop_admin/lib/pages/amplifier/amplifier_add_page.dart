@@ -208,7 +208,7 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
       ..headphoneJack = _headphoneJack
       ..usbjack = _usbJack
       ..numberOfPresets = _numberOfPresets
-      ..image = _base64Image;
+      ..productImage = _base64Image;
 
     try {
       await amplifierProvider.insert(request);

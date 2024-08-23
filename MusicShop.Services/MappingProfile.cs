@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MusicShop.Model.BaseModel;
 using MusicShop.Model.Requests;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace MusicShop.Services
     {
         public MappingProfile()
         {
+            
+
             CreateMap<Database.Brand, MusicShop.Model.Brand>();
             CreateMap<NameUpsertRequest, Database.Brand>();
 
@@ -49,6 +52,13 @@ namespace MusicShop.Services
 
             CreateMap<Database.StudioReservation, Model.StudioReservation>();
             CreateMap<StudioReservationUpsertRequest, Database.StudioReservation>();
+
+            CreateMap<Database.OrderDetail, Model.OrderDetail>();
+            CreateMap<OrderInsertRequest, Database.OrderDetail>();
+            CreateMap<OrderUpdateRequest, Database.OrderDetail>();
+
+            CreateMap<Database.Product, Model.BaseModel.Product>();
+            CreateMap<ProductUpsertRequest, Database.Product>();
         }
     }
 }

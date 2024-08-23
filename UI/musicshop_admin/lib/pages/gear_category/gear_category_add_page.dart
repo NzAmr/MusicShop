@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:musicshop_admin/models/requests/name_insert_request.dart';
+import 'package:musicshop_admin/models/requests/name_upsert_request.dart';
 import 'package:musicshop_admin/providers/product/gear_category_provider.dart';
 import 'package:musicshop_admin/models/gear_category/gear_category.dart';
 
@@ -24,7 +24,7 @@ class _AddGearCategoryPageState extends State<AddGearCategoryPage> {
   void _saveGearCategory() async {
     final String gearCategoryName = _nameController.text;
     if (gearCategoryName.isNotEmpty) {
-      final NameInsertRequest request = NameInsertRequest()
+      final NameUpsertRequest request = NameUpsertRequest()
         ..name = gearCategoryName;
 
       try {
@@ -90,7 +90,7 @@ class _AddGearCategoryPageState extends State<AddGearCategoryPage> {
               onPressed: () async {
                 final String newName = _updateController.text;
                 if (newName.isNotEmpty) {
-                  final NameInsertRequest request = NameInsertRequest()
+                  final NameUpsertRequest request = NameUpsertRequest()
                     ..name = newName;
                   try {
                     await _gearCategoryProvider.update(

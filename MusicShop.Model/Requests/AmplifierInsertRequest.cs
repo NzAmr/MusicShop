@@ -8,7 +8,6 @@ namespace MusicShop.Model.Requests
 {
     public class AmplifierInsertRequest
     {
-        //public string? ProductNumber { get; set; }
         public int? BrandId { get; set; }
         public string? Model { get; set; }
         public decimal? Price { get; set; }
@@ -18,5 +17,6 @@ namespace MusicShop.Model.Requests
         public bool? HeadphoneJack { get; set; }
         public bool? Usbjack { get; set; }
         public int? NumberOfPresets { get; set; }
+        public string? ProductImage { get; set; }
     }
 }

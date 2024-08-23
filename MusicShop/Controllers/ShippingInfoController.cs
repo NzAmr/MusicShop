@@ -12,11 +12,11 @@ namespace MusicShop.Controllers
     public class ShippingInfoController : BaseCRUDController<Model.ShippingInfo, NameSearchObject, ShippingInfoUpsertRequest, ShippingInfoUpsertRequest>
     {
         public ShippingInfoController(IShippingInfoService service) : base(service) {}
-        [HttpGet("get-by-customer-name")]
-        public IEnumerable<ShippingInfo> GetByCustomerName([FromQuery] NameSearchObject search = null)
+        [HttpGet("get-by-customer-id")]
+        public ShippingInfo GetByCustomerId([FromQuery] int id )
         {
             var _service = (IShippingInfoService)Service;
-            return (_service as IShippingInfoService).GetByCustomerName(search);
+            return (_service as IShippingInfoService).GetByCustomerId(id);
         }
 
     }

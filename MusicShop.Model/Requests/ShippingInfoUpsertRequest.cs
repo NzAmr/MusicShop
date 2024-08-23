@@ -8,6 +8,7 @@ namespace MusicShop.Model.Requests
 {
     public class ShippingInfoUpsertRequest
     {
+        public int? CustomerId { get; set; }
         public string? Country { get; set; }
         public string? StateOrProvince { get; set; }
         public string? City { get; set; }

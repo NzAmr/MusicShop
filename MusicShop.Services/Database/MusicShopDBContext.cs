@@ -63,30 +63,16 @@ namespace MusicShop.Services.Database
                 entity.ToTable("Customer");
 
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-
                 entity.Property(e => e.Email).HasMaxLength(100);
-
                 entity.Property(e => e.FirstName).HasMaxLength(50);
-
                 entity.Property(e => e.LastName).HasMaxLength(50);
-
                 entity.Property(e => e.PasswordHash).HasMaxLength(50);
-
                 entity.Property(e => e.PasswordSalt).HasMaxLength(50);
-
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
-
-                entity.Property(e => e.ShippingInfoId).HasColumnName("ShippingInfoID");
-
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-
                 entity.Property(e => e.Username).HasMaxLength(50);
-
-                entity.HasOne(d => d.ShippingInfo)
-                    .WithMany(p => p.Customers)
-                    .HasForeignKey(d => d.ShippingInfoId)
-                    .HasConstraintName("FK_Customer_ShippingInfo");
             });
+
 
             modelBuilder.Entity<Employee>(entity =>
             {
@@ -139,7 +125,6 @@ namespace MusicShop.Services.Database
 
                 entity.Property(e => e.OrderNumber).HasMaxLength(50);
 
-                entity.Property(e => e.ShippingPrice).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.ShippingStatus).HasMaxLength(50);
 
@@ -160,16 +145,19 @@ namespace MusicShop.Services.Database
             {
                 entity.ToTable("ShippingInfo");
 
-                entity.Property(e => e.City).HasMaxLength(50);
-
                 entity.Property(e => e.Country).HasMaxLength(50);
-
                 entity.Property(e => e.StateOrProvince).HasMaxLength(50);
-
+                entity.Property(e => e.City).HasMaxLength(50);
                 entity.Property(e => e.StreetAddress).HasMaxLength(50);
-
                 entity.Property(e => e.ZipCode).HasMaxLength(12);
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.ShippingInfos) 
+                    .HasForeignKey(d => d.CustomerId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_ShippingInfo_Customer");
             });
+
 
             modelBuilder.Entity<StudioReservation>(entity =>
             {

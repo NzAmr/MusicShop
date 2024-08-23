@@ -12,11 +12,6 @@ class CalendarPopup extends StatefulWidget {
 
 class _CalendarPopupState extends State<CalendarPopup> {
   List<StudioReservation> _reservations = [];
-  DateTime _focusedDay = DateTime.now();
-  DateTime _startOfWeek =
-      DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1));
-  final DateTime _endOfWeek =
-      DateTime.now().add(Duration(days: 7 - DateTime.now().weekday));
 
   @override
   void initState() {

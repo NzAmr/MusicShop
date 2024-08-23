@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:musicshop_admin/models/abstract/product.dart';
+import 'package:musicshop_admin/pages/order/order_details_page.dart';
 import 'package:provider/provider.dart';
 import 'package:musicshop_admin/providers/product/synthesizer_provider.dart';
 import 'package:musicshop_admin/providers/product/brand_provider.dart';
@@ -126,7 +128,7 @@ class _SynthesizerDetailsPageState extends State<SynthesizerDetailsPage> {
         ..weighedKeys = widget.synthesizer.weighedKeys
         ..polyphony = polyphony
         ..numberOfPresets = numberOfPresets
-        ..image = _imageBase64
+        ..productImage = _imageBase64
         ..brandId = _selectedBrandId;
 
       await _synthesizerProvider.update(id, updateRequest);
@@ -179,6 +181,24 @@ class _SynthesizerDetailsPageState extends State<SynthesizerDetailsPage> {
                 fit: BoxFit.cover,
               )
             : Placeholder(),
+      ),
+    );
+  }
+
+  void _navigateToOrderDetailsPage() {
+    final product = Product();
+
+    product.id = widget.synthesizer.id;
+    product.model = widget.synthesizer.model;
+    product.price = widget.synthesizer.price;
+    product.description = widget.synthesizer.description;
+    product.productImage = widget.synthesizer.productImage;
+    product.brand = new Brand();
+    product.brand?.id = widget.synthesizer.brand?.id;
+    product.brand?.name = widget.synthesizer.brand?.name;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OrderDetailsPage(product: product),
       ),
     );
   }
@@ -300,11 +320,23 @@ class _SynthesizerDetailsPageState extends State<SynthesizerDetailsPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: _updateSynthesizer,
-                          child: Text('Update'),
-                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: _updateSynthesizer,
+                                child: Text('Update'),
+                              ),
+                              SizedBox(width: 16),
+                              ElevatedButton(
+                                onPressed: _navigateToOrderDetailsPage,
+                                child: Text('Order'),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),

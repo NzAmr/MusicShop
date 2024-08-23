@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusicShop.Model;
+using System;
 using System.Collections.Generic;
 
 namespace MusicShop.Services.Database
@@ -8,13 +9,13 @@ namespace MusicShop.Services.Database
         public Customer()
         {
             StudioReservations = new HashSet<StudioReservation>();
+            ShippingInfos = new HashSet<ShippingInfo>();
         }
 
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Username { get; set; }
         public string? Email { get; set; }
-        public int? ShippingInfoId { get; set; }
         public string? PasswordHash { get; set; }
         public string? PasswordSalt { get; set; }
         public bool? Status { get; set; }
@@ -22,7 +23,8 @@ namespace MusicShop.Services.Database
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public virtual ShippingInfo? ShippingInfo { get; set; }
         public virtual ICollection<StudioReservation> StudioReservations { get; set; }
+        public virtual ICollection<ShippingInfo> ShippingInfos { get; set; } 
+
     }
 }

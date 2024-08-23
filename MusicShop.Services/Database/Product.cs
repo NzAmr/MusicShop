@@ -12,14 +12,13 @@ namespace MusicShop.Services.Database
         }
 
         public string? ProductNumber { get; set; }
-        public int? ProductImageId { get; set; }
         public int? BrandId { get; set; }
         public string? Model { get; set; }
         public decimal? Price { get; set; }
         public string? Description { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
+        public string? Type { get; set; }
         public virtual Brand? Brand { get; set; }
         public virtual byte[]? ProductImage { get; set; }
 

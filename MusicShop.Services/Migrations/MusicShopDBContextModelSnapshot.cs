@@ -74,10 +74,6 @@ namespace MusicShop.Services.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("ShippingInfoId")
-                        .HasColumnType("int")
-                        .HasColumnName("ShippingInfoID");
-
                     b.Property<bool?>("Status")
                         .HasColumnType("bit");
 
@@ -89,8 +85,6 @@ namespace MusicShop.Services.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ShippingInfoId");
 
                     b.ToTable("Customer", (string)null);
                 });
@@ -203,8 +197,8 @@ namespace MusicShop.Services.Migrations
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("ShippingPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("ShippingInfoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ShippingStatus")
                         .HasMaxLength(50)
@@ -213,6 +207,8 @@ namespace MusicShop.Services.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ShippingInfoId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -247,6 +243,9 @@ namespace MusicShop.Services.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProductNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -293,6 +292,10 @@ namespace MusicShop.Services.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.Property<string>("StateOrProvince")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -306,6 +309,8 @@ namespace MusicShop.Services.Migrations
                         .HasColumnType("nvarchar(12)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("ShippingInfo", (string)null);
                 });
@@ -426,16 +431,6 @@ namespace MusicShop.Services.Migrations
                     b.ToTable("Synthesizer", (string)null);
                 });
 
-            modelBuilder.Entity("MusicShop.Services.Database.Customer", b =>
-                {
-                    b.HasOne("MusicShop.Services.Database.ShippingInfo", "ShippingInfo")
-                        .WithMany("Customers")
-                        .HasForeignKey("ShippingInfoId")
-                        .HasConstraintName("FK_Customer_ShippingInfo");
-
-                    b.Navigation("ShippingInfo");
-                });
-
             modelBuilder.Entity("MusicShop.Services.Database.OrderDetail", b =>
                 {
                     b.HasOne("MusicShop.Services.Database.Product", "Product")
@@ -443,7 +438,13 @@ namespace MusicShop.Services.Migrations
                         .HasForeignKey("ProductId")
                         .HasConstraintName("FK_OrderDetails_Product");
 
+                    b.HasOne("MusicShop.Services.Database.ShippingInfo", "ShippingInfo")
+                        .WithMany()
+                        .HasForeignKey("ShippingInfoId");
+
                     b.Navigation("Product");
+
+                    b.Navigation("ShippingInfo");
                 });
 
             modelBuilder.Entity("MusicShop.Services.Database.Product", b =>
@@ -457,6 +458,18 @@ namespace MusicShop.Services.Migrations
                         .HasForeignKey("ProductImageId");
 
                     b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("MusicShop.Services.Database.ShippingInfo", b =>
+                {
+                    b.HasOne("MusicShop.Services.Database.Customer", "Customer")
+                        .WithMany("ShippingInfos")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_ShippingInfo_Customer");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("MusicShop.Services.Database.StudioReservation", b =>
@@ -539,6 +552,8 @@ namespace MusicShop.Services.Migrations
 
             modelBuilder.Entity("MusicShop.Services.Database.Customer", b =>
                 {
+                    b.Navigation("ShippingInfos");
+
                     b.Navigation("StudioReservations");
                 });
 
@@ -562,11 +577,6 @@ namespace MusicShop.Services.Migrations
             modelBuilder.Entity("MusicShop.Services.Database.ProductImage", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("MusicShop.Services.Database.ShippingInfo", b =>
-                {
-                    b.Navigation("Customers");
                 });
 #pragma warning restore 612, 618
         }

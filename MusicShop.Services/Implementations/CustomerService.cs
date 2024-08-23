@@ -15,6 +15,7 @@ namespace MusicShop.Services.Implementations
 {
     public class CustomerService : BaseCRUDService<Model.Customer, Database.Customer, NameSearchObject, CustomerInsertRequest, CustomerUpdateRequest>, ICustomerService
     {
+
         public CustomerService(MusicShopDBContext context, IMapper mapper) : base(context, mapper)
         {
         }
@@ -41,7 +42,8 @@ namespace MusicShop.Services.Implementations
             entity.PasswordHash = AuthUtils.GenerateHash(salt, insert.Password);
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
-        }
+            
+    }
 
         public Model.Customer Login(LoginRequest request)
         {
@@ -58,6 +60,21 @@ namespace MusicShop.Services.Implementations
             }
             return Mapper.Map<Model.Customer>(entity);
 
+        }
+        public override IQueryable<Customer> AddFilter(IQueryable<Customer> query, NameSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+
+            if(search.Name != null)
+            {
+                string searchModelLower = search.Name.ToLower();
+                filteredQuery = filteredQuery.Where(x =>
+                    x.FirstName.ToLower().Contains(searchModelLower) ||
+                    (x.LastName != null && x.LastName.ToLower().Contains(searchModelLower)) ||
+                    (x.LastName != null && (x.FirstName + " " + x.LastName).ToLower().Contains(searchModelLower))
+                );
+            }
+            return filteredQuery;
         }
     }
 }

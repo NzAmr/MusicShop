@@ -3,10 +3,12 @@ import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:musicshop_admin/models/abstract/product.dart';
 import 'package:musicshop_admin/models/brand/brand.dart';
 import 'package:musicshop_admin/models/gear/gear.dart';
 import 'package:musicshop_admin/models/gear/gear_update_request.dart';
 import 'package:musicshop_admin/models/gear_category/gear_category.dart';
+import 'package:musicshop_admin/pages/order/order_details_page.dart';
 import 'package:musicshop_admin/providers/product/brand_provider.dart';
 import 'package:musicshop_admin/providers/product/gear_category_provider.dart';
 import 'package:musicshop_admin/providers/product/gear_provider.dart';
@@ -174,6 +176,24 @@ class _GearDetailsPageState extends State<GearDetailsPage> {
     );
   }
 
+  void _navigateToOrderDetailsPage() {
+    final product = Product();
+
+    product.id = widget.gear.id;
+    product.model = widget.gear.model;
+    product.price = widget.gear.price;
+    product.description = widget.gear.description;
+    product.productImage = widget.gear.productImage;
+    product.brand = new Brand();
+    product.brand?.id = widget.gear.brand?.id;
+    product.brand?.name = widget.gear.brand?.name;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OrderDetailsPage(product: product),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -273,11 +293,23 @@ class _GearDetailsPageState extends State<GearDetailsPage> {
                             maxLines: 15,
                           ),
                         ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: _updateGear,
-                          child: Text('Update'),
-                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: _updateGear,
+                                child: Text('Update'),
+                              ),
+                              SizedBox(width: 16),
+                              ElevatedButton(
+                                onPressed: _navigateToOrderDetailsPage,
+                                child: Text('Order'),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),

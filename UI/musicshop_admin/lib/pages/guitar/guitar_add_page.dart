@@ -254,13 +254,14 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
       ..frets = _frets
       ..price = _price
       ..model = _model
-      ..image = _base64Image;
+      ..productImage = _base64Image;
 
     try {
       await guitarProvider.insert(request);
       Navigator.pop(context);
-    } catch (e) {
+    } catch (e, stackTrace) {
       print("Error submitting form: $e");
+      print("Stack trace: $stackTrace");
     }
   }
 }
