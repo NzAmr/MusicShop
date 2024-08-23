@@ -49,21 +49,40 @@ namespace MusicShop
 
             object user = null;
             string role = null;
+            string userId = null;
 
-
-            var employee = _employeeService.Login(new LoginRequest { Username = username, Password = password });
-            if (employee != null)
+            try
             {
-                user = employee;
-                role = "Employee";
-            }
-            else
-            {
-                var customer = _customerService.Login(new LoginRequest { Username = username, Password = password });
-                if (customer != null)
+               
+                var employee = _employeeService.Login(new LoginRequest { Username = username, Password = password });
+                if (employee != null)
                 {
-                    user = customer;
-                    role = "Customer";
+                    user = employee;
+                    role = "Employee";
+                    userId = employee.Id.ToString();
+                }
+            }
+            catch (Exception)
+            {
+               
+            }
+
+            if (user == null)
+            {
+                try
+                {
+                    
+                    var customer = _customerService.Login(new LoginRequest { Username = username, Password = password });
+                    if (customer != null)
+                    {
+                        user = customer;
+                        role = "Customer";
+                        userId = customer.Id.ToString();
+                    }
+                }
+                catch (Exception)
+                {
+                   
                 }
             }
 
@@ -76,7 +95,8 @@ namespace MusicShop
             {
                 new Claim(ClaimTypes.NameIdentifier, username),
                 new Claim(ClaimTypes.Name, GetFirstName(user)),
-                new Claim(ClaimTypes.Role, role) 
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.NameIdentifier, userId)
             };
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);

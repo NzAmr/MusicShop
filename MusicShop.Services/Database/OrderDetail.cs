@@ -10,7 +10,9 @@ namespace MusicShop.Services.Database
         public string? OrderNumber { get; set; }
         public DateTime? OrderDate { get; set; }
         public string? ShippingStatus { get; set; }
+
         public virtual Product? Product { get; set; }
         public virtual ShippingInfo? ShippingInfo { get; set; }
+
     }
 }

@@ -1,14 +1,13 @@
 ﻿using MusicShop.Model.BaseModel;
-using MusicShop.Services.Implementations;
-using System;
+using MusicShop.Model.Requests;
+using MusicShop.Model.SearchObjects;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MusicShop.Services.Interfaces
 {
-    public interface IProductService : ICRUDService<Model.BaseModel.Product, ProductSearchObject, ProductUpsertRequest, ProductUpsertRequest>
+    public interface IProductService : ICRUDService<Product, ProductSearchObject, ProductUpsertRequest, ProductUpsertRequest>
     {
+        Task<List<Product>> RecommendProductsAsync(int customerId);
     }
 }
