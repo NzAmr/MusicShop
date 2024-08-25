@@ -120,6 +120,10 @@
             "Microsoft.ML": {
               "target": "Package",
               "version": "[3.0.1, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.8.1, )"
             }
           },
           "imports": [

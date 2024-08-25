@@ -1,0 +1,75 @@
+#See https://aka.ms/customizecoversion: '3'
+services:
+#mssql docker
+  musicshop-sql:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=QWEasd123!
+      - MSSQL_PID=Developer
+    ports:
+      - 1401:1433
+    expose:
+      - 1433
+    networks:
+      - musicshopnet
+    
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - musicshopnet
+  
+  musicshop-api:
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      - ConnectionStrings:DefaultConnection=Server=musicshop-sql,1433;Database=IB160121;User=sa;Password=QWEasd123!;ConnectRetryCount=0; TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - SERVER_ADDRESS=smtp.gmail.com
+      - MAIL_SENDER=musicshop225883@gmail.com
+      - MAIL_PASS=prnkhviwmogxbfyj
+      - MAIL_PORT=587
+    ports:
+      - 5146:5146
+    networks:
+      - musicshopnet
+    links:
+      - musicshop-sql
+    depends_on:
+      - musicshop-sql
+      - rabbitmq
+
+  musicshop-console:
+    restart: unless-stopped
+    build:
+      context: ./MQRabbit
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - SERVER_ADDRESS=smtp.gmail.com
+      - MAIL_SENDER=musicshop225883@gmail.com
+      - MAIL_PASS=prnkhviwmogxbfyj
+      - MAIL_PORT=587
+    networks:
+      - musicshopnet
+    depends_on:
+      - rabbitmq
+ 
+networks:
+  musicshopnet:
+    driver: bridge 
+

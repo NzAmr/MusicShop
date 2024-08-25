@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "L7biPnwaS9fdDrHp7JbQnsZmVRIQ7ML02PcCWkgcKCzNgu29bMqfxQeecQ7DDbEW03ecdeuj7RHTiYV1SRfutg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\amar_\\source\\repos\\MusicShop\\MQRabbit\\MQRabbit.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\amar_\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\amar_\\.nuget\\packages\\rabbitmq.client\\6.8.1\\rabbitmq.client.6.8.1.nupkg.sha512",
+    "C:\\Users\\amar_\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
+    "C:\\Users\\amar_\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

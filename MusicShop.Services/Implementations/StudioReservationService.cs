@@ -8,15 +8,18 @@ using MusicShop.Model.SearchObjects;
 using MusicShop.Services.Database;
 using MusicShop.Services.Interfaces;
 using MusicShop.Services.StudioStateMachine;
+using System.Net;
 
 namespace MusicShop.Services.Implementations
 {
     public class StudioReservationService : BaseCRUDService<Model.StudioReservation, Database.StudioReservation, StudioReservationSearchObject, StudioReservationUpsertRequest, StudioReservationUpsertRequest>, IStudioReservationService
     {
+        private IMQRabbitService _rabbitService;
         private BaseState BaseState { get; }
-        public StudioReservationService(MusicShopDBContext context, IMapper mapper, BaseState baseState) : base(context, mapper)
+        public StudioReservationService(MusicShopDBContext context, IMapper mapper, BaseState baseState ,IMQRabbitService mQRabbitService) : base(context, mapper)
         {
             BaseState = baseState;
+            _rabbitService = mQRabbitService;
         }
         
         public override IQueryable<Database.StudioReservation> AddInclude(IQueryable<Database.StudioReservation> query, StudioReservationSearchObject? search = null)
@@ -86,7 +89,7 @@ namespace MusicShop.Services.Implementations
         }
         public Model.StudioReservation MarkAsCancelled(int id)
         {
-            var item = Context.StudioReservations.FirstOrDefault(x =>x.Id ==id);
+            var item = Context.StudioReservations.Include(x => x.Customer).FirstOrDefault(x =>x.Id ==id);
 
             if (item == null)
             {
@@ -95,12 +98,18 @@ namespace MusicShop.Services.Implementations
 
             var state = BaseState.CreateState(item.Status);
             state.CurrentEntity = item;
-
+            var emailReciever = item.Customer.Email;
+            _rabbitService.sendEmail(new Mail()
+            {
+                ToAddress = emailReciever,
+                EmailSubject = "Reservation cancelled!",
+                EmailBody = $"Your studio reservation on {item.TimeFrom} has been cancelled!"
+            });
             return state.MarkAsCancelled();
         }
         public Model.StudioReservation MarkAsConfirmed(int id)
         {
-            var item = Context.StudioReservations.FirstOrDefault(x => x.Id == id);
+            var item = Context.StudioReservations.Include(x=>x.Customer).FirstOrDefault(x => x.Id == id);
 
             if (item == null)
             {
@@ -110,6 +119,13 @@ namespace MusicShop.Services.Implementations
             var state = BaseState.CreateState(item.Status);
             state.CurrentEntity = item;
 
+            var emailReciever = item.Customer.Email;
+            _rabbitService.sendEmail(new Mail()
+            {
+                ToAddress = emailReciever,
+                EmailSubject = "Reservation confirmed!",
+                EmailBody = $"Your studio reservation on {item.TimeFrom} has been confirmed!"
+            });
             return state.MarkAsConfirmed();
         }
 
