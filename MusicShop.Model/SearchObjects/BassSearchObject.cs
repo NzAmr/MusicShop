@@ -14,7 +14,7 @@ namespace MusicShop.Model.SearchObjects
         public string? Pickups { get; set; }
         public int? Frets { get; set; }
         public string? ProductNumber { get; set; }
-        public int? ProductImageId { get; set; }
+        public byte[]? ProductImage { get; set; }
         public int? BrandId { get; set; }
         public decimal? PriceFrom { get; set; }
         public decimal? PriceTo { get; set; }

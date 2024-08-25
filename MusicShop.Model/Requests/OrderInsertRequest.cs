@@ -8,7 +8,8 @@ namespace MusicShop.Model.Requests
 {
     public class OrderInsertRequest
     {
-        public int? ProductId { get; set; }
-        public int? ShippingInfoId { get; set; }
+        public int ProductId { get; set; }
+        public int ShippingInfoId { get; set; }
+        public string? PaymentId { get; set; }
     }
 }

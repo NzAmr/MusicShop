@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicshop_admin/models/Abstract/product.dart';
-import 'package:musicshop_admin/models/brand/brand.dart';
+import 'package:musicshop_mobile/models/Abstract/product.dart';
+import 'package:musicshop_mobile/models/brand/brand.dart';
 
 part 'amplifier.g.dart';
 

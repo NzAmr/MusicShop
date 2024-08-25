@@ -184,7 +184,7 @@ class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
     );
   }
 
-  void _navigateToOrderDetailsPage() {
+  void _navigateToOrderPage() {
     final product = Product();
 
     product.id = widget.amplifier.id;
@@ -197,7 +197,7 @@ class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
     product.brand?.name = widget.amplifier.brand?.name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(product: product),
+        builder: (context) => OrderPage(product: product),
       ),
     );
   }
@@ -330,7 +330,7 @@ class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
                               ),
                               SizedBox(width: 16),
                               ElevatedButton(
-                                onPressed: _navigateToOrderDetailsPage,
+                                onPressed: _navigateToOrderPage,
                                 child: Text('Order'),
                               ),
                             ],

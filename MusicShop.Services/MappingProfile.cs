@@ -39,13 +39,15 @@ namespace MusicShop.Services
             CreateMap<GearUpsertRequest, Database.Gear>();
 
             CreateMap<Database.ShippingInfo, Model.ShippingInfo>();
-            CreateMap<ShippingInfoUpsertRequest, Database.ShippingInfo>();
+            CreateMap<ShippingInfoInsertRequest, Database.ShippingInfo>();
+            CreateMap<ShippingInfoUpdateRequest, Database.ShippingInfo>();
 
             CreateMap<Database.Employee, Model.Employee>();
             CreateMap<EmployeeUpsertRequest, Database.Employee>();  
 
             CreateMap<Database.Customer, Model.Customer>();
             CreateMap<CustomerInsertRequest, Database.Customer>();
+            CreateMap<CustomerUpdateRequest, Database.Customer>();
 
             CreateMap<Database.GuitarType, Model.GuitarType>();
             CreateMap<NameUpsertRequest, Database.GuitarType>();
@@ -53,9 +55,9 @@ namespace MusicShop.Services
             CreateMap<Database.StudioReservation, Model.StudioReservation>();
             CreateMap<StudioReservationUpsertRequest, Database.StudioReservation>();
 
-            CreateMap<Database.OrderDetail, Model.OrderDetail>();
-            CreateMap<OrderInsertRequest, Database.OrderDetail>();
-            CreateMap<OrderUpdateRequest, Database.OrderDetail>();
+            CreateMap<Database.Order, Model.Order>();
+            CreateMap<OrderInsertRequest, Database.Order>();
+            CreateMap<OrderUpdateRequest, Database.Order>();
 
             CreateMap<Database.Product, Model.BaseModel.Product>();
             CreateMap<ProductUpsertRequest, Database.Product>();

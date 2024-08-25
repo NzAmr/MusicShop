@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicshop_admin/models/guitar_type/guitar_type.dart';
+import 'package:musicshop_mobile/models/brand/brand.dart';
+import 'package:musicshop_mobile/models/guitar_type/guitar_type.dart';
 
 part 'bass.g.dart';
 
@@ -7,14 +8,14 @@ part 'bass.g.dart';
 class Bass {
   int? id;
   String? productNumber;
-  int? brandId;
+  Brand? brand;
   String? model;
   double? price;
   String? description;
   GuitarType? guitarType;
   String? pickups;
   int? frets;
-  String? image;
+  String? productImage;
 
   Bass();
 

@@ -8,6 +8,6 @@ namespace MusicShop.Model.Requests
 {
     public class OrderUpdateRequest
     {
-        public string? ShippingStatus { get; set; }
+        public string ShippingStatus { get; set; }
     }
 }

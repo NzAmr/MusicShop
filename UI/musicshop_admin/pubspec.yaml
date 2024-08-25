@@ -46,9 +46,12 @@ dependencies:
   image_picker: ^1.1.2
   image_cropper: ^8.0.2
   fl_chart: ^0.68.0
+  pdf: ^3.11.1
+  path_provider: ^2.1.4
   table_calendar: ^3.0.0
   flutter_event_calendar: ^1.0.0
   syncfusion_flutter_calendar: ^26.2.10
+  
   font_awesome_flutter: ^10.0.0
   
 dev_dependencies:

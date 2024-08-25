@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:musicshop_admin/models/order/order.dart';
+import 'package:musicshop_admin/models/order/order_shipping_update_request.dart';
 import 'package:provider/provider.dart';
-import 'package:musicshop_admin/models/order/order_details.dart';
-import 'package:musicshop_admin/models/order/order_details_shipping_update_request.dart';
 import 'package:musicshop_admin/providers/order_provider/order_provider.dart';
 
 class OrdersSearchPage extends StatefulWidget {
@@ -10,7 +10,7 @@ class OrdersSearchPage extends StatefulWidget {
 }
 
 class _OrdersSearchPageState extends State<OrdersSearchPage> {
-  Future<List<OrderDetails>>? _ordersFuture;
+  Future<List<Order>>? _ordersFuture;
 
   @override
   void initState() {
@@ -20,12 +20,11 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
 
   void _fetchOrders() {
     setState(() {
-      _ordersFuture =
-          Provider.of<OrderDetailsProvider>(context, listen: false).get();
+      _ordersFuture = Provider.of<OrderProvider>(context, listen: false).get();
     });
   }
 
-  Future<void> _showOrderDetails(OrderDetails orderDetails) async {
+  Future<void> _showOrder(Order Order) async {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -39,19 +38,19 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
               Text('Order Details',
                   style: Theme.of(context).textTheme.titleLarge),
               SizedBox(height: 16),
-              Text('Order Number: ${orderDetails.orderNumber ?? 'N/A'}',
+              Text('Order Number: ${Order.orderNumber ?? 'N/A'}',
                   style: Theme.of(context).textTheme.titleMedium),
               SizedBox(height: 16),
-              Text('Brand: ${orderDetails.product?.brand?.name ?? 'N/A'}'),
-              Text('Model: ${orderDetails.product?.model ?? 'N/A'}'),
+              Text('Brand: ${Order.product?.brand?.name ?? 'N/A'}'),
+              Text('Model: ${Order.product?.model ?? 'N/A'}'),
               Text(
-                  'Price: \$${orderDetails.product?.price?.toStringAsFixed(2) ?? 'N/A'}'),
+                  'Price: \$${Order.product?.price?.toStringAsFixed(2) ?? 'N/A'}'),
               SizedBox(height: 16),
               Text(
-                  'Customer: ${orderDetails.shippingInfo?.customer?.firstName ?? 'N/A'} ${orderDetails.shippingInfo?.customer?.lastName ?? 'N/A'}'),
+                  'Customer: ${Order.shippingInfo?.customer?.firstName ?? 'N/A'} ${Order.shippingInfo?.customer?.lastName ?? 'N/A'}'),
               Text(
-                  'Order Date: ${orderDetails.orderDate?.toLocal().toString() ?? 'N/A'}'),
-              Text('Shipping Status: ${orderDetails.shippingStatus ?? 'N/A'}'),
+                  'Order Date: ${Order.orderDate?.toLocal().toString() ?? 'N/A'}'),
+              Text('Shipping Status: ${Order.shippingStatus ?? 'N/A'}'),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -87,11 +86,10 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
             onPressed: () {
               final newStatus = textController.text.trim();
               if (newStatus.isNotEmpty) {
-                final orderDetailsShippingUpdateRequest =
-                    OrderDetailsShippingUpdateRequest(
-                        shippingStatus: newStatus);
-                Provider.of<OrderDetailsProvider>(context, listen: false)
-                    .update(orderId, orderDetailsShippingUpdateRequest)
+                final updateRequest =
+                    OrderShippingUpdateRequest(shippingStatus: newStatus);
+                Provider.of<OrderProvider>(context, listen: false)
+                    .update(orderId, updateRequest)
                     .then((_) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -120,7 +118,7 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
       appBar: AppBar(title: Text('Orders')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<List<OrderDetails>>(
+        child: FutureBuilder<List<Order>>(
           future: _ordersFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -154,7 +152,7 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
                 final shippingStatus = order.shippingStatus ?? 'N/A';
 
                 return GestureDetector(
-                  onTap: () => _showOrderDetails(order),
+                  onTap: () => _showOrder(order),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.white, width: 2.0),

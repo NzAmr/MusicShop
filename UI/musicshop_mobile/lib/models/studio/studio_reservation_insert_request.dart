@@ -6,7 +6,6 @@ part 'studio_reservation_insert_request.g.dart';
 class StudioReservationInsertRequest {
   DateTime? timeFrom;
   DateTime? timeTo;
-  int? customerId;
 
   StudioReservationInsertRequest();
 

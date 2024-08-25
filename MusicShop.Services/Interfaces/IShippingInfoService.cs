@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Services.Interfaces
 {
-    public interface IShippingInfoService : ICRUDService<Model.ShippingInfo, NameSearchObject, ShippingInfoUpsertRequest, ShippingInfoUpsertRequest>
+    public interface IShippingInfoService : ICRUDService<Model.ShippingInfo, NameSearchObject, ShippingInfoInsertRequest, ShippingInfoUpdateRequest>
     {
         Model.ShippingInfo GetByCustomerId(int Id);
 

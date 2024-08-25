@@ -6,6 +6,7 @@ using MusicShop.Services;
 using MusicShop.Services.Database;
 using MusicShop.Services.Implementations;
 using MusicShop.Services.Interfaces;
+using MusicShop.Services.StudioStateMachine;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,10 @@ builder.Services.AddTransient<IProductImageService, ProductImageService>();
 builder.Services.AddTransient<IStudioReservationService, StudioReservationService>();
 builder.Services.AddTransient<IOrderDetailService,OrderDetailsService>();
 builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<BaseState>();
+builder.Services.AddTransient<DraftState>();
+builder.Services.AddTransient<ConfirmedState>();
+builder.Services.AddTransient<CancelledState>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MusicShopDBContext>(options =>

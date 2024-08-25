@@ -14,13 +14,11 @@ StudioReservationInsertRequest _$StudioReservationInsertRequestFromJson(
           : DateTime.parse(json['timeFrom'] as String)
       ..timeTo = json['timeTo'] == null
           ? null
-          : DateTime.parse(json['timeTo'] as String)
-      ..customerId = (json['customerId'] as num?)?.toInt();
+          : DateTime.parse(json['timeTo'] as String);
 
 Map<String, dynamic> _$StudioReservationInsertRequestToJson(
         StudioReservationInsertRequest instance) =>
     <String, dynamic>{
       'timeFrom': instance.timeFrom?.toIso8601String(),
       'timeTo': instance.timeTo?.toIso8601String(),
-      'customerId': instance.customerId,
     };

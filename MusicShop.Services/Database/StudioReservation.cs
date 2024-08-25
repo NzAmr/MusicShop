@@ -8,7 +8,7 @@ namespace MusicShop.Services.Database
         public int? CustomerId { get; set; }
         public DateTime? TimeFrom { get; set; }
         public DateTime? TimeTo { get; set; }
-
+        public string? Status { get; set; }
         public virtual Customer? Customer { get; set; }
     }
 }

@@ -1,25 +1,34 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:musicshop_admin/models/shipping_info/shipping_info.dart';
-import 'package:musicshop_admin/providers/base/base_provider.dart';
+import 'dart:io';
+import 'package:http/io_client.dart';
+import 'package:musicshop_mobile/models/shipping_info/shipping_info.dart';
+import 'package:musicshop_mobile/providers/base/base_provider.dart';
 
 class ShippingInfoProvider extends BaseProvider<ShippingInfo> {
-  ShippingInfoProvider() : super('ShippingInfo');
+  late HttpClient _client;
+  late IOClient _http;
+
+  ShippingInfoProvider() : super('ShippingInfo') {
+    _client = HttpClient();
+    _client.badCertificateCallback = (cert, host, port) => true;
+    _http = IOClient(_client);
+  }
 
   @override
   ShippingInfo fromJson(data) {
     return ShippingInfo.fromJson(data);
   }
 
-  Future<ShippingInfo?> getByCustomerId(int customerId) async {
-    final url = "${baseUrl}ShippingInfo/get-by-customer-id?id=$customerId";
+  @override
+  Future<ShippingInfo?> getByCustomerId() async {
+    final url = "${baseUrl}ShippingInfo/get-by-customer-id-from-request";
     final uri = Uri.parse(url);
     final headers = createHeaders();
 
     try {
-      final response = await http.get(uri, headers: headers);
+      final response = await _http.get(uri, headers: headers);
 
-      if (isValidResponse(response)) {
+      if (isValidResponseCode(response)) {
         final data = jsonDecode(response.body);
         print('Response data: $data');
         return fromJson(data);

@@ -14,8 +14,8 @@ namespace MusicShop.Model.Requests
         public decimal Price { get; set; }
         public string Description { get; set; }
         public int GuitarTypeId { get; set; }
-        public string Pickups { get; set; }
-        public string PickupConfiguration { get; set; }
+        public string? Pickups { get; set; }
+        public string? PickupConfiguration { get; set; }
         public int Frets { get; set; }
     }
 }

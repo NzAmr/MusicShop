@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicshop_admin/models/customer/customer.dart';
+import 'package:musicshop_mobile/models/customer/customer.dart';
 
 part 'studio_reservation.g.dart';
 
@@ -8,7 +8,7 @@ class StudioReservation {
   DateTime? timeFrom;
   DateTime? timeTo;
   Customer? customer;
-
+  String? status;
   StudioReservation();
 
   factory StudioReservation.fromJson(Map<String, dynamic> json) =>

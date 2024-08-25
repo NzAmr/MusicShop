@@ -11,5 +11,8 @@ namespace MusicShop.Services.Interfaces
 {
     public interface IStudioReservationService : ICRUDService<StudioReservation,StudioReservationSearchObject, StudioReservationUpsertRequest, StudioReservationUpsertRequest>
     {
+        Model.StudioReservation MarkAsCancelled(int id);
+        Model.StudioReservation MarkAsConfirmed(int id);
+        List<Model.StudioReservation> GetByCustomerId(int id);
     }
 }

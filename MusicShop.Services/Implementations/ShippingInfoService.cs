@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Services.Implementations
 {
-    public class ShippingInfoService : BaseCRUDService<Model.ShippingInfo, Database.ShippingInfo, NameSearchObject, ShippingInfoUpsertRequest, ShippingInfoUpsertRequest>, IShippingInfoService
+    public class ShippingInfoService : BaseCRUDService<Model.ShippingInfo, Database.ShippingInfo, NameSearchObject, ShippingInfoInsertRequest, ShippingInfoUpdateRequest>, IShippingInfoService
     {
         public ShippingInfoService(MusicShopDBContext context, IMapper mapper) : base(context, mapper)
         {
@@ -38,5 +38,7 @@ namespace MusicShop.Services.Implementations
             query = query.Include(x => x.Customer);
             return query;
         }
+
+
     }
 }

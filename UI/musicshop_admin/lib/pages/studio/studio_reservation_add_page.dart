@@ -237,6 +237,140 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
     }
   }
 
+  Future<void> _showManageReservationsPopup() async {
+    try {
+      final reservations =
+          await Provider.of<StudioReservationProvider>(context, listen: false)
+              .get();
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Manage Reservations'),
+          content: FractionallySizedBox(
+            heightFactor: 0.95,
+            child: SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                itemCount: reservations.length,
+                itemBuilder: (context, index) {
+                  final reservation = reservations[index];
+                  final customerName = reservation.customer != null
+                      ? '${reservation.customer!.firstName ?? 'No First Name'} ${reservation.customer!.lastName ?? 'No Last Name'}'
+                      : 'Unknown Customer';
+
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 2.0),
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: Colors.grey[200],
+                    ),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(8.0),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Customer: $customerName',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                          SizedBox(height: 4.0),
+                          Text(
+                            'From: ${reservation.timeFrom?.toLocal()}',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                          SizedBox(height: 4.0),
+                          Text(
+                            'To: ${reservation.timeTo?.toLocal()}',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                          SizedBox(height: 4.0),
+                          Text(
+                            'Status: ${reservation.status}',
+                            style: TextStyle(color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              try {
+                                await Provider.of<StudioReservationProvider>(
+                                        context,
+                                        listen: false)
+                                    .markAsConfirmed(reservation.id!);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Reservation confirmed!')),
+                                );
+                                Navigator.of(context).pop();
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'Failed to confirm reservation: $e')),
+                                );
+                              }
+                            },
+                            child: Text('Confirm'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () async {
+                              try {
+                                await Provider.of<StudioReservationProvider>(
+                                        context,
+                                        listen: false)
+                                    .markAsCancelled(reservation.id!);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Reservation cancelled!')),
+                                );
+                                Navigator.of(context).pop();
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'Failed to cancel reservation: $e')),
+                                );
+                              }
+                            },
+                            child: Text('Cancel'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch reservations: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -307,6 +441,11 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                   );
                 },
                 child: Text('View Calendar'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _showManageReservationsPopup,
+                child: Text('Manage Reservations'),
               ),
             ],
           ),

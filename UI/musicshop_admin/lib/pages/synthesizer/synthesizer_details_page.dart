@@ -185,7 +185,7 @@ class _SynthesizerDetailsPageState extends State<SynthesizerDetailsPage> {
     );
   }
 
-  void _navigateToOrderDetailsPage() {
+  void _navigateToOrderPage() {
     final product = Product();
 
     product.id = widget.synthesizer.id;
@@ -198,7 +198,7 @@ class _SynthesizerDetailsPageState extends State<SynthesizerDetailsPage> {
     product.brand?.name = widget.synthesizer.brand?.name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(product: product),
+        builder: (context) => OrderPage(product: product),
       ),
     );
   }
@@ -331,7 +331,7 @@ class _SynthesizerDetailsPageState extends State<SynthesizerDetailsPage> {
                               ),
                               SizedBox(width: 16),
                               ElevatedButton(
-                                onPressed: _navigateToOrderDetailsPage,
+                                onPressed: _navigateToOrderPage,
                                 child: Text('Order'),
                               ),
                             ],

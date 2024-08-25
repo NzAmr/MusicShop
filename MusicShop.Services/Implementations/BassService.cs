@@ -82,7 +82,7 @@ namespace MusicShop.Services.Implementations
         public override void BeforeInsert(BassUpsertRequest insert, Bass entity)
         {
             entity.Type = nameof(Bass);
-            //entity.ProductImage = Convert.FromBase64String(insert.ProductImage);
+
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
             entity.ProductNumber = GenerateUniqueProductNumber();

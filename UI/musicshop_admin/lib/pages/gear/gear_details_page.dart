@@ -176,7 +176,7 @@ class _GearDetailsPageState extends State<GearDetailsPage> {
     );
   }
 
-  void _navigateToOrderDetailsPage() {
+  void _navigateToOrderPage() {
     final product = Product();
 
     product.id = widget.gear.id;
@@ -189,7 +189,7 @@ class _GearDetailsPageState extends State<GearDetailsPage> {
     product.brand?.name = widget.gear.brand?.name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(product: product),
+        builder: (context) => OrderPage(product: product),
       ),
     );
   }
@@ -304,7 +304,7 @@ class _GearDetailsPageState extends State<GearDetailsPage> {
                               ),
                               SizedBox(width: 16),
                               ElevatedButton(
-                                onPressed: _navigateToOrderDetailsPage,
+                                onPressed: _navigateToOrderPage,
                                 child: Text('Order'),
                               ),
                             ],

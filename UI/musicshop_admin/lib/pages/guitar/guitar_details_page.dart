@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:musicshop_admin/models/abstract/product.dart';
 import 'package:musicshop_admin/pages/order/order_details_page.dart';
+
 import 'package:provider/provider.dart';
 import 'package:musicshop_admin/providers/product/brand_provider.dart';
 import 'package:musicshop_admin/providers/product/guitar_provider.dart';
@@ -206,7 +207,7 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
     );
   }
 
-  void _navigateToOrderDetailsPage() {
+  void _navigateToOrderPage() {
     final product = Product();
 
     product.id = widget.guitar.id;
@@ -219,7 +220,7 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
     product.brand?.name = widget.guitar.brand?.name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderDetailsPage(product: product),
+        builder: (context) => OrderPage(product: product),
       ),
     );
   }
@@ -370,7 +371,7 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
                               ),
                               SizedBox(width: 16),
                               ElevatedButton(
-                                onPressed: _navigateToOrderDetailsPage,
+                                onPressed: _navigateToOrderPage,
                                 child: Text('Order'),
                               ),
                             ],

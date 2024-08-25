@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 class Authorization {
   static String? username;
   static String? password;
-  static String? accountType = "Employee";
 }
 
 Image imageFromBase64String(String base64Image) {

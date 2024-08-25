@@ -18,7 +18,6 @@ namespace MusicShop.Services.Implementations
         public override void BeforeInsert(SynthesizerUpsertRequest insert, Synthesizer entity)
         {
             entity.Type = nameof(Synthesizer);
-            //entity.ProductImage = Convert.FromBase64String(insert.ProductImage);
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
         }

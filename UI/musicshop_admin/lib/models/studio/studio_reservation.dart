@@ -5,10 +5,11 @@ part 'studio_reservation.g.dart';
 
 @JsonSerializable()
 class StudioReservation {
+  int? id;
   DateTime? timeFrom;
   DateTime? timeTo;
   Customer? customer;
-
+  String? status;
   StudioReservation();
 
   factory StudioReservation.fromJson(Map<String, dynamic> json) =>

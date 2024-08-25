@@ -71,6 +71,17 @@ class _AddGearPageState extends State<AddGearPage> {
     }
   }
 
+  String? _validateNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    final number = double.tryParse(value);
+    if (number == null) {
+      return 'Please enter a valid number';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +141,9 @@ class _AddGearPageState extends State<AddGearPage> {
                       onChanged: (value) {
                         _model = value;
                       },
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Model is required'
+                          : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -146,14 +160,18 @@ class _AddGearPageState extends State<AddGearPage> {
                       onChanged: (value) {
                         _price = double.tryParse(value);
                       },
+                      validator: _validateNumber,
                     ),
                     SizedBox(height: 20),
                     _imageFile == null
                         ? Text('No image selected.')
-                        : SizedBox(
-                            width: double.infinity,
-                            height: 200,
-                            child: Image.file(_imageFile!, fit: BoxFit.cover),
+                        : Container(
+                            width: 150,
+                            height: 150,
+                            child: Image.file(
+                              _imageFile!,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -164,7 +182,13 @@ class _AddGearPageState extends State<AddGearPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          _submitForm();
+                          if (_base64Image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Image is required')),
+                            );
+                          } else {
+                            _submitForm();
+                          }
                         }
                       },
                       child: Text('Submit'),
@@ -180,6 +204,13 @@ class _AddGearPageState extends State<AddGearPage> {
   }
 
   Future<void> _submitForm() async {
+    if (_imageFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Image is required')),
+      );
+      return;
+    }
+
     final gearProvider = Provider.of<GearProvider>(context, listen: false);
 
     final request = GearInsertRequest()

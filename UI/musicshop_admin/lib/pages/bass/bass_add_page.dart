@@ -131,6 +131,9 @@ class _AddBassPageState extends State<AddBassPage> {
                       onChanged: (value) {
                         _model = value;
                       },
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Please enter the model'
+                          : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -138,6 +141,9 @@ class _AddBassPageState extends State<AddBassPage> {
                       onChanged: (value) {
                         _pickups = value;
                       },
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Please enter pickups information'
+                          : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -145,6 +151,9 @@ class _AddBassPageState extends State<AddBassPage> {
                       onChanged: (value) {
                         _description = value;
                       },
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Please enter a description'
+                          : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -152,6 +161,12 @@ class _AddBassPageState extends State<AddBassPage> {
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         _frets = int.tryParse(value);
+                      },
+                      validator: (value) {
+                        final intValue = int.tryParse(value ?? '');
+                        return intValue == null
+                            ? 'Please enter a valid number for frets'
+                            : null;
                       },
                     ),
                     SizedBox(height: 16),
@@ -162,15 +177,23 @@ class _AddBassPageState extends State<AddBassPage> {
                       onChanged: (value) {
                         _price = double.tryParse(value);
                       },
+                      validator: (value) {
+                        final doubleValue = double.tryParse(value ?? '');
+                        return doubleValue == null
+                            ? 'Please enter a valid number for price'
+                            : null;
+                      },
                     ),
                     SizedBox(height: 20),
                     _imageFile == null
                         ? Text('No image selected.')
-                        : Image.file(
-                            _imageFile!,
+                        : Container(
                             width: 150,
                             height: 150,
-                            fit: BoxFit.cover,
+                            child: Image.file(
+                              _imageFile!,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -181,6 +204,13 @@ class _AddBassPageState extends State<AddBassPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
+                          if (_base64Image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text('Please select an image.')),
+                            );
+                            return;
+                          }
                           _submitForm();
                         }
                       },

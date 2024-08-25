@@ -11,7 +11,7 @@ namespace MusicShop.Model
     {
         public DateTime? TimeFrom { get; set; }
         public DateTime? TimeTo { get; set; }
-
+        public string? Status { get; set; }
         public virtual Customer? Customer { get; set; }
     }
 }

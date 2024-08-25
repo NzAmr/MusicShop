@@ -7,15 +7,18 @@ using MusicShop.Model.Requests;
 using MusicShop.Model.SearchObjects;
 using MusicShop.Services.Database;
 using MusicShop.Services.Interfaces;
+using MusicShop.Services.StudioStateMachine;
 
 namespace MusicShop.Services.Implementations
 {
     public class StudioReservationService : BaseCRUDService<Model.StudioReservation, Database.StudioReservation, StudioReservationSearchObject, StudioReservationUpsertRequest, StudioReservationUpsertRequest>, IStudioReservationService
     {
-        public StudioReservationService(MusicShopDBContext context, IMapper mapper) : base(context, mapper)
+        private BaseState BaseState { get; }
+        public StudioReservationService(MusicShopDBContext context, IMapper mapper, BaseState baseState) : base(context, mapper)
         {
+            BaseState = baseState;
         }
-
+        
         public override IQueryable<Database.StudioReservation> AddInclude(IQueryable<Database.StudioReservation> query, StudioReservationSearchObject? search = null)
         {
             query = query.Include(x => x.Customer);
@@ -29,7 +32,7 @@ namespace MusicShop.Services.Implementations
 
             
             var existingReservations = Context.StudioReservations
-                .Where(r => r.TimeFrom.HasValue && r.TimeTo.HasValue
+                .Where(r => r.Status == "confirmed" && r.TimeFrom.HasValue && r.TimeTo.HasValue
                             && ((entity.TimeFrom >= r.TimeFrom && entity.TimeFrom < r.TimeTo)
                                 || (entity.TimeTo > r.TimeFrom && entity.TimeTo <= r.TimeTo)
                                 || (entity.TimeFrom <= r.TimeFrom && entity.TimeTo >= r.TimeTo)))
@@ -39,6 +42,7 @@ namespace MusicShop.Services.Implementations
             {
                 throw new InvalidOperationException("Studio is already in use during this time.");
             }
+            entity.Status = "draft";
 
             base.BeforeInsert(insert, entity);
         }
@@ -80,7 +84,41 @@ namespace MusicShop.Services.Implementations
                 throw new ArgumentException("End time must be after the start time.");
             }
         }
+        public Model.StudioReservation MarkAsCancelled(int id)
+        {
+            var item = Context.StudioReservations.FirstOrDefault(x =>x.Id ==id);
+
+            if (item == null)
+            {
+                throw new Exception("Reservation Not Found");
+            }
+
+            var state = BaseState.CreateState(item.Status);
+            state.CurrentEntity = item;
+
+            return state.MarkAsCancelled();
+        }
+        public Model.StudioReservation MarkAsConfirmed(int id)
+        {
+            var item = Context.StudioReservations.FirstOrDefault(x => x.Id == id);
+
+            if (item == null)
+            {
+                throw new Exception("Reservation Not Found");
+            }
+
+            var state = BaseState.CreateState(item.Status);
+            state.CurrentEntity = item;
+
+            return state.MarkAsConfirmed();
+        }
+
+        public List<Model.StudioReservation> GetByCustomerId(int id)
+        {
+            var res = Context.StudioReservations.Where(x=>x.CustomerId == id).ToList();
 
 
+            return Mapper.Map<List<Model.StudioReservation>>(res);
+        }
     }
 }

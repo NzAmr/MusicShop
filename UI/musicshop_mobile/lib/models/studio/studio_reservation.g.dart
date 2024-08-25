@@ -16,11 +16,13 @@ StudioReservation _$StudioReservationFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['timeTo'] as String)
       ..customer = json['customer'] == null
           ? null
-          : Customer.fromJson(json['customer'] as Map<String, dynamic>);
+          : Customer.fromJson(json['customer'] as Map<String, dynamic>)
+      ..status = json['status'] as String?;
 
 Map<String, dynamic> _$StudioReservationToJson(StudioReservation instance) =>
     <String, dynamic>{
       'timeFrom': instance.timeFrom?.toIso8601String(),
       'timeTo': instance.timeTo?.toIso8601String(),
       'customer': instance.customer,
+      'status': instance.status,
     };

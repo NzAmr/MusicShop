@@ -24,16 +24,16 @@ public class ProductController : BaseCRUDController<Product, ProductSearchObject
     [HttpGet("recommendations")]
     public async Task<IActionResult> GetRecommendations()
     {
-        //var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-        //if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int customerId))
-        //{
-        //    return Unauthorized("User is not authenticated or customer ID is missing.");
-        //}
+        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int customerId))
+        {
+            return Unauthorized("User is not authenticated or customer ID is missing.");
+        }
 
         try
         {
-            var recommendations = await _productService.RecommendProductsAsync(2);
+            var recommendations = await _productService.RecommendProductsAsync(customerId);
             return Ok(recommendations);
         }
         catch (Exception ex)

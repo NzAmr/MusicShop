@@ -62,5 +62,33 @@ namespace MusicShop.Services.Implementations
             return Mapper.Map<Model.Employee>(entity);
           
         }
+        public override Model.Employee Update(int id, EmployeeUpsertRequest update)
+        {
+            var entity = Context.Employees.Find(id);
+            if (entity == null)
+            {
+                throw new Exception("Employee not found");
+            }
+
+            
+            Mapper.Map(update, entity);
+
+            if (!string.IsNullOrEmpty(update.Password))
+            {
+                if (update.Password != update.PasswordConfirm)
+                {
+                    throw new Exception("Password and confirmation must be identical");
+                }
+
+                var salt = AuthUtils.GenerateSalt();
+                entity.PasswordSalt = salt;
+                entity.PasswordHash = AuthUtils.GenerateHash(salt, update.Password);
+            }
+
+            entity.UpdatedAt = DateTime.Now;
+
+            Context.SaveChanges();
+            return Mapper.Map<Model.Employee>(entity);
+        }
     }
 }

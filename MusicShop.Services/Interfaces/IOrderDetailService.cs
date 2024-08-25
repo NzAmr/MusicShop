@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Services.Interfaces
 {
-    public interface IOrderDetailService : ICRUDService<Model.OrderDetail, OrderSearchObject, OrderInsertRequest, OrderUpdateRequest>
+    public interface IOrderDetailService : ICRUDService<Model.Order, OrderSearchObject, OrderInsertRequest, OrderUpdateRequest>
     {
+        List<Order> GetByCustomerId(int id);
     }
 }

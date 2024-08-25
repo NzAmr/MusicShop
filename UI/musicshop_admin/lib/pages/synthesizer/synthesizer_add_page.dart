@@ -64,6 +64,17 @@ class _AddSynthesizerPageState extends State<AddSynthesizerPage> {
     }
   }
 
+  String? _validateNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    final number = double.tryParse(value);
+    if (number == null) {
+      return 'Please enter a valid number';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,6 +122,7 @@ class _AddSynthesizerPageState extends State<AddSynthesizerPage> {
                       onChanged: (value) {
                         _price = double.tryParse(value);
                       },
+                      validator: _validateNumber,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -126,6 +138,7 @@ class _AddSynthesizerPageState extends State<AddSynthesizerPage> {
                       onChanged: (value) {
                         _keyboardSize = int.tryParse(value);
                       },
+                      validator: _validateNumber,
                     ),
                     SizedBox(height: 16),
                     SwitchListTile(
@@ -144,6 +157,7 @@ class _AddSynthesizerPageState extends State<AddSynthesizerPage> {
                       onChanged: (value) {
                         _polyphony = int.tryParse(value);
                       },
+                      validator: _validateNumber,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -153,15 +167,18 @@ class _AddSynthesizerPageState extends State<AddSynthesizerPage> {
                       onChanged: (value) {
                         _numberOfPresets = int.tryParse(value);
                       },
+                      validator: _validateNumber,
                     ),
                     SizedBox(height: 20),
                     _imageFile == null
                         ? Text('No image selected.')
-                        : Image.file(
-                            _imageFile!,
-                            width: 150,
+                        : Container(
+                            width: double.infinity,
                             height: 150,
-                            fit: BoxFit.cover,
+                            child: Image.file(
+                              _imageFile!,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -172,7 +189,15 @@ class _AddSynthesizerPageState extends State<AddSynthesizerPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          _submitForm();
+                          if (_base64Image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Image is required'),
+                              ),
+                            );
+                          } else {
+                            _submitForm();
+                          }
                         }
                       },
                       child: Text('Submit'),

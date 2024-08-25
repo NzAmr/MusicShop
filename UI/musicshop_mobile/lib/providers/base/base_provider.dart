@@ -1,19 +1,30 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:musicshop_admin/utils/util.dart';
-
-import '../generic/search_result.dart';
+import 'package:http/http.dart';
+import 'package:http/io_client.dart';
+import 'package:musicshop_mobile/utils/util.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {
   static String? _baseUrl;
   String _endpoint = "";
 
+  HttpClient client = HttpClient();
+  IOClient? http;
+
   BaseProvider(String endpoint) {
     _endpoint = endpoint;
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:7234/");
+        defaultValue: "https://10.0.2.2:7234/");
+
+    if (_baseUrl!.endsWith("/") == false) {
+      _baseUrl = _baseUrl! + "/";
+    }
+
+    client.badCertificateCallback = (cert, host, port) => true;
+    http = IOClient(client);
   }
+
   String get baseUrl => _baseUrl ?? "";
 
   Future<List<T>> get({dynamic filter}) async {
@@ -27,9 +38,9 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
-    var response = await http.get(uri, headers: headers);
+    var response = await http!.get(uri, headers: headers);
 
-    if (isValidResponse(response)) {
+    if (isValidResponseCode(response)) {
       try {
         List<dynamic> dataList = jsonDecode(response.body);
         List<T> resultList = dataList.map((item) => fromJson(item)).toList();
@@ -47,13 +58,13 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
-    var response = await http.get(uri, headers: headers);
+    var response = await http!.get(uri, headers: headers);
 
-    if (isValidResponse(response)) {
+    if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 
@@ -63,13 +74,13 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var jsonRequest = jsonEncode(request);
-    var response = await http.post(uri, headers: headers, body: jsonRequest);
+    var response = await http!.post(uri, headers: headers, body: jsonRequest);
 
-    if (isValidResponse(response)) {
+    if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 
@@ -79,13 +90,14 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var headers = createHeaders();
 
     var jsonRequest = jsonEncode(request);
-    var response = await http.put(uri, headers: headers, body: jsonRequest);
-
-    if (isValidResponse(response)) {
+    print(jsonRequest);
+    var response = await http!.put(uri, headers: headers, body: jsonRequest);
+    print(response);
+    if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw new Exception("Unknown error");
+      throw Exception("Unknown error");
     }
   }
 
@@ -94,9 +106,9 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
-    var response = await http.delete(uri, headers: headers);
+    var response = await http!.delete(uri, headers: headers);
 
-    if (isValidResponse(response)) {
+    if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
@@ -108,14 +120,21 @@ abstract class BaseProvider<T> with ChangeNotifier {
     throw Exception("Method not implemented");
   }
 
-  bool isValidResponse(http.Response response) {
-    if (response.statusCode < 299) {
+  bool isValidResponseCode(Response response) {
+    if (response.statusCode == 200 || response.statusCode == 204) {
       return true;
+    } else if (response.statusCode == 400) {
+      throw Exception("Bad request");
     } else if (response.statusCode == 401) {
-      throw new Exception("Unauthorized");
+      throw Exception("Unauthorized");
+    } else if (response.statusCode == 403) {
+      throw Exception("Forbidden");
+    } else if (response.statusCode == 404) {
+      throw Exception("Not found");
+    } else if (response.statusCode == 500) {
+      throw Exception("Internal server error");
     } else {
-      print(response.body);
-      throw new Exception(response.body);
+      throw Exception("Unhandled response status code: ${response.statusCode}");
     }
   }
 
@@ -123,17 +142,13 @@ abstract class BaseProvider<T> with ChangeNotifier {
     String username = Authorization.username ?? "";
     String password = Authorization.password ?? "";
 
-    print("passed creds: $username, $password");
-
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$password'))}";
 
-    var headers = {
+    return {
       "Content-Type": "application/json",
-      "Authorization": basicAuth
+      "Authorization": basicAuth,
     };
-
-    return headers;
   }
 
   String getQueryString(Map params,

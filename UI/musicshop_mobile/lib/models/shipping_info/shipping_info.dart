@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicshop_admin/models/customer/customer.dart';
+import 'package:musicshop_mobile/models/customer/customer.dart';
 
 part 'shipping_info.g.dart';
 

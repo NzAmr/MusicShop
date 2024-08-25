@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:musicshop_admin/models/customer/customer.dart';
+import 'package:musicshop_admin/models/shipping_info/shipping_info_insert_request.dart';
 import 'package:musicshop_admin/providers/customer/customer_provider.dart';
 import 'package:musicshop_admin/models/shipping_info/shipping_info.dart';
 import 'package:musicshop_admin/models/shipping_info/shipping_info_update_request.dart';
@@ -86,7 +87,36 @@ class _ManageCustomersPageState extends State<ManageCustomersPage> {
         content: isLoading
             ? const Center(child: CircularProgressIndicator())
             : shippingInfo == null
-                ? const Text('No shipping info available.')
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('No shipping info available.'),
+                      const SizedBox(height: 16.0),
+                      TextField(
+                        controller: countryController,
+                        decoration: const InputDecoration(labelText: 'Country'),
+                      ),
+                      TextField(
+                        controller: stateController,
+                        decoration:
+                            const InputDecoration(labelText: 'State/Province'),
+                      ),
+                      TextField(
+                        controller: cityController,
+                        decoration: const InputDecoration(labelText: 'City'),
+                      ),
+                      TextField(
+                        controller: zipCodeController,
+                        decoration:
+                            const InputDecoration(labelText: 'Zip Code'),
+                      ),
+                      TextField(
+                        controller: streetAddressController,
+                        decoration:
+                            const InputDecoration(labelText: 'Street Address'),
+                      ),
+                    ],
+                  )
                 : SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -148,10 +178,32 @@ class _ManageCustomersPageState extends State<ManageCustomersPage> {
                         content: Text('Failed to update shipping info: $e')),
                   );
                 }
-                Navigator.of(context).pop();
+              } else {
+                try {
+                  await _shippingInfoProvider.insert(
+                    ShippingInfoInsertRequest()
+                      ..country = countryController.text
+                      ..stateOrProvince = stateController.text
+                      ..city = cityController.text
+                      ..zipCode = zipCodeController.text
+                      ..streetAddress = streetAddressController.text
+                      ..customerId = customer.id,
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Shipping info inserted successfully!')),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Failed to insert shipping info: $e')),
+                  );
+                }
               }
+              Navigator.of(context).pop();
             },
-            child: const Text('Save'),
+            child: Text(shippingInfo != null ? 'Save' : 'Add'),
           ),
         ],
       ),

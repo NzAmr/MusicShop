@@ -3,23 +3,23 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:musicshop_admin/models/abstract/product.dart';
 import 'package:musicshop_admin/models/customer/customer.dart';
-import 'package:musicshop_admin/models/order/order_details_insert_request.dart';
+import 'package:musicshop_admin/models/order/order_insert_request.dart';
 import 'package:musicshop_admin/models/shipping_info/shipping_info.dart';
 import 'package:musicshop_admin/providers/customer/customer_provider.dart';
 import 'package:musicshop_admin/providers/order_provider/order_provider.dart';
 import 'package:musicshop_admin/providers/shipping_info/shipping_info_provider.dart';
 import 'package:provider/provider.dart';
 
-class OrderDetailsPage extends StatefulWidget {
+class OrderPage extends StatefulWidget {
   final Product product;
 
-  OrderDetailsPage({Key? key, required this.product}) : super(key: key);
+  OrderPage({Key? key, required this.product}) : super(key: key);
 
   @override
-  _OrderDetailsPageState createState() => _OrderDetailsPageState();
+  _OrderPageState createState() => _OrderPageState();
 }
 
-class _OrderDetailsPageState extends State<OrderDetailsPage> {
+class _OrderPageState extends State<OrderPage> {
   ShippingInfo? _selectedShippingInfo;
   String? _selectedCustomerName;
   int? _selectedCustomerId;
@@ -148,14 +148,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       return;
     }
 
-    final orderProvider =
-        Provider.of<OrderDetailsProvider>(context, listen: false);
-    final orderDetailsRequest = OrderDetailsInsertRequest()
+    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+    final OrderRequest = OrderInsertRequest()
       ..shippingInfoId = _selectedShippingInfo!.id
       ..productId = widget.product.id;
 
     try {
-      await orderProvider.insert(orderDetailsRequest);
+      await orderProvider.insert(OrderRequest);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order submitted successfully!')),
       );

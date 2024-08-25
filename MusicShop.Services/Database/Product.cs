@@ -8,7 +8,7 @@ namespace MusicShop.Services.Database
     {
         public Product()
         {
-            OrderDetails = new HashSet<OrderDetail>();
+            OrderDetails = new HashSet<Order>();
         }
 
         public string? ProductNumber { get; set; }
@@ -22,6 +22,6 @@ namespace MusicShop.Services.Database
         public virtual Brand? Brand { get; set; }
         public virtual byte[]? ProductImage { get; set; }
 
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<Order> OrderDetails { get; set; }
     }
 }

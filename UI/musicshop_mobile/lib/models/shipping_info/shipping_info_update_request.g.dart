@@ -14,8 +14,7 @@ ShippingInfoUpdateRequest _$ShippingInfoUpdateRequestFromJson(
       ..stateOrProvince = json['stateOrProvince'] as String?
       ..city = json['city'] as String?
       ..zipCode = json['zipCode'] as String?
-      ..streetAddress = json['streetAddress'] as String?
-      ..customerId = (json['customerId'] as num?)?.toInt();
+      ..streetAddress = json['streetAddress'] as String?;
 
 Map<String, dynamic> _$ShippingInfoUpdateRequestToJson(
         ShippingInfoUpdateRequest instance) =>
@@ -26,5 +25,4 @@ Map<String, dynamic> _$ShippingInfoUpdateRequestToJson(
       'city': instance.city,
       'zipCode': instance.zipCode,
       'streetAddress': instance.streetAddress,
-      'customerId': instance.customerId,
     };

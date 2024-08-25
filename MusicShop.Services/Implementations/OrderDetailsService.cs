@@ -10,13 +10,13 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace MusicShop.Services.Implementations
 {
-    public class OrderDetailsService : BaseCRUDService<Model.OrderDetail, Database.OrderDetail, OrderSearchObject, OrderInsertRequest, OrderUpdateRequest>, IOrderDetailService
+    public class OrderDetailsService : BaseCRUDService<Model.Order, Database.Order, OrderSearchObject, OrderInsertRequest, OrderUpdateRequest>, IOrderDetailService
     {
         public OrderDetailsService(MusicShopDBContext context, IMapper mapper) : base(context, mapper)
         {
         }
 
-        public override void BeforeInsert(OrderInsertRequest insert, OrderDetail entity)
+        public override void BeforeInsert(OrderInsertRequest insert, Order entity)
         {
             entity.OrderDate = DateTime.Now;
             entity.ShippingStatus = "Pending";
@@ -31,13 +31,13 @@ namespace MusicShop.Services.Implementations
             do
             {
                 orderNumber = "ORD" + DateTime.Now.ToString("yyyyMMddHHmmss") + new Random().Next(1000, 9999).ToString();
-                isUnique = !Context.OrderDetails.Any(o => o.OrderNumber == orderNumber);
+                isUnique = !Context.Orders.Any(o => o.OrderNumber == orderNumber);
             }
             while (!isUnique);
 
             return orderNumber;
         }
-        public override IQueryable<OrderDetail> AddFilter(IQueryable<OrderDetail> query, OrderSearchObject? search = null)
+        public override IQueryable<Order> AddFilter(IQueryable<Order> query, OrderSearchObject? search = null)
         {
             var filteredQuery = base.AddFilter(query, search);
 
@@ -48,7 +48,7 @@ namespace MusicShop.Services.Implementations
             return filteredQuery;
         }
 
-        public override IQueryable<OrderDetail> AddInclude(IQueryable<OrderDetail> query, OrderSearchObject? search = null)
+        public override IQueryable<Order> AddInclude(IQueryable<Order> query, OrderSearchObject? search = null)
         {
             query = query.Include(x => x.Product);
             query = query.Include(x => x.ShippingInfo);
@@ -56,9 +56,20 @@ namespace MusicShop.Services.Implementations
             query = query.Include(x => x.ShippingInfo.Customer);
             return query;
         }
-        public override Model.OrderDetail Update(int id, OrderUpdateRequest update)
+        public override Model.Order Update(int id, OrderUpdateRequest update)
         {
             return base.Update(id, update);
+        }
+
+        public List<Model.Order> GetByCustomerId(int id)
+        {
+            var results = Context.Orders.Include(x => x.Product).Include(x=>x.ShippingInfo).Include(x=>x.Product.Brand)
+                .Where(x => x.ShippingInfo.CustomerId == id)
+                .ToList();
+
+            var mappedResults = Mapper.Map<List<Model.Order>>(results);
+
+            return mappedResults;
         }
     }
 }

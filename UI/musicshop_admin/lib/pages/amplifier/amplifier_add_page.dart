@@ -166,10 +166,13 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
                     SizedBox(height: 20),
                     _imageFile == null
                         ? Text('No image selected.')
-                        : SizedBox(
-                            width: 200,
+                        : Container(
+                            width: 150,
                             height: 150,
-                            child: Image.file(_imageFile!, fit: BoxFit.cover),
+                            child: Image.file(
+                              _imageFile!,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                     ElevatedButton(
                       onPressed: _pickImage,

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:musicshop_admin/models/brand/brand.dart';
-import 'package:musicshop_admin/models/gear_category/gear_category.dart';
+import 'package:musicshop_mobile/models/brand/brand.dart';
+import 'package:musicshop_mobile/models/gear_category/gear_category.dart';
 
 part 'gear.g.dart';
 

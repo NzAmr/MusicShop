@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:musicshop_admin/models/bass/bass.dart';
-import 'package:musicshop_admin/providers/customer/customer_provider.dart';
-import 'package:musicshop_admin/providers/order_provider/order_provider.dart';
-import 'package:musicshop_admin/providers/product/amplifier_provider.dart';
-import 'package:musicshop_admin/providers/product/bass_provider.dart';
-import 'package:musicshop_admin/providers/product/brand_provider.dart';
-import 'package:musicshop_admin/providers/product/gear_category_provider.dart';
-import 'package:musicshop_admin/providers/product/gear_provider.dart';
-import 'package:musicshop_admin/providers/product/guitar_provider.dart';
-import 'package:musicshop_admin/providers/product/guitar_type_provider.dart';
-import 'package:musicshop_admin/providers/product/synthesizer_provider.dart';
-import 'package:musicshop_admin/providers/shipping_info/shipping_info_provider.dart';
-import 'package:musicshop_admin/providers/studio/studio_reservation_provider.dart';
+import 'package:musicshop_mobile/providers/customer/customer_provider.dart';
+import 'package:musicshop_mobile/providers/order_provider/order_provider.dart';
+import 'package:musicshop_mobile/providers/product/amplifier_provider.dart';
+import 'package:musicshop_mobile/providers/product/bass_provider.dart';
+import 'package:musicshop_mobile/providers/product/brand_provider.dart';
+import 'package:musicshop_mobile/providers/product/gear_category_provider.dart';
+import 'package:musicshop_mobile/providers/product/gear_provider.dart';
+import 'package:musicshop_mobile/providers/product/guitar_provider.dart';
+import 'package:musicshop_mobile/providers/product/guitar_type_provider.dart';
+import 'package:musicshop_mobile/providers/product/product_provider.dart';
+import 'package:musicshop_mobile/providers/product/synthesizer_provider.dart';
+import 'package:musicshop_mobile/providers/shipping_info/shipping_info_provider.dart';
+import 'package:musicshop_mobile/providers/studio/studio_reservation_provider.dart';
 import 'package:provider/provider.dart';
 
 class ApiProvider extends StatelessWidget {
@@ -33,10 +33,13 @@ class ApiProvider extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BassProvider()),
         ChangeNotifierProvider(create: (_) => SynthesizerProvider()),
         ChangeNotifierProvider(create: (_) => CustomerProvider()),
-        ChangeNotifierProvider(create: (_) => OrderDetailsProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
         ChangeNotifierProvider(create: (_) => ShippingInfoProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
       ],
       child: child,
     );
   }
 }
+
+class ProductInfoProvider {}

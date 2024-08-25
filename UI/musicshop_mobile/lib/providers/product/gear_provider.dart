@@ -1,5 +1,5 @@
-import 'package:musicshop_admin/models/gear/gear.dart';
-import 'package:musicshop_admin/providers/base/base_provider.dart';
+import 'package:musicshop_mobile/models/gear/gear.dart';
+import 'package:musicshop_mobile/providers/base/base_provider.dart';
 
 class GearProvider extends BaseProvider<Gear> {
   GearProvider() : super('Gear');

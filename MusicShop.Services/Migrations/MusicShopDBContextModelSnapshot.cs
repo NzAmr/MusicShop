@@ -179,7 +179,7 @@ namespace MusicShop.Services.Migrations
                     b.ToTable("GuitarType", (string)null);
                 });
 
-            modelBuilder.Entity("MusicShop.Services.Database.OrderDetail", b =>
+            modelBuilder.Entity("MusicShop.Services.Database.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -193,6 +193,9 @@ namespace MusicShop.Services.Migrations
                     b.Property<string>("OrderNumber")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
@@ -210,7 +213,7 @@ namespace MusicShop.Services.Migrations
 
                     b.HasIndex("ShippingInfoId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("MusicShop.Services.Database.Product", b =>
@@ -326,6 +329,9 @@ namespace MusicShop.Services.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("TimeFrom")
                         .HasColumnType("datetime");
 
@@ -431,7 +437,7 @@ namespace MusicShop.Services.Migrations
                     b.ToTable("Synthesizer", (string)null);
                 });
 
-            modelBuilder.Entity("MusicShop.Services.Database.OrderDetail", b =>
+            modelBuilder.Entity("MusicShop.Services.Database.Order", b =>
                 {
                     b.HasOne("MusicShop.Services.Database.Product", "Product")
                         .WithMany("OrderDetails")

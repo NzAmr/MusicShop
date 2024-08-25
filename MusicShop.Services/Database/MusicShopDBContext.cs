@@ -25,7 +25,7 @@ namespace MusicShop.Services.Database
         public virtual DbSet<GearCategory> GearCategories { get; set; } = null!;
         public virtual DbSet<Guitar> Guitars { get; set; } = null!;
         public virtual DbSet<GuitarType> GuitarTypes { get; set; } = null!;
-        public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
+        public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductImage> ProductImages { get; set; } = null!;
         public virtual DbSet<ShippingInfo> ShippingInfos { get; set; } = null!;
@@ -119,8 +119,11 @@ namespace MusicShop.Services.Database
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<OrderDetail>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
+
+                modelBuilder.Entity<Order>().ToTable("Order");
+
                 entity.Property(e => e.OrderDate).HasColumnType("date");
 
                 entity.Property(e => e.OrderNumber).HasMaxLength(50);

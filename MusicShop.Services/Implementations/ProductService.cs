@@ -24,6 +24,42 @@ namespace MusicShop.Services.Implementations
             _model = TrainModel();
         }
 
+        public override IQueryable<Database.Product> AddFilter(IQueryable<Database.Product> query, ProductSearchObject? search = null)
+        {
+            var filteredQuery = base.AddFilter(query, search);
+
+            if (search.BrandId != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.BrandId == search.BrandId);
+            }
+
+           
+
+            if (search.Model != null)
+            {
+                string searchModelLower = search.Model.ToLower();
+
+                filteredQuery = filteredQuery.Where(x =>
+                    x.Model.ToLower().Contains(searchModelLower) ||
+                    (x.Brand != null && x.Brand.Name.ToLower().Contains(searchModelLower)) ||
+                    (x.Brand != null && (x.Brand.Name + " " + x.Model).ToLower().Contains(searchModelLower))
+                );
+            }
+
+
+            if (search.PriceFrom != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price >= search.PriceFrom);
+            }
+            if (search.PriceTo != null)
+            {
+                filteredQuery = filteredQuery.Where(x => x.Price <= search.PriceTo);
+            }
+
+
+            return filteredQuery;
+        }
+
         private ITransformer TrainModel()
         {
             var products = Context.Products.Select(p => new ProductFeatures
@@ -66,13 +102,13 @@ namespace MusicShop.Services.Implementations
 
         public async Task<List<Model.BaseModel.Product>> RecommendProductsAsync(int customerId)
         {
-            var purchasedProductIds = await Context.OrderDetails
+            var purchasedProductIds = await Context.Orders
                 .Where(o => o.ShippingInfo.CustomerId == customerId)
                 .Select(o => o.ProductId)
                 .Distinct()
                 .ToListAsync();
 
-            var allProducts = Context.Products.ToList();
+            var allProducts = Context.Products.Include(x => x.Brand).ToList();
             var productFeatures = allProducts
                 .Select(p => new ProductFeatures
                 {
@@ -83,35 +119,41 @@ namespace MusicShop.Services.Implementations
 
             var transformedData = _mlContext.Data.LoadFromEnumerable(productFeatures);
             var features = _model.Transform(transformedData);
-
             var productFeatureVectors = _mlContext.Data.CreateEnumerable<ProductPrediction>(features, reuseRowObject: false).ToList();
 
             var recommendations = new List<Tuple<Model.BaseModel.Product, double>>();
+            var recommendedProductIds = new HashSet<int>();
 
             foreach (var product in productFeatureVectors)
             {
                 if (purchasedProductIds.Contains(product.Id))
                     continue;
 
-                foreach (var purchasedProductId in purchasedProductIds)
+                double similarityScore = productFeatureVectors
+                    .Where(p => p.Id != product.Id && purchasedProductIds.Contains(p.Id))
+                    .Select(p => ComputeCosineSimilarity(product.Features, p.Features))
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                if (similarityScore > 0 && !recommendedProductIds.Contains(product.Id))
                 {
-                    var purchasedProduct = productFeatureVectors.First(p => p.Id == purchasedProductId);
-
-                    double similarityScore = ComputeCosineSimilarity(
-                        product.Features, purchasedProduct.Features);
-
                     var productEntity = allProducts.First(p => p.Id == product.Id);
                     var mappedProduct = Mapper.Map<Model.BaseModel.Product>(productEntity);
 
                     recommendations.Add(new Tuple<Model.BaseModel.Product, double>(mappedProduct, similarityScore));
+                    recommendedProductIds.Add(product.Id);
                 }
             }
 
-            return recommendations.OrderByDescending(r => r.Item2)
-                                   .Select(r => r.Item1)
-                                   .Take(3)
-                                   .ToList();
+            var sortedRecommendations = recommendations
+                .OrderByDescending(r => r.Item2)
+                .Select(r => r.Item1)
+                .ToList();
+
+            return sortedRecommendations.Take(3).ToList();
         }
+
+
 
         public class ProductFeatures
         {

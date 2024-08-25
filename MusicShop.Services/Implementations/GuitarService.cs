@@ -81,7 +81,7 @@ namespace MusicShop.Services.Implementations
         public override void BeforeInsert(GuitarInsertRequest insert, Guitar entity)
         {
             entity.Type = nameof(Guitar);
-            //entity.ProductImage = Convert.FromBase64String(insert.ProductImage);
+
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
             entity.ProductNumber = GenerateUniqueProductNumber();

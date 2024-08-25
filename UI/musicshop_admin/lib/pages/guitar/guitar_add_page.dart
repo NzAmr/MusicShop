@@ -84,6 +84,27 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
         'Acoustic';
   }
 
+  void _onGuitarTypeChanged(int? value) {
+    setState(() {
+      _selectedGuitarTypeId = value;
+      if (_isAcousticGuitar()) {
+        _pickups = null;
+        _pickupConfiguration = null;
+      }
+    });
+  }
+
+  String? _validateNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    final number = double.tryParse(value);
+    if (number == null) {
+      return 'Please enter a valid number';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,11 +149,7 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                           child: Text(type.name ?? 'Unknown Type'),
                         );
                       }).toList(),
-                      onChanged: (int? value) {
-                        setState(() {
-                          _selectedGuitarTypeId = value;
-                        });
-                      },
+                      onChanged: _onGuitarTypeChanged,
                       validator: (value) =>
                           value == null ? 'Please select a guitar type' : null,
                     ),
@@ -142,6 +159,9 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                       onChanged: (value) {
                         _model = value;
                       },
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Model is required'
+                          : null,
                     ),
                     SizedBox(height: 16),
                     Row(
@@ -157,8 +177,10 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                             enabled: !_isAcousticGuitar(),
                             validator: (value) => _isAcousticGuitar() &&
                                     value != null
-                                ? 'Pickups are not applicable for Acoustic guitars'
-                                : null,
+                                ? null
+                                : _isAcousticGuitar() && value == null
+                                    ? 'Pickups are not applicable for Acoustic guitars'
+                                    : null,
                           ),
                         ),
                         SizedBox(width: 8),
@@ -171,6 +193,7 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                             onChanged: (value) {
                               _frets = int.tryParse(value);
                             },
+                            validator: _validateNumber,
                           ),
                         ),
                         SizedBox(width: 8),
@@ -184,6 +207,7 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                             onChanged: (value) {
                               _price = double.tryParse(value);
                             },
+                            validator: _validateNumber,
                           ),
                         ),
                       ],
@@ -198,8 +222,10 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                       },
                       enabled: !_isAcousticGuitar(),
                       validator: (value) => _isAcousticGuitar() && value != null
-                          ? 'Pickup Configuration is not applicable for Acoustic guitars'
-                          : null,
+                          ? null
+                          : _isAcousticGuitar() && value == null
+                              ? 'Pickup Configuration is not applicable for Acoustic guitars'
+                              : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
@@ -212,11 +238,13 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                     SizedBox(height: 20),
                     _imageFile == null
                         ? Text('No image selected.')
-                        : Image.file(
-                            _imageFile!,
+                        : Container(
                             width: 150,
                             height: 150,
-                            fit: BoxFit.cover,
+                            child: Image.file(
+                              _imageFile!,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                     SizedBox(height: 20),
                     ElevatedButton(
@@ -227,7 +255,13 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          _submitForm();
+                          if (_base64Image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Image is required')),
+                            );
+                          } else {
+                            _submitForm();
+                          }
                         }
                       },
                       child: Text('Submit'),
@@ -243,6 +277,13 @@ class _AddGuitarPageState extends State<AddGuitarPage> {
   }
 
   Future<void> _submitForm() async {
+    if (_imageFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Image is required')),
+      );
+      return;
+    }
+
     final guitarProvider = Provider.of<GuitarProvider>(context, listen: false);
 
     final request = GuitarInsertRequest()

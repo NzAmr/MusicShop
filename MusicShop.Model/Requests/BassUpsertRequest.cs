@@ -9,7 +9,7 @@ namespace MusicShop.Model.Requests
 {
     public class BassUpsertRequest : ProductUpsertRequest
     {
-        public int? GuitarTypeId { get; set; }
+        public int GuitarTypeId { get; set; }
         public string? Pickups { get; set; }
         public int? Frets { get; set; }
 

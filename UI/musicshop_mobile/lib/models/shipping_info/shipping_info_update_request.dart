@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:musicshop_mobile/models/customer/customer.dart';
 
 part 'shipping_info_update_request.g.dart';
 
@@ -10,7 +11,6 @@ class ShippingInfoUpdateRequest {
   String? city;
   String? zipCode;
   String? streetAddress;
-  int? customerId;
 
   ShippingInfoUpdateRequest();
 

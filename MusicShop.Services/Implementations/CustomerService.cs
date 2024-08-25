@@ -76,5 +76,34 @@ namespace MusicShop.Services.Implementations
             }
             return filteredQuery;
         }
+
+        public override Model.Customer Update(int id, CustomerUpdateRequest update)
+        {
+            var entity = Context.Customers.Find(id);
+            if (entity == null)
+            {
+                throw new Exception("Customer not found");
+            }
+
+
+            Mapper.Map(update, entity);
+
+            if (!string.IsNullOrEmpty(update.Password))
+            {
+                if (update.Password != update.PasswordConfirm)
+                {
+                    throw new Exception("Password and confirmation must be identical");
+                }
+
+                var salt = AuthUtils.GenerateSalt();
+                entity.PasswordSalt = salt;
+                entity.PasswordHash = AuthUtils.GenerateHash(salt, update.Password);
+            }
+
+            entity.UpdatedAt = DateTime.Now;
+
+            Context.SaveChanges();
+            return Mapper.Map<Model.Customer>(entity);
+        }
     }
 }
