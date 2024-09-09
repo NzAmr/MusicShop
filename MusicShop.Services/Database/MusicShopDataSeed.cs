@@ -127,7 +127,7 @@ namespace MusicShop.Services.Database
                 }
             );
 
-            // Seed data for Bass
+            
             modelBuilder.Entity<Bass>().HasData(
                 new Bass
                 {
@@ -179,7 +179,7 @@ namespace MusicShop.Services.Database
                 }
             );
 
-            // Seed data for Guitar
+           
             modelBuilder.Entity<Guitar>().HasData(
                 new Guitar
                 {

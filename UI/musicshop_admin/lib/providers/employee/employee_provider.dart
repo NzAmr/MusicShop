@@ -13,7 +13,7 @@ class EmployeeProvider extends BaseProvider<Employee> {
   }
 
   Future<Employee> employeeLogin(Login request) async {
-    var url = "https://localhost:7234/Employee/login";
+    var url = "${baseUrl}Employee/login";
     var uri = Uri.parse(url);
     var headers = createHeaders();
 
@@ -33,13 +33,18 @@ class EmployeeProvider extends BaseProvider<Employee> {
   }
 
   Future<Employee> getLoggedInEmployee() async {
-    var url = "https://localhost:7234/Employee/get-employee-login";
+    var url = "${baseUrl}Employee/get-employee-login";
     var uri = Uri.parse(url);
     var headers = createHeaders();
-    print("asdasd");
+
+    print('Making POST request to: $uri');
+
     headers['Content-Type'] = 'application/json';
 
     var response = await http.post(uri, headers: headers);
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);

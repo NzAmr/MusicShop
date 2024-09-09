@@ -1,7 +1,7 @@
-#See https://aka.ms/customizecoversion: '3'
+version: "3"
 services:
-#mssql docker
-  musicshop-sql:
+  #mssql docker
+  musicshop-database:
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     restart: unless-stopped
     environment:
@@ -13,11 +13,11 @@ services:
     expose:
       - 1433
     networks:
-      - musicshopnet
-    
-  rabbitmq:
+      - musicshop-network
+
+  musicshop-rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: musicshop-rabbitmq
     restart: unless-stopped
     environment:
       - RABBITMQ_DEFAULT_USER=guest
@@ -26,31 +26,31 @@ services:
       - "15672:15672"
       - "5672:5672"
     networks:
-      - musicshopnet
-  
+      - musicshop-network
+
   musicshop-api:
     restart: unless-stopped
     build:
       context: .
     environment:
-      - ConnectionStrings:DefaultConnection=Server=musicshop-sql,1433;Database=IB160121;User=sa;Password=QWEasd123!;ConnectRetryCount=0; TrustServerCertificate=True
+      - ConnectionStrings:DefaultConnection=Server=musicshop-database,1433;Database=IB160121;User=sa;Password=QWEasd123!;ConnectRetryCount=0; TrustServerCertificate=True
       - ASPNETCORE_ENVIRONMENT=Development
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=guest
       - RABBITMQ_PASS=guest
       - SERVER_ADDRESS=smtp.gmail.com
-      - MAIL_SENDER=musicshop225883@gmail.com
-      - MAIL_PASS=prnkhviwmogxbfyj
+      - MAIL_SENDER=noreply.musicshopbikes@gmail.com
+      - MAIL_PASS=xdjshsnocmbhxfjd
       - MAIL_PORT=587
     ports:
-      - 5146:5146
+      - 5146:80
     networks:
-      - musicshopnet
+      - musicshop-network
     links:
-      - musicshop-sql
+      - musicshop-database
     depends_on:
-      - musicshop-sql
-      - rabbitmq
+      - musicshop-database
+      - musicshop-rabbitmq
 
   musicshop-console:
     restart: unless-stopped
@@ -65,11 +65,10 @@ services:
       - MAIL_PASS=prnkhviwmogxbfyj
       - MAIL_PORT=587
     networks:
-      - musicshopnet
+      - musicshop-network
     depends_on:
-      - rabbitmq
- 
-networks:
-  musicshopnet:
-    driver: bridge 
+      - musicshop-rabbitmq
 
+networks:
+  musicshop-network:
+    driver: bridge

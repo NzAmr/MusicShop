@@ -12,7 +12,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
   BaseProvider(String endpoint) {
     _endpoint = endpoint;
     _baseUrl = const String.fromEnvironment("baseUrl",
-        defaultValue: "https://localhost:7234/");
+        defaultValue: "http://localhost:5146/");
   }
   String get baseUrl => _baseUrl ?? "";
 
@@ -123,8 +123,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     String username = Authorization.username ?? "";
     String password = Authorization.password ?? "";
 
-    print("passed creds: $username, $password");
-
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$password'))}";
 
@@ -132,6 +130,8 @@ abstract class BaseProvider<T> with ChangeNotifier {
       "Content-Type": "application/json",
       "Authorization": basicAuth
     };
+
+    print("Headers: $headers");
 
     return headers;
   }

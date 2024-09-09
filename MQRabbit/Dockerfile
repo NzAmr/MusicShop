@@ -5,7 +5,7 @@ COPY *.csproj ./
 RUN dotnet restore
 
 COPY . ./
-RUN dotnet build "MQRabbit.csproj" -c Release -o /app/build
+RUN dotnet build -c Release -o /app/build
 
 FROM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
 WORKDIR /app

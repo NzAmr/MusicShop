@@ -12,7 +12,7 @@ class StudioReservationProvider extends BaseProvider<StudioReservation> {
   }
 
   Future<StudioReservation> markAsCancelled(int id) async {
-    var url = "${baseUrl}StudioReservation/mark-as-cancelled/?id=$id";
+    var url = "${baseUrl}StudioReservation/mark-as-cancelled?id=$id";
     print(url);
     var uri = Uri.parse(url);
     var headers = createHeaders();
@@ -28,7 +28,7 @@ class StudioReservationProvider extends BaseProvider<StudioReservation> {
   }
 
   Future<StudioReservation> markAsConfirmed(int id) async {
-    var url = "${baseUrl}StudioReservation/mark-as-confirmed/?id=$id";
+    var url = "${baseUrl}StudioReservation/mark-as-confirmed?id=$id";
     print(url);
     var uri = Uri.parse(url);
     var headers = createHeaders();

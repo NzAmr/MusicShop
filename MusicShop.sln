@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicShop.Services", "Music
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MusicShop.Model", "MusicShop.Model\MusicShop.Model.csproj", "{34F1E7B9-AB99-41C5-A4B5-1A5432DB09ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQRabbit", "MQRabbit\MQRabbit.csproj", "{D1048A32-2265-44C1-B277-960D949A0889}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQRabbit", "MQRabbit\MQRabbit.csproj", "{D1048A32-2265-44C1-B277-960D949A0889}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EBEAB393-F041-488A-B707-753E22F2EB71}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

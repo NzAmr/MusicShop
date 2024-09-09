@@ -23,7 +23,7 @@ class StudioReservationProvider extends BaseProvider<StudioReservation> {
     if (http == null) {
       throw Exception("Http client is not initialized.");
     }
-
+    print(jsonRequest);
     var response = await http!.post(uri, headers: headers, body: jsonRequest);
 
     if (isValidResponseCode(response)) {

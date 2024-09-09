@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MQRabbit")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b7efd6c6465fcf5b63185490fc2194304f163cde")]
 [assembly: System.Reflection.AssemblyProductAttribute("MQRabbit")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MQRabbit")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
