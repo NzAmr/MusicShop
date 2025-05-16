@@ -6,6 +6,7 @@ part 'order_insert_request.g.dart';
 class OrderInsertRequest {
   int? shippingInfoId;
   int? productId;
+  int? employeeId;
 
   OrderInsertRequest();
 
