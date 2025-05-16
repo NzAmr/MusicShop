@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicShop.Services.Interfaces
 {
-    public interface IMQRabbitService
+    public interface IRabbitMQService
     {
         void sendEmail(Mail mail);
     }

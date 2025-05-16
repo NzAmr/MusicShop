@@ -7,11 +7,11 @@ using System.Text;
 
 namespace MusicShop.Services.Implementations
 {
-    public class MQRabbitService : IMQRabbitService
+    public class RabbitMQService : IRabbitMQService
     {
         private readonly ConnectionFactory _connectionFactory;
 
-        public MQRabbitService()
+        public RabbitMQService()
         {
             _connectionFactory = CreateConnectionFactory();
         }
