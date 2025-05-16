@@ -6,8 +6,10 @@ import 'package:musicshop_admin/models/customer/customer.dart';
 import 'package:musicshop_admin/models/order/order_insert_request.dart';
 import 'package:musicshop_admin/models/shipping_info/shipping_info.dart';
 import 'package:musicshop_admin/providers/customer/customer_provider.dart';
+import 'package:musicshop_admin/providers/employee/employee_provider.dart';
 import 'package:musicshop_admin/providers/order_provider/order_provider.dart';
 import 'package:musicshop_admin/providers/shipping_info/shipping_info_provider.dart';
+import 'package:musicshop_admin/utils/util.dart';
 import 'package:provider/provider.dart';
 
 class OrderPage extends StatefulWidget {
@@ -148,13 +150,22 @@ class _OrderPageState extends State<OrderPage> {
       return;
     }
 
-    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-    final OrderRequest = OrderInsertRequest()
-      ..shippingInfoId = _selectedShippingInfo!.id
-      ..productId = widget.product.id;
-
     try {
-      await orderProvider.insert(OrderRequest);
+      final employeeProvider =
+          Provider.of<EmployeeProvider>(context, listen: false);
+      final employee = await employeeProvider.getLoggedInEmployee();
+      final employeeId = employee.id;
+
+      print("employeeId: "+ employeeId.toString());
+
+      final orderRequest = OrderInsertRequest()
+        ..productId = widget.product.id
+        ..shippingInfoId = _selectedShippingInfo!.id
+        ..employeeId = employeeId;
+
+      final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+      await orderProvider.insert(orderRequest);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Order submitted successfully!')),
       );

@@ -16,6 +16,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _signUpUsernameController = TextEditingController();
+  final _signUpPasswordController = TextEditingController();
+  final _signUpConfirmPasswordController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
 
   Future<void> _login() async {
     final username = _usernameController.text;
@@ -75,12 +82,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _showSignUpDialog() {
-    final _firstNameController = TextEditingController();
-    final _lastNameController = TextEditingController();
-    final _emailController = TextEditingController();
-    final _phoneNumberController = TextEditingController();
-    final _passwordConfirmController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -101,20 +102,20 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               TextField(
-                controller: _usernameController,
+                controller: _signUpUsernameController,
                 decoration: const InputDecoration(
                   labelText: 'Username',
                 ),
               ),
               TextField(
-                controller: _passwordController,
+                controller: _signUpPasswordController,
                 decoration: const InputDecoration(
                   labelText: 'Password',
                 ),
                 obscureText: true,
               ),
               TextField(
-                controller: _passwordConfirmController,
+                controller: _signUpConfirmPasswordController,
                 decoration: const InputDecoration(
                   labelText: 'Confirm Password',
                 ),
@@ -139,33 +140,22 @@ class _LoginPageState extends State<LoginPage> {
         ),
         actions: <Widget>[
           TextButton(
-            onPressed: () async {
-              final employeeProvider =
-                  Provider.of<EmployeeProvider>(context, listen: false);
-
-              final newEmployee = EmployeeUpsertRequest()
-                ..firstName = _firstNameController.text
-                ..lastName = _lastNameController.text
-                ..username = _usernameController.text
-                ..password = _passwordController.text
-                ..passwordConfirm = _passwordConfirmController.text
-                ..email = _emailController.text
-                ..phoneNumber = _phoneNumberController.text;
-
-              try {
-                await employeeProvider.insert(newEmployee);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Account created successfully!'),
-                  ),
-                );
-              } catch (e) {
+            onPressed: () {
+              if (_firstNameController.text.isEmpty ||
+                  _lastNameController.text.isEmpty ||
+                  _signUpUsernameController.text.isEmpty ||
+                  _signUpPasswordController.text.isEmpty ||
+                  _signUpConfirmPasswordController.text.isEmpty ||
+                  _emailController.text.isEmpty ||
+                  _phoneNumberController.text.isEmpty ||
+                  _signUpPasswordController.text !=
+                      _signUpConfirmPasswordController.text) {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('Error'),
-                    content: Text('Sign up failed: ${e.toString()}'),
+                    content: const Text(
+                        'Please fill in all fields and ensure passwords match.'),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
@@ -176,6 +166,44 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 );
+              } else {
+                final employeeProvider =
+                    Provider.of<EmployeeProvider>(context, listen: false);
+
+                final newEmployee = EmployeeUpsertRequest()
+                  ..firstName = _firstNameController.text
+                  ..lastName = _lastNameController.text
+                  ..username = _signUpUsernameController.text
+                  ..password = _signUpPasswordController.text
+                  ..passwordConfirm = _signUpConfirmPasswordController.text
+                  ..email = _emailController.text
+                  ..phoneNumber = _phoneNumberController.text;
+
+                try {
+                  employeeProvider.insert(newEmployee);
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Account created successfully!'),
+                    ),
+                  );
+                } catch (e) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Error'),
+                      content: Text('Sign up failed: ${e.toString()}'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               }
             },
             child: const Text('Sign Up'),
