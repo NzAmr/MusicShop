@@ -23,8 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (username.isNotEmpty && password.isNotEmpty) {
       final loginRequest = Login(username: username, password: password);
-      final customerProvider =
-          Provider.of<CustomerProvider>(context, listen: false);
+      final customerProvider = Provider.of<CustomerProvider>(context, listen: false);
 
       try {
         await customerProvider.customerLogin(loginRequest);
@@ -46,9 +45,7 @@ class _LoginPageState extends State<LoginPage> {
             content: Text('Login failed: ${e.toString()}'),
             actions: <Widget>[
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('OK'),
               ),
             ],
@@ -63,9 +60,7 @@ class _LoginPageState extends State<LoginPage> {
           content: const Text('Please enter both username and password.'),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('OK'),
             ),
           ],
@@ -77,9 +72,11 @@ class _LoginPageState extends State<LoginPage> {
   void _showSignUpDialog() {
     final _firstNameController = TextEditingController();
     final _lastNameController = TextEditingController();
+    final _signUpUsernameController = TextEditingController();
+    final _signUpPasswordController = TextEditingController();
+    final _passwordConfirmController = TextEditingController();
     final _emailController = TextEditingController();
     final _phoneNumberController = TextEditingController();
-    final _passwordConfirmController = TextEditingController();
 
     showDialog(
       context: context,
@@ -90,48 +87,34 @@ class _LoginPageState extends State<LoginPage> {
             children: <Widget>[
               TextField(
                 controller: _firstNameController,
-                decoration: const InputDecoration(
-                  labelText: 'First Name',
-                ),
+                decoration: const InputDecoration(labelText: 'First Name'),
               ),
               TextField(
                 controller: _lastNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Last Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Last Name'),
               ),
               TextField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                ),
+                controller: _signUpUsernameController,
+                decoration: const InputDecoration(labelText: 'Username'),
               ),
               TextField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                ),
+                controller: _signUpPasswordController,
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
               ),
               TextField(
                 controller: _passwordConfirmController,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm Password',
-                ),
+                decoration: const InputDecoration(labelText: 'Confirm Password'),
                 obscureText: true,
               ),
               TextField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
+                decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
               ),
               TextField(
                 controller: _phoneNumberController,
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                ),
+                decoration: const InputDecoration(labelText: 'Phone Number'),
                 keyboardType: TextInputType.phone,
               ),
             ],
@@ -140,14 +123,41 @@ class _LoginPageState extends State<LoginPage> {
         actions: <Widget>[
           TextButton(
             onPressed: () async {
-              final customerProvider =
-                  Provider.of<CustomerProvider>(context, listen: false);
+              final allFieldsFilled = _firstNameController.text.isNotEmpty &&
+                  _lastNameController.text.isNotEmpty &&
+                  _signUpUsernameController.text.isNotEmpty &&
+                  _signUpPasswordController.text.isNotEmpty &&
+                  _passwordConfirmController.text.isNotEmpty &&
+                  _emailController.text.isNotEmpty &&
+                  _phoneNumberController.text.isNotEmpty;
+
+              final passwordsMatch =
+                  _signUpPasswordController.text == _passwordConfirmController.text;
+
+              if (!allFieldsFilled || !passwordsMatch) {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Error'),
+                    content: const Text('Please fill in all fields and ensure passwords match.'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
+                return;
+              }
+
+              final customerProvider = Provider.of<CustomerProvider>(context, listen: false);
 
               final newCustomer = CustomerUpsertRequest()
                 ..firstName = _firstNameController.text
                 ..lastName = _lastNameController.text
-                ..username = _usernameController.text
-                ..password = _passwordController.text
+                ..username = _signUpUsernameController.text
+                ..password = _signUpPasswordController.text
                 ..passwordConfirm = _passwordConfirmController.text
                 ..email = _emailController.text
                 ..phoneNumber = _phoneNumberController.text;
@@ -155,6 +165,9 @@ class _LoginPageState extends State<LoginPage> {
               try {
                 await customerProvider.insert(newCustomer);
                 Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Account created successfully!')),
+                );
               } catch (e) {
                 showDialog(
                   context: context,
@@ -163,9 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                     content: Text('Sign up failed: ${e.toString()}'),
                     actions: <Widget>[
                       TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
+                        onPressed: () => Navigator.of(context).pop(),
                         child: const Text('OK'),
                       ),
                     ],
@@ -176,9 +187,7 @@ class _LoginPageState extends State<LoginPage> {
             child: const Text('Sign Up'),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: () => Navigator.of(context).pop(),
             child: const Text('Cancel'),
           ),
         ],
@@ -197,9 +206,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: 600,
-              ),
+              constraints: BoxConstraints(maxWidth: 600),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
