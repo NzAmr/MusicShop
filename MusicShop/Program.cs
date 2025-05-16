@@ -52,7 +52,7 @@ builder.Services.AddTransient<IProductImageService, ProductImageService>();
 builder.Services.AddTransient<IStudioReservationService, StudioReservationService>();
 builder.Services.AddTransient<IOrderDetailService,OrderDetailsService>();
 builder.Services.AddTransient<IProductService, ProductService>();
-builder.Services.AddTransient<IMQRabbitService, MQRabbitService>();
+builder.Services.AddTransient<IRabbitMQService, RabbitMQService>();
 builder.Services.AddTransient<BaseState>();
 builder.Services.AddTransient<DraftState>();
 builder.Services.AddTransient<ConfirmedState>();

@@ -14,9 +14,9 @@ namespace MusicShop.Services.Implementations
 {
     public class StudioReservationService : BaseCRUDService<Model.StudioReservation, Database.StudioReservation, StudioReservationSearchObject, StudioReservationUpsertRequest, StudioReservationUpsertRequest>, IStudioReservationService
     {
-        private IMQRabbitService _rabbitService;
+        private IRabbitMQService _rabbitService;
         private BaseState BaseState { get; }
-        public StudioReservationService(MusicShopDBContext context, IMapper mapper, BaseState baseState ,IMQRabbitService mQRabbitService) : base(context, mapper)
+        public StudioReservationService(MusicShopDBContext context, IMapper mapper, BaseState baseState , IRabbitMQService mQRabbitService) : base(context, mapper)
         {
             BaseState = baseState;
             _rabbitService = mQRabbitService;

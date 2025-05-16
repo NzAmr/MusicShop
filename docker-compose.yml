@@ -55,7 +55,7 @@ services:
   musicshop-console:
     restart: unless-stopped
     build:
-      context: ./MQRabbit
+      context: ./RabbitMQ
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=guest
