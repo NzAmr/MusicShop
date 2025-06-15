@@ -17,13 +17,17 @@ class _LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future<void> _login() async {
-    final username = _usernameController.text;
-    final password = _passwordController.text;
+  final _formKey = GlobalKey<FormState>();
+  final _signUpFormKey = GlobalKey<FormState>();
 
-    if (username.isNotEmpty && password.isNotEmpty) {
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      final username = _usernameController.text;
+      final password = _passwordController.text;
+
       final loginRequest = Login(username: username, password: password);
-      final customerProvider = Provider.of<CustomerProvider>(context, listen: false);
+      final customerProvider =
+          Provider.of<CustomerProvider>(context, listen: false);
 
       try {
         await customerProvider.customerLogin(loginRequest);
@@ -52,20 +56,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       }
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Please enter both username and password.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
     }
   }
 
@@ -83,105 +73,151 @@ class _LoginPageState extends State<LoginPage> {
       builder: (context) => AlertDialog(
         title: const Text('Sign Up'),
         content: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              TextField(
-                controller: _firstNameController,
-                decoration: const InputDecoration(labelText: 'First Name'),
-              ),
-              TextField(
-                controller: _lastNameController,
-                decoration: const InputDecoration(labelText: 'Last Name'),
-              ),
-              TextField(
-                controller: _signUpUsernameController,
-                decoration: const InputDecoration(labelText: 'Username'),
-              ),
-              TextField(
-                controller: _signUpPasswordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-              ),
-              TextField(
-                controller: _passwordConfirmController,
-                decoration: const InputDecoration(labelText: 'Confirm Password'),
-                obscureText: true,
-              ),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              TextField(
-                controller: _phoneNumberController,
-                decoration: const InputDecoration(labelText: 'Phone Number'),
-                keyboardType: TextInputType.phone,
-              ),
-            ],
+          child: Form(
+            key: _signUpFormKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  controller: _firstNameController,
+                  decoration: const InputDecoration(labelText: 'First Name'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your first name';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _lastNameController,
+                  decoration: const InputDecoration(labelText: 'Last Name'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your last name';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _signUpUsernameController,
+                  decoration: const InputDecoration(labelText: 'Username'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a username';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _signUpPasswordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a password';
+                    }
+                    if (value.length < 4) {
+                      return 'Password must be at least 4 characters';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _passwordConfirmController,
+                  decoration:
+                      const InputDecoration(labelText: 'Confirm Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != _signUpPasswordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _phoneNumberController,
+                  decoration: const InputDecoration(labelText: 'Phone Number'),
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your phone number';
+                    }
+                    final phoneRegex = RegExp(r'^\+?[\d\s\-]{7,15}$');
+                    if (!phoneRegex.hasMatch(value)) {
+                      return 'Please enter a valid phone number';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () async {
-              final allFieldsFilled = _firstNameController.text.isNotEmpty &&
-                  _lastNameController.text.isNotEmpty &&
-                  _signUpUsernameController.text.isNotEmpty &&
-                  _signUpPasswordController.text.isNotEmpty &&
-                  _passwordConfirmController.text.isNotEmpty &&
-                  _emailController.text.isNotEmpty &&
-                  _phoneNumberController.text.isNotEmpty;
+              if (_signUpFormKey.currentState!.validate()) {
+                final customerProvider =
+                    Provider.of<CustomerProvider>(context, listen: false);
 
-              final passwordsMatch =
-                  _signUpPasswordController.text == _passwordConfirmController.text;
+                final newCustomer = CustomerUpsertRequest()
+                  ..firstName = _firstNameController.text
+                  ..lastName = _lastNameController.text
+                  ..username = _signUpUsernameController.text
+                  ..password = _signUpPasswordController.text
+                  ..passwordConfirm = _passwordConfirmController.text
+                  ..email = _emailController.text
+                  ..phoneNumber = _phoneNumberController.text;
 
-              if (!allFieldsFilled || !passwordsMatch) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Error'),
-                    content: const Text('Please fill in all fields and ensure passwords match.'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  ),
-                );
-                return;
-              }
+                try {
+                  await customerProvider.insert(newCustomer);
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Account created successfully!')),
+                  );
+                } catch (e) {
+                  final errorMessage = e.toString();
+                  print('Signup error: ${e.toString()}');
 
-              final customerProvider = Provider.of<CustomerProvider>(context, listen: false);
+                  String userFriendlyMessage =
+                      'Sign up failed. Please try again.';
+                  if (errorMessage.contains('Username is taken')) {
+                    userFriendlyMessage =
+                        'This username is already taken. Please choose another one.';
+                  }
 
-              final newCustomer = CustomerUpsertRequest()
-                ..firstName = _firstNameController.text
-                ..lastName = _lastNameController.text
-                ..username = _signUpUsernameController.text
-                ..password = _signUpPasswordController.text
-                ..passwordConfirm = _passwordConfirmController.text
-                ..email = _emailController.text
-                ..phoneNumber = _phoneNumberController.text;
-
-              try {
-                await customerProvider.insert(newCustomer);
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Account created successfully!')),
-                );
-              } catch (e) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Error'),
-                    content: Text('Sign up failed: ${e.toString()}'),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  ),
-                );
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Error'),
+                      content: Text(userFriendlyMessage),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               }
             },
             child: const Text('Sign Up'),
@@ -207,47 +243,62 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 600),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  TextField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                    ),
-                    obscureText: true,
-                    textInputAction: TextInputAction.done,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: _login,
-                          child: const Text('Login'),
-                        ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _usernameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Username',
+                        border: OutlineInputBorder(),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: _showSignUpDialog,
-                          child: const Text('Sign Up'),
-                        ),
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your username';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(),
                       ),
-                    ],
-                  ),
-                ],
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _login,
+                            child: const Text('Login'),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _showSignUpDialog,
+                            child: const Text('Sign Up'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

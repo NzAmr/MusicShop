@@ -206,8 +206,7 @@ class _AddBassPageState extends State<AddBassPage> {
                         if (_formKey.currentState?.validate() ?? false) {
                           if (_base64Image == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text('Please select an image.')),
+                              SnackBar(content: Text('Please select an image.')),
                             );
                             return;
                           }
@@ -227,6 +226,15 @@ class _AddBassPageState extends State<AddBassPage> {
   }
 
   Future<void> _submitForm() async {
+    if (_imageFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select an image before submitting.')),
+      );
+      return;
+    }
+
+    print("Submitting bass form with image base64 length: ${_base64Image?.length}");
+
     final bassProvider = Provider.of<BassProvider>(context, listen: false);
 
     final request = BassInsertRequest()
@@ -237,13 +245,17 @@ class _AddBassPageState extends State<AddBassPage> {
       ..frets = _frets
       ..price = _price
       ..model = _model
-      ..image = _base64Image;
+      ..productImage = _base64Image;
 
     try {
       await bassProvider.insert(request);
       Navigator.pop(context);
-    } catch (e) {
+    } catch (e, stackTrace) {
       print("Error submitting form: $e");
+      print("Stack trace: $stackTrace");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to submit bass. Please try again.')),
+      );
     }
   }
 }

@@ -19,75 +19,118 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
 
   void _fetchOrders() {
     setState(() {
-      _ordersFuture = Provider.of<OrderProvider>(context, listen: false)
-          .getCustomerOrders();
+      _ordersFuture = Provider.of<OrderProvider>(context, listen: false).getCustomerOrders();
     });
   }
 
-  Future<void> _showOrder(Order Order) async {
+  Future<void> _showOrder(Order order) async {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.black,
-        title: Text('Order Details', style: TextStyle(color: Colors.white)),
-        content: SingleChildScrollView(
-          child: ListBody(
+      builder: (context) => Dialog(
+        backgroundColor: Color(0xFF121212),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Color(0xFF121212),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Order Number: ${Order.orderNumber ?? 'N/A'}',
-                  style: TextStyle(color: Colors.white)),
-              SizedBox(height: 8),
-              Text('Brand: ${Order.product?.brand?.name ?? 'N/A'}',
-                  style: TextStyle(color: Colors.white)),
-              Text('Model: ${Order.product?.model ?? 'N/A'}',
-                  style: TextStyle(color: Colors.white)),
-              Text(
-                  'Price: \$${Order.product?.price?.toStringAsFixed(2) ?? 'N/A'}',
-                  style: TextStyle(color: Colors.white)),
-              SizedBox(height: 8),
-              Text(
-                  'Customer: ${Order.shippingInfo?.customer?.firstName ?? 'N/A'} ${Order.shippingInfo?.customer?.lastName ?? 'N/A'}',
-                  style: TextStyle(color: Colors.white)),
-              Text(
-                  'Order Date: ${Order.orderDate?.toLocal().toString() ?? 'N/A'}',
-                  style: TextStyle(color: Colors.white)),
-              Text('Shipping Status: ${Order.shippingStatus ?? 'N/A'}',
-                  style: TextStyle(color: Colors.white)),
+              Text('Order Details', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+              SizedBox(height: 16),
+              _buildDetailRow(Icons.confirmation_number, 'Order Number', order.orderNumber ?? 'N/A'),
+              _buildDetailRow(Icons.branding_watermark, 'Brand', order.product?.brand?.name ?? 'N/A'),
+              _buildDetailRow(Icons.devices, 'Model', order.product?.model ?? 'N/A'),
+              _buildDetailRow(Icons.attach_money, 'Price', '\$${order.product?.price?.toStringAsFixed(2) ?? 'N/A'}'),
+              _buildDetailRow(Icons.person, 'Customer', '${order.shippingInfo?.customer?.firstName ?? 'N/A'} ${order.shippingInfo?.customer?.lastName ?? ''}'),
+              _buildDetailRow(Icons.date_range, 'Order Date', order.orderDate?.toLocal().toString().split(" ")[0] ?? 'N/A'),
+              _buildDetailRow(Icons.local_shipping, 'Shipping Status', order.shippingStatus ?? 'N/A'),
+              SizedBox(height: 20),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.amber[700],
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: Text('Close', style: TextStyle(color: Colors.black)),
+                ),
+              )
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('Close', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }
 
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: Colors.grey[400]),
+        SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Transform.translate(
+              offset: Offset(0, -6),
+              child: Text(
+                label.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[500],
+                  letterSpacing: 1,
+                ),
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white70,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Orders')),
+      backgroundColor: Color(0xFF121212),
+      appBar: AppBar(
+        title: Text('Orders'),
+        backgroundColor: Color(0xFF1F1F1F),
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<List<Order>>(
           future: _ordersFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator(color: Colors.amber[700]));
             }
 
             if (snapshot.hasError) {
-              return Center(
-                  child: Text('Error fetching orders',
-                      style: TextStyle(color: Colors.white)));
+              return Center(child: Text('Error fetching orders', style: TextStyle(color: Colors.redAccent)));
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                  child: Text('No orders found',
-                      style: TextStyle(color: Colors.white)));
+              return Center(child: Text('No orders found', style: TextStyle(color: Colors.grey[400])));
             }
 
             final orders = snapshot.data!;
@@ -96,32 +139,28 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
-                final customerName =
-                    '${order.shippingInfo?.customer?.firstName ?? 'N/A'} ${order.shippingInfo?.customer?.lastName ?? 'N/A'}';
-                final brand = order.product?.brand?.name ?? 'N/A';
-                final model = order.product?.model ?? 'N/A';
-                final shippingStatus = order.shippingStatus ?? 'N/A';
+                final customerName = '${order.shippingInfo?.customer?.firstName ?? 'N/A'} ${order.shippingInfo?.customer?.lastName ?? ''}';
 
                 return Card(
-                  color: Colors.black,
-                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(
-                    title: Text('Order Number: ${order.orderNumber ?? 'N/A'}',
-                        style: TextStyle(color: Colors.white)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Customer: $customerName',
-                            style: TextStyle(color: Colors.white)),
-                        Text('Brand: $brand',
-                            style: TextStyle(color: Colors.white)),
-                        Text('Model: $model',
-                            style: TextStyle(color: Colors.white)),
-                        Text('Status: $shippingStatus',
-                            style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
+                  color: Color(0xFF1F1F1F),
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: InkWell(
                     onTap: () => _showOrder(order),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDetailRow(Icons.confirmation_number, 'Order Number', order.orderNumber ?? 'N/A'),
+                          _buildDetailRow(Icons.person, 'Customer', customerName),
+                          _buildDetailRow(Icons.branding_watermark, 'Brand', order.product?.brand?.name ?? 'N/A'),
+                          _buildDetailRow(Icons.devices, 'Model', order.product?.model ?? 'N/A'),
+                          _buildDetailRow(Icons.local_shipping, 'Status', order.shippingStatus ?? 'N/A'),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },

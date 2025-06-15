@@ -17,13 +17,13 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
   final _formKey = GlobalKey<FormState>();
   int? _selectedBrandId;
   String? _model;
-  double? _price;
+  String? _priceString;
   String? _description;
-  int? _voltage;
-  int? _powerRating;
+  String? _voltageString;
+  String? _powerRatingString;
   bool? _headphoneJack = false;
   bool? _usbJack = false;
-  int? _numberOfPresets;
+  String? _numberOfPresetsString;
   File? _imageFile;
   String? _base64Image;
 
@@ -37,10 +37,8 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
 
   Future<void> _fetchData() async {
     final brandProvider = Provider.of<BrandProvider>(context, listen: false);
-
     try {
       final brandResult = await brandProvider.get();
-
       setState(() {
         _brands = brandResult;
         if (_brands.isNotEmpty && _selectedBrandId == null) {
@@ -55,7 +53,6 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       setState(() {
@@ -93,46 +90,54 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
                           _selectedBrandId = value;
                         });
                       },
-                      validator: (value) =>
-                          value == null ? 'Please select a brand' : null,
+                      validator: (value) => value == null ? 'Please select a brand' : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Model'),
-                      onChanged: (value) {
-                        _model = value;
-                      },
+                      onChanged: (value) => _model = value,
+                      validator: (value) => value == null || value.isEmpty ? 'Model is required' : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Price'),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      onChanged: (value) {
-                        _price = double.tryParse(value);
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      onChanged: (value) => _priceString = value,
+                      validator: (value) {
+                        final price = double.tryParse(value ?? '');
+                        if (value == null || value.isEmpty) return 'Price is required';
+                        if (price == null || price <= 0) return 'Price must be a positive number';
+                        return null;
                       },
                     ),
                     SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Description'),
-                      onChanged: (value) {
-                        _description = value;
-                      },
+                      onChanged: (value) => _description = value,
+                      validator: (value) => value == null || value.isEmpty ? 'Description is required' : null,
                     ),
                     SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Voltage'),
                       keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        _voltage = int.tryParse(value);
+                      onChanged: (value) => _voltageString = value,
+                      validator: (value) {
+                        final voltage = int.tryParse(value ?? '');
+                        if (value == null || value.isEmpty) return 'Voltage is required';
+                        if (voltage == null || voltage <= 0) return 'Voltage must be a positive number';
+                        return null;
                       },
                     ),
                     SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Power Rating'),
                       keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        _powerRating = int.tryParse(value);
+                      onChanged: (value) => _powerRatingString = value,
+                      validator: (value) {
+                        final power = int.tryParse(value ?? '');
+                        if (value == null || value.isEmpty) return 'Power Rating is required';
+                        if (power == null || power <= 0) return 'Power Rating must be a positive number';
+                        return null;
                       },
                     ),
                     SizedBox(height: 16),
@@ -156,11 +161,14 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
                     ),
                     SizedBox(height: 16),
                     TextFormField(
-                      decoration:
-                          InputDecoration(labelText: 'Number of Presets'),
+                      decoration: InputDecoration(labelText: 'Number of Presets'),
                       keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        _numberOfPresets = int.tryParse(value);
+                      onChanged: (value) => _numberOfPresetsString = value,
+                      validator: (value) {
+                        final presets = int.tryParse(value ?? '');
+                        if (value == null || value.isEmpty) return 'Number of Presets is required';
+                        if (presets == null || presets < 0) return 'Presets must be 0 or more';
+                        return null;
                       },
                     ),
                     SizedBox(height: 20),
@@ -182,6 +190,12 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
+                          if (_base64Image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Please select an image.')),
+                            );
+                            return;
+                          }
                           _submitForm();
                         }
                       },
@@ -198,21 +212,18 @@ class _AddAmplifierPageState extends State<AddAmplifierPage> {
   }
 
   Future<void> _submitForm() async {
-    final amplifierProvider =
-        Provider.of<AmplifierProvider>(context, listen: false);
-
+    final amplifierProvider = Provider.of<AmplifierProvider>(context, listen: false);
     final request = AmplifierInsertRequest()
       ..brandId = _selectedBrandId
       ..model = _model
-      ..price = _price
+      ..price = double.tryParse(_priceString ?? '')
       ..description = _description
-      ..voltage = _voltage
-      ..powerRating = _powerRating
+      ..voltage = int.tryParse(_voltageString ?? '')
+      ..powerRating = int.tryParse(_powerRatingString ?? '')
       ..headphoneJack = _headphoneJack
       ..usbjack = _usbJack
-      ..numberOfPresets = _numberOfPresets
+      ..numberOfPresets = int.tryParse(_numberOfPresetsString ?? '')
       ..productImage = _base64Image;
-
     try {
       await amplifierProvider.insert(request);
       Navigator.pop(context);

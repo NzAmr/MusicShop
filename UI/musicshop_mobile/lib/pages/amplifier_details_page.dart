@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,41 +16,13 @@ class AmplifierDetailsPage extends StatefulWidget {
 }
 
 class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
-  late TextEditingController _modelController;
-  late TextEditingController _priceController;
-  late TextEditingController _descriptionController;
-  late TextEditingController _voltageController;
-  late TextEditingController _powerRatingController;
-  late TextEditingController _numberOfPresetsController;
-  String _imageBase64 = '';
+  late String _imageBase64;
   File? _imageFile;
 
   @override
   void initState() {
     super.initState();
-    _modelController = TextEditingController(text: widget.amplifier.model);
-    _priceController =
-        TextEditingController(text: widget.amplifier.price?.toStringAsFixed(2));
-    _descriptionController =
-        TextEditingController(text: widget.amplifier.description);
-    _voltageController =
-        TextEditingController(text: widget.amplifier.voltage?.toString());
-    _powerRatingController =
-        TextEditingController(text: widget.amplifier.powerRating?.toString());
-    _numberOfPresetsController = TextEditingController(
-        text: widget.amplifier.numberOfPresets?.toString());
     _imageBase64 = widget.amplifier.productImage ?? '';
-  }
-
-  @override
-  void dispose() {
-    _modelController.dispose();
-    _priceController.dispose();
-    _descriptionController.dispose();
-    _voltageController.dispose();
-    _powerRatingController.dispose();
-    _numberOfPresetsController.dispose();
-    super.dispose();
   }
 
   Future<void> _pickImage() async {
@@ -69,7 +40,6 @@ class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
 
   void _navigateToOrderPage() {
     final product = Product();
-
     product.id = widget.amplifier.id;
     product.model = widget.amplifier.model;
     product.price = widget.amplifier.price;
@@ -83,16 +53,63 @@ class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
     );
   }
 
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: Colors.grey[400]),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Transform.translate(
+                  offset: Offset(0, -6),
+                  child: Text(
+                    label.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[500],
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final amplifier = widget.amplifier;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Amplifier Details')),
+      backgroundColor: Color(0xFF121212),
+      appBar: AppBar(
+        title: Text('Amplifier Details'),
+        backgroundColor: Color(0xFF1F1F1F),
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: _pickImage,
@@ -101,57 +118,51 @@ class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
                       maxWidth: 400,
                       maxHeight: 400,
                     ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey[700]!),
+                    ),
+                    clipBehavior: Clip.antiAlias,
                     child: _imageBase64.isNotEmpty
                         ? Image.memory(
                             base64Decode(_imageBase64),
                             fit: BoxFit.cover,
                           )
-                        : Placeholder(),
+                        : Container(
+                            height: 200,
+                            color: Color(0xFF1F1F1F),
+                            child: Center(
+                              child: Icon(Icons.image, size: 60, color: Colors.grey[700]),
+                            ),
+                          ),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text(
-                  'Model: ${widget.amplifier.model}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Brand: ${widget.amplifier.brand?.name ?? 'Unknown Brand'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Price: \$${widget.amplifier.price?.toStringAsFixed(2) ?? 'N/A'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Divider(),
-                Text(
-                  'Description: ${widget.amplifier.description ?? 'No description'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Divider(),
-                Text(
-                  'Voltage: ${widget.amplifier.voltage?.toString() ?? 'N/A'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Power Rating: ${widget.amplifier.powerRating?.toString() ?? 'N/A'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Number of Presets: ${widget.amplifier.numberOfPresets?.toString() ?? 'N/A'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
+                SizedBox(height: 24),
+                _buildDetailRow(Icons.devices, 'Model', amplifier.model ?? 'N/A'),
+                _buildDetailRow(Icons.branding_watermark, 'Brand', amplifier.brand?.name ?? 'Unknown Brand'),
+                _buildDetailRow(Icons.attach_money, 'Price', amplifier.price != null ? '\$${amplifier.price!.toStringAsFixed(2)}' : 'N/A'),
+                Divider(color: Colors.grey[700], height: 32, thickness: 1),
+                _buildDetailRow(Icons.description, 'Description', amplifier.description ?? 'No description'),
+                Divider(color: Colors.grey[700], height: 32, thickness: 1),
+                _buildDetailRow(Icons.bolt, 'Voltage', amplifier.voltage?.toString() ?? 'N/A'),
+                _buildDetailRow(Icons.power, 'Power Rating', amplifier.powerRating?.toString() ?? 'N/A'),
+                _buildDetailRow(Icons.settings_input_component, 'Number of Presets', amplifier.numberOfPresets?.toString() ?? 'N/A'),
+                SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _navigateToOrderPage,
-                    child: Text('Order'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber[700],
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Order',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ],

@@ -10,3 +10,15 @@ C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\refint\Mu
 C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.pdb
 C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\ref\MusicShop.Model.dll
 C:\Users\amar_\source\repos\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.sourcelink.json
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\bin\Debug\net6.0\MusicShop.Model.deps.json
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\bin\Debug\net6.0\MusicShop.Model.dll
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\bin\Debug\net6.0\MusicShop.Model.pdb
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.AssemblyInfo.cs
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.sourcelink.json
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.dll
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\refint\MusicShop.Model.dll
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\MusicShop.Model.pdb
+C:\Users\User\Desktop\MusicShop\MusicShop\MusicShop.Model\obj\Debug\net6.0\ref\MusicShop.Model.dll

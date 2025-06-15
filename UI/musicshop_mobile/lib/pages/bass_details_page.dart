@@ -5,136 +5,150 @@ import 'package:musicshop_mobile/models/abstract/product.dart';
 import 'package:musicshop_mobile/models/bass/bass.dart';
 import 'package:musicshop_mobile/pages/order_page.dart';
 
-class BassDetailsPage extends StatelessWidget {
+class BassDetailsPage extends StatefulWidget {
   final Bass bass;
 
   BassDetailsPage({required this.bass});
 
-  Widget _buildImageSection() {
-    Uint8List? _imageBytes;
-    if (bass.productImage != null && bass.productImage!.isNotEmpty) {
-      try {
-        _imageBytes = base64Decode(bass.productImage!);
-      } catch (e) {
-        print('Error decoding base64 image: $e');
-      }
-    }
+  @override
+  _BassDetailsPageState createState() => _BassDetailsPageState();
+}
 
-    return Container(
-      constraints: BoxConstraints(
-        maxWidth: 400,
-        maxHeight: 400,
+class _BassDetailsPageState extends State<BassDetailsPage> {
+  late String _imageBase64;
+
+  @override
+  void initState() {
+    super.initState();
+    _imageBase64 = widget.bass.productImage ?? '';
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: Colors.grey[400]),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Transform.translate(
+                  offset: Offset(0, -6),
+                  child: Text(
+                    label.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[500],
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      child: _imageBytes != null
-          ? Image.memory(
-              _imageBytes,
-              fit: BoxFit.cover,
-            )
-          : Placeholder(),
+    );
+  }
+
+  void _navigateToOrderPage() {
+    final product = Product();
+    product.id = widget.bass.id;
+    product.model = widget.bass.model;
+    product.price = widget.bass.price;
+    product.description = widget.bass.description;
+    product.productImage = widget.bass.productImage;
+    product.brand = widget.bass.brand;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OrderPage(product: product),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    Uint8List? imageBytes;
+    if (_imageBase64.isNotEmpty) {
+      try {
+        imageBytes = base64Decode(_imageBase64);
+      } catch (_) {}
+    }
+
     return Scaffold(
-      appBar: AppBar(title: Text('Bass Details')),
+      backgroundColor: Color(0xFF121212),
+      appBar: AppBar(
+        title: Text('Bass Details'),
+        backgroundColor: Color(0xFF1F1F1F),
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildImageSection(),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Model: ${bass.model ?? 'Unknown Model'}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Brand: ${bass.brand?.name ?? 'Unknown Brand'}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Description: ${bass.description ?? 'No Description'}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Pickups: ${bass.pickups ?? 'No Pickups'}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Frets: ${bass.frets?.toString() ?? 'No Frets Information'}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Price: \$${bass.price?.toStringAsFixed(2) ?? 'No Price'}',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        final product = Product()
-                          ..id = bass.id
-                          ..model = bass.model
-                          ..price = bass.price
-                          ..description = bass.description
-                          ..productImage = bass.productImage
-                          ..brand = bass.brand;
-
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => OrderPage(product: product),
+                Container(
+                  constraints: BoxConstraints(
+                    maxWidth: 400,
+                    maxHeight: 400,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.grey[700]!),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: imageBytes != null
+                      ? Image.memory(
+                          imageBytes,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          height: 200,
+                          color: Color(0xFF1F1F1F),
+                          child: Center(
+                            child: Icon(Icons.image_not_supported, size: 60, color: Colors.grey[700]),
                           ),
-                        );
-                      },
-                      child: Text('Order'),
+                        ),
+                ),
+                SizedBox(height: 24),
+                _buildDetailRow(Icons.devices, 'Model', widget.bass.model ?? 'N/A'),
+                _buildDetailRow(Icons.branding_watermark, 'Brand', widget.bass.brand?.name ?? 'Unknown Brand'),
+                _buildDetailRow(Icons.description, 'Description', widget.bass.description ?? 'No description'),
+                _buildDetailRow(Icons.music_note, 'Pickups', widget.bass.pickups ?? 'N/A'),
+                _buildDetailRow(Icons.format_list_numbered, 'Frets', widget.bass.frets?.toString() ?? 'N/A'),
+                _buildDetailRow(Icons.attach_money, 'Price', widget.bass.price != null ? '\$${widget.bass.price!.toStringAsFixed(2)}' : 'N/A'),
+                SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _navigateToOrderPage,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber[700],
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ],
+                    child: Text(
+                      'Order',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
               ],
             ),

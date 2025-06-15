@@ -730,7 +730,10 @@
       },
       "MusicShop.Model/1.0.0": {
         "runtime": {
-          "MusicShop.Model.dll": {}
+          "MusicShop.Model.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "MusicShop.Services/1.0.0": {
@@ -743,7 +746,10 @@
           "RabbitMQ.Client": "6.8.1"
         },
         "runtime": {
-          "MusicShop.Services.dll": {}
+          "MusicShop.Services.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

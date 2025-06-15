@@ -18,7 +18,14 @@ namespace MusicShop.Controllers
 
         public override ActionResult<Model.Employee> Insert([FromBody] EmployeeUpsertRequest insert)
         {
-            return base.Insert(insert);
+            try
+            {
+                return base.Insert(insert);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("login")]
         public ActionResult<Model.Employee> Login([FromBody] LoginRequest request)

@@ -11,7 +11,7 @@ class BassInsertRequest {
   int? guitarTypeId;
   String? pickups;
   int? frets;
-  String? image;
+  String? productImage;
 
   BassInsertRequest();
 

@@ -26,7 +26,7 @@ namespace MusicShop.Services.Implementations
         public override void BeforeInsert(AmplifierInsertRequest insert, Amplifier entity)
         {
             entity.Type = nameof(Amplifier);
-            entity.ProductImage = Convert.FromBase64String(insert.ProductImage);
+            entity.ProductImage = insert.ProductImage;
             entity.CreatedAt = DateTime.Now;
             entity.UpdatedAt = DateTime.Now;
             entity.ProductNumber = GenerateUniqueProductNumber();

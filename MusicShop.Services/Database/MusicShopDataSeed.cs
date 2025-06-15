@@ -63,7 +63,7 @@ namespace MusicShop.Services.Database
                {
                    Id = 1,
                    CustomerId = 1,
-                   Country = "USA",
+                   Country = "US",
                    StateOrProvince = "California",
                    City = "Los Angeles",
                    ZipCode = "90001",

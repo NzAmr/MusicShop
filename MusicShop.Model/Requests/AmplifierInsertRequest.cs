@@ -17,6 +17,6 @@ namespace MusicShop.Model.Requests
         public bool? HeadphoneJack { get; set; }
         public bool? Usbjack { get; set; }
         public int? NumberOfPresets { get; set; }
-        public string? ProductImage { get; set; }
+        public byte[]? ProductImage { get; set; }
     }
 }

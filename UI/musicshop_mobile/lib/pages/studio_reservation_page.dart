@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:musicshop_mobile/models/studio/studio_reservation_insert_request.dart';
 import 'package:musicshop_mobile/pages/studio_calendar_popup.dart';
 import 'package:musicshop_mobile/providers/studio/studio_reservation_provider.dart';
@@ -13,6 +14,7 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
   DateTime? _fromTime;
   DateTime? _toTime;
   final TextEditingController _durationController = TextEditingController();
+  final DateFormat _dateFormat = DateFormat('yyyy-MM-dd HH:mm');
 
   @override
   void initState() {
@@ -178,7 +180,7 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                                 color: Colors.black),
                           ),
                           TextSpan(
-                            text: '${reservation.timeFrom?.toLocal()}\n',
+                            text: '${_dateFormat.format(reservation.timeFrom!.toLocal())}\n',
                             style: TextStyle(color: Colors.black87),
                           ),
                           TextSpan(
@@ -188,7 +190,7 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                                 color: Colors.black),
                           ),
                           TextSpan(
-                            text: '${reservation.timeTo?.toLocal()}\n',
+                            text: '${_dateFormat.format(reservation.timeTo!.toLocal())}\n',
                             style: TextStyle(color: Colors.black87),
                           ),
                           TextSpan(
@@ -243,7 +245,7 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                 readOnly: true,
                 controller: TextEditingController(
                   text: _fromTime != null
-                      ? _fromTime!.toLocal().toString()
+                      ? _dateFormat.format(_fromTime!.toLocal())
                       : 'Select Date and Time',
                 ),
               ),
@@ -263,7 +265,7 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    'To: ${_toTime!.toLocal()}',
+                    'To: ${_dateFormat.format(_toTime!.toLocal())}',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),

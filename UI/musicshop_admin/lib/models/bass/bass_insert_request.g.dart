@@ -15,7 +15,7 @@ BassInsertRequest _$BassInsertRequestFromJson(Map<String, dynamic> json) =>
       ..guitarTypeId = (json['guitarTypeId'] as num?)?.toInt()
       ..pickups = json['pickups'] as String?
       ..frets = (json['frets'] as num?)?.toInt()
-      ..image = json['image'] as String?;
+      ..productImage = json['productImage'] as String?;
 
 Map<String, dynamic> _$BassInsertRequestToJson(BassInsertRequest instance) =>
     <String, dynamic>{
@@ -26,5 +26,5 @@ Map<String, dynamic> _$BassInsertRequestToJson(BassInsertRequest instance) =>
       'guitarTypeId': instance.guitarTypeId,
       'pickups': instance.pickups,
       'frets': instance.frets,
-      'image': instance.image,
+      'productImage': instance.productImage,
     };

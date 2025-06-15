@@ -32,7 +32,22 @@ namespace MusicShop.Services.Implementations
                 throw new Exception("Password and confirmation must be identical");
             }
 
-            return base.Insert(insert);
+            var customer = base.Insert(insert);
+
+            var shippingInfo = new ShippingInfo
+            {
+                CustomerId = customer.Id,
+                Country = null,
+                StateOrProvince = null,
+                City = null,
+                ZipCode = null,
+                StreetAddress = null
+            };
+
+            Context.ShippingInfos.Add(shippingInfo);
+            Context.SaveChanges();
+
+            return customer;
         }
 
         public override void BeforeInsert(CustomerInsertRequest insert, Customer entity)

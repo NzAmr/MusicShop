@@ -442,7 +442,7 @@ namespace MusicShop.Services.Migrations
                         {
                             Id = 1,
                             City = "Los Angeles",
-                            Country = "USA",
+                            Country = "US",
                             CustomerId = 1,
                             StateOrProvince = "California",
                             StreetAddress = "123 Music Lane",

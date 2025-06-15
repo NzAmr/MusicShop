@@ -408,13 +408,14 @@ class _AmplifierSearchPageState extends State<AmplifierSearchPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => AddAmplifierPage(),
             ),
           );
+          await _search();
         },
         child: Icon(Icons.add),
         backgroundColor: CupertinoColors.lightBackgroundGray,

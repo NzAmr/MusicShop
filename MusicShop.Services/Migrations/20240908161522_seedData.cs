@@ -78,7 +78,7 @@ namespace MusicShop.Services.Migrations
             migrationBuilder.InsertData(
                 table: "ShippingInfo",
                 columns: new[] { "Id", "City", "Country", "CustomerId", "StateOrProvince", "StreetAddress", "ZipCode" },
-                values: new object[] { 1, "Los Angeles", "USA", 1, "California", "123 Music Lane", "90001" });
+                values: new object[] { 1, "Los Angeles", "US", 1, "California", "123 Music Lane", "90001" });
 
             migrationBuilder.InsertData(
                 table: "StudioReservation",

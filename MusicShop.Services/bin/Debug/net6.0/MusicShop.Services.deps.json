@@ -731,7 +731,10 @@
       },
       "MusicShop.Model/1.0.0": {
         "runtime": {
-          "MusicShop.Model.dll": {}
+          "MusicShop.Model.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

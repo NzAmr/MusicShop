@@ -99,6 +99,8 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
   }
 
   void _showUpdateDialog(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+
     final _firstNameController =
         TextEditingController(text: employee.firstName);
     final _lastNameController = TextEditingController(text: employee.lastName);
@@ -114,21 +116,74 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
       builder: (context) => AlertDialog(
         title: const Text('Update Account'),
         content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTextField(_firstNameController, 'First Name'),
-              _buildTextField(_lastNameController, 'Last Name'),
-              _buildTextField(_usernameController, 'Username'),
-              _buildTextField(_emailController, 'Email',
-                  keyboardType: TextInputType.emailAddress),
-              _buildTextField(_phoneNumberController, 'Phone Number',
-                  keyboardType: TextInputType.phone),
-              _buildTextField(_passwordController, 'Password',
-                  obscureText: true),
-              _buildTextField(_passwordConfirmController, 'Confirm Password',
-                  obscureText: true),
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildValidatedTextField(
+                  controller: _firstNameController,
+                  label: 'First Name',
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Required' : null,
+                ),
+                _buildValidatedTextField(
+                  controller: _lastNameController,
+                  label: 'Last Name',
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Required' : null,
+                ),
+                _buildValidatedTextField(
+                  controller: _usernameController,
+                  label: 'Username',
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Required' : null,
+                ),
+                _buildValidatedTextField(
+                  controller: _emailController,
+                  label: 'Email',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return 'Required';
+                    final emailRegex = RegExp(r'\S+@\S+\.\S+');
+                    return emailRegex.hasMatch(value)
+                        ? null
+                        : 'Enter valid email';
+                  },
+                ),
+                _buildValidatedTextField(
+                  controller: _phoneNumberController,
+                  label: 'Phone Number',
+                  keyboardType: TextInputType.phone,
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Required' : null,
+                ),
+                _buildValidatedTextField(
+                  controller: _passwordController,
+                  label: 'Password',
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return null;
+                    if (value.length < 6) {
+                      return 'Min 6 characters';
+                    }
+                    return null;
+                  },
+                ),
+                _buildValidatedTextField(
+                  controller: _passwordConfirmController,
+                  label: 'Confirm Password',
+                  obscureText: true,
+                  validator: (value) {
+                    if (_passwordController.text.isNotEmpty &&
+                        value != _passwordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         actions: <Widget>[
@@ -140,6 +195,8 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
           ),
           TextButton(
             onPressed: () async {
+              if (!_formKey.currentState!.validate()) return;
+
               final firstName = _firstNameController.text;
               final lastName = _lastNameController.text;
               final username = _usernameController.text;
@@ -151,34 +208,6 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
               final passwordConfirm = _passwordConfirmController.text.isEmpty
                   ? null
                   : _passwordConfirmController.text;
-
-              if ((password != null && passwordConfirm == null) ||
-                  (password == null && passwordConfirm != null)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text(
-                          'Both password fields must be filled or both must be empty')),
-                );
-                return;
-              }
-
-              if (password != null && password != passwordConfirm) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Passwords do not match')),
-                );
-                return;
-              }
-
-              if (firstName.isEmpty ||
-                  lastName.isEmpty ||
-                  username.isEmpty ||
-                  email.isEmpty ||
-                  phoneNumber.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please fill in all fields')),
-                );
-                return;
-              }
 
               final updatedEmployee = EmployeeUpsertRequest()
                 ..firstName = firstName
@@ -226,13 +255,19 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label,
-      {bool obscureText = false,
-      TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildValidatedTextField({
+    required TextEditingController controller,
+    required String label,
+    String? Function(String?)? validator,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
@@ -240,8 +275,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         ),
-        obscureText: obscureText,
-        keyboardType: keyboardType,
+        validator: validator,
       ),
     );
   }

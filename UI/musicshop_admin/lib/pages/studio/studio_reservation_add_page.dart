@@ -5,6 +5,7 @@ import 'package:musicshop_admin/providers/customer/customer_provider.dart';
 import 'package:musicshop_admin/models/studio/studio_reservation_insert_request.dart';
 import 'package:musicshop_admin/providers/studio/studio_reservation_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class StudioReservationPage extends StatefulWidget {
   @override
@@ -18,6 +19,8 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
   int? _selectedCustomerId;
   String? _selectedCustomerName;
   Future<List<Customer>>? _customersFuture;
+
+  final DateFormat _dateFormat = DateFormat('dd.MM.yyyy HH:mm');
 
   @override
   void initState() {
@@ -279,12 +282,12 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                           ),
                           SizedBox(height: 4.0),
                           Text(
-                            'From: ${reservation.timeFrom?.toLocal()}',
+                            'From: ${reservation.timeFrom != null ? _dateFormat.format(reservation.timeFrom!.toLocal()) : 'N/A'}',
                             style: TextStyle(color: Colors.black87),
                           ),
                           SizedBox(height: 4.0),
                           Text(
-                            'To: ${reservation.timeTo?.toLocal()}',
+                            'To: ${reservation.timeTo != null ? _dateFormat.format(reservation.timeTo!.toLocal()) : 'N/A'}',
                             style: TextStyle(color: Colors.black87),
                           ),
                           SizedBox(height: 4.0),
@@ -390,7 +393,7 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                 readOnly: true,
                 controller: TextEditingController(
                   text: _fromTime != null
-                      ? _fromTime!.toLocal().toString()
+                      ? _dateFormat.format(_fromTime!.toLocal())
                       : 'Select Date and Time',
                 ),
               ),
@@ -410,7 +413,7 @@ class _StudioReservationPageState extends State<StudioReservationPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                    'To: ${_toTime!.toLocal()}',
+                    'To: ${_dateFormat.format(_toTime!.toLocal())}',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),

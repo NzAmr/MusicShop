@@ -101,68 +101,155 @@ class _GearDetailsPageState extends State<GearDetailsPage> {
     );
   }
 
+  Widget buildInfoRow(IconData icon, String label, String value, TextStyle? labelStyle, TextStyle? valueStyle) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 20, color: Colors.grey[500]),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: labelStyle),
+                SizedBox(height: 4),
+                Text(value, style: valueStyle),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(title: Text('Gear Details')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: 400,
-                      maxHeight: 400,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: 400,
+                        maxHeight: 400,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: _imageBase64.isNotEmpty
+                          ? Image.memory(
+                              base64Decode(_imageBase64),
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              height: 200,
+                              color: Colors.grey.shade200,
+                              child: Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  size: 60,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
                     ),
-                    child: _imageBase64.isNotEmpty
-                        ? Image.memory(
-                            base64Decode(_imageBase64),
-                            fit: BoxFit.cover,
-                          )
-                        : Placeholder(),
                   ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Model: ${widget.gear.model}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Brand: ${widget.gear.brand?.name ?? 'Unknown Brand'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Price: \$${widget.gear.price?.toStringAsFixed(2) ?? 'N/A'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Divider(),
-                Text(
-                  'Description: ${widget.gear.description ?? 'No description'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 8),
-                Divider(),
-                Text(
-                  'Gear Category: ${widget.gear.gearCategory?.name ?? 'Unknown Category'}',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: ElevatedButton(
-                    onPressed: _navigateToOrderPage,
-                    child: Text('Order'),
+                  SizedBox(height: 24),
+                  buildInfoRow(
+                    Icons.devices,
+                    'Model',
+                    widget.gear.model ?? 'Unknown Model',
+                    theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                    theme.textTheme.titleMedium,
                   ),
-                ),
-              ],
+                  SizedBox(height: 8),
+                  buildInfoRow(
+                    Icons.branding_watermark,
+                    'Brand',
+                    widget.gear.brand?.name ?? 'Unknown Brand',
+                    theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                    theme.textTheme.titleMedium,
+                  ),
+                  SizedBox(height: 8),
+                  buildInfoRow(
+                    Icons.attach_money,
+                    'Price',
+                    widget.gear.price != null
+                        ? '\$${widget.gear.price!.toStringAsFixed(2)}'
+                        : 'N/A',
+                    theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                    theme.textTheme.titleMedium,
+                  ),
+                  SizedBox(height: 16),
+                  Divider(),
+                  SizedBox(height: 16),
+                  buildInfoRow(
+                    Icons.description,
+                    'Description',
+                    widget.gear.description ?? 'No description',
+                    theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                    theme.textTheme.bodyMedium,
+                  ),
+                  SizedBox(height: 16),
+                  Divider(),
+                  SizedBox(height: 16),
+                  buildInfoRow(
+                    Icons.category,
+                    'Gear Category',
+                    widget.gear.gearCategory?.name ?? 'Unknown Category',
+                    theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                    theme.textTheme.titleMedium,
+                  ),
+                  SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _navigateToOrderPage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber[700],
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'Order',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

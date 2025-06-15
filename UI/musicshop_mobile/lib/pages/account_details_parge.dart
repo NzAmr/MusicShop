@@ -146,6 +146,29 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
     );
   }
 
+  final List<Map<String, String>> countryCodes = [
+    {'code': 'US', 'name': 'United States'},
+    {'code': 'BA', 'name': 'Bosnia and Herzegovina'},
+    {'code': 'HR', 'name': 'Croatia'},
+    {'code': 'RS', 'name': 'Serbia'},
+    {'code': 'DE', 'name': 'Germany'},
+    {'code': 'GB', 'name': 'United Kingdom'},
+    {'code': 'FR', 'name': 'France'},
+    {'code': 'IT', 'name': 'Italy'},
+    {'code': 'ES', 'name': 'Spain'},
+    {'code': 'NL', 'name': 'Netherlands'},
+    {'code': 'SE', 'name': 'Sweden'},
+    {'code': 'CH', 'name': 'Switzerland'},
+    {'code': 'NO', 'name': 'Norway'},
+    {'code': 'FI', 'name': 'Finland'},
+    {'code': 'PL', 'name': 'Poland'},
+    {'code': 'CZ', 'name': 'Czech Republic'},
+    {'code': 'AT', 'name': 'Austria'},
+    {'code': 'HU', 'name': 'Hungary'},
+  ];
+
+  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+
   void _showUpdatePersonalInfoDialog(BuildContext context) {
     final _firstNameController =
         TextEditingController(text: customer.firstName);
@@ -156,38 +179,113 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
         TextEditingController(text: customer.phoneNumber);
     final _passwordController = TextEditingController();
     final _passwordConfirmController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Update Personal Info'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTextField(_firstNameController, 'First Name'),
-              _buildTextField(_lastNameController, 'Last Name'),
-              _buildTextField(_usernameController, 'Username'),
-              _buildTextField(_emailController, 'Email',
-                  keyboardType: TextInputType.emailAddress),
-              _buildTextField(_phoneNumberController, 'Phone Number',
-                  keyboardType: TextInputType.phone),
-              _buildTextField(_passwordController, 'Password',
-                  obscureText: true),
-              _buildTextField(_passwordConfirmController, 'Confirm Password',
-                  obscureText: true),
-            ],
+        content: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildFormTextField(
+                  _firstNameController,
+                  'First Name',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'First Name is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _lastNameController,
+                  'Last Name',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Last Name is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _usernameController,
+                  'Username',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Username is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _emailController,
+                  'Email',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email is required';
+                    }
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Invalid email format';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _phoneNumberController,
+                  'Phone Number',
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Phone Number is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _passwordController,
+                  'Password',
+                  obscureText: true,
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (value.length < 4)
+                        return 'Password must be at least 4 characters';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _passwordConfirmController,
+                  'Confirm Password',
+                  obscureText: true,
+                  validator: (value) {
+                    if (_passwordController.text.isNotEmpty) {
+                      if (value == null || value.isEmpty) {
+                        return 'Confirm Password is required';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-        actions: <Widget>[
+        actions: [
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: () => Navigator.of(context).pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
+              if (!_formKey.currentState!.validate()) return;
               final firstName = _firstNameController.text;
               final lastName = _lastNameController.text;
               final username = _usernameController.text;
@@ -217,17 +315,6 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
                 return;
               }
 
-              if (firstName.isEmpty ||
-                  lastName.isEmpty ||
-                  username.isEmpty ||
-                  email.isEmpty ||
-                  phoneNumber.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please fill in all fields')),
-                );
-                return;
-              }
-
               final updatedCustomer = CustomerUpsertRequest()
                 ..firstName = firstName
                 ..lastName = lastName
@@ -235,9 +322,10 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
                 ..email = email
                 ..phoneNumber = phoneNumber;
 
-              if (password != null) {
-                updatedCustomer.password = password;
-                updatedCustomer.passwordConfirm = passwordConfirm;
+              if (_passwordController.text.isNotEmpty) {
+                updatedCustomer.password = _passwordController.text;
+                updatedCustomer.passwordConfirm =
+                    _passwordConfirmController.text;
               }
 
               final customerProvider =
@@ -275,8 +363,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
   }
 
   void _showUpdateShippingInfoDialog(BuildContext context) {
-    final _countryController =
-        TextEditingController(text: shippingInfo?.country);
+    String selectedCountry = shippingInfo?.country ?? 'US';
     final _stateOrProvinceController =
         TextEditingController(text: shippingInfo?.stateOrProvince);
     final _cityController = TextEditingController(text: shippingInfo?.city);
@@ -284,21 +371,89 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
         TextEditingController(text: shippingInfo?.zipCode);
     final _streetAddressController =
         TextEditingController(text: shippingInfo?.streetAddress);
+    final _formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Update Shipping Info'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTextField(_countryController, 'Country'),
-              _buildTextField(_stateOrProvinceController, 'State/Province'),
-              _buildTextField(_cityController, 'City'),
-              _buildTextField(_zipCodeController, 'Zip Code'),
-              _buildTextField(_streetAddressController, 'Street Address'),
-            ],
+        content: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DropdownButtonFormField<String>(
+                  value: selectedCountry,
+                  items: countryCodes
+                      .map((country) => DropdownMenuItem<String>(
+                            value: country['code'],
+                            child:
+                                Text('${country['name']} (${country['code']})'),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      selectedCountry = value;
+                    }
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Country',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16.0),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a country';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildFormTextField(
+                  _stateOrProvinceController,
+                  'State/Province',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'State/Province is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _cityController,
+                  'City',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'City is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _zipCodeController,
+                  'Zip Code',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Zip Code is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildFormTextField(
+                  _streetAddressController,
+                  'Street Address',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Street Address is required';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         actions: <Widget>[
@@ -310,22 +465,12 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
           ),
           TextButton(
             onPressed: () async {
-              final country = _countryController.text;
+              if (!_formKey.currentState!.validate()) return;
+
               final stateOrProvince = _stateOrProvinceController.text;
               final city = _cityController.text;
               final zipCode = _zipCodeController.text;
               final streetAddress = _streetAddressController.text;
-
-              if (country.isEmpty ||
-                  stateOrProvince.isEmpty ||
-                  city.isEmpty ||
-                  zipCode.isEmpty ||
-                  streetAddress.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Please fill in all fields')),
-                );
-                return;
-              }
 
               final shippingInfoId = shippingInfo?.id;
               if (shippingInfoId == null) {
@@ -336,7 +481,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
               }
 
               final updatedShippingInfo = ShippingInfoUpdateRequest()
-                ..country = country
+                ..country = selectedCountry
                 ..stateOrProvince = stateOrProvince
                 ..city = city
                 ..zipCode = zipCode
@@ -357,7 +502,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
 
                 setState(() {
                   shippingInfo = ShippingInfo()
-                    ..country = country
+                    ..country = selectedCountry
                     ..stateOrProvince = stateOrProvince
                     ..city = city
                     ..zipCode = zipCode
@@ -379,13 +524,19 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label,
-      {bool obscureText = false,
-      TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildFormTextField(
+    TextEditingController controller,
+    String label, {
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
@@ -393,8 +544,7 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         ),
-        obscureText: obscureText,
-        keyboardType: keyboardType,
+        validator: validator,
       ),
     );
   }
