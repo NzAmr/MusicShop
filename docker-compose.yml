@@ -1,4 +1,5 @@
-version: "3"
+version: "3.9" 
+
 services:
   musicshop-database:
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
@@ -26,6 +27,11 @@ services:
       - "5672:5672"
     networks:
       - musicshop-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   musicshop-api:
     restart: unless-stopped
@@ -66,7 +72,8 @@ services:
     networks:
       - musicshop-network
     depends_on:
-      - musicshop-rabbitmq
+      musicshop-rabbitmq:
+        condition: service_healthy
 
 networks:
   musicshop-network:

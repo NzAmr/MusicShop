@@ -220,7 +220,7 @@ class _GuitarDetailsPageState extends State<GuitarDetailsPage> {
     product.brand?.name = widget.guitar.brand?.name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderPage(product: product),
+        builder: (context) => OrderPage(product: product, sourcePage:'guitar'),
       ),
     );
   }

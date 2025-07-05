@@ -216,39 +216,38 @@ class _AmplifierSearchPageState extends State<AmplifierSearchPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Stack(
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    height: 250,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                      image: imageBytes != null
-                                          ? DecorationImage(
-                                              image: MemoryImage(
-                                                  Uint8List.fromList(
-                                                      imageBytes)),
-                                              fit: BoxFit.contain,
-                                            )
-                                          : null,
-                                    ),
-                                    child: imageBytes == null
-                                        ? Center(child: Text('No Image'))
-                                        : null,
-                                  ),
-                                  Positioned(
-                                    top: 8,
-                                    right: 8,
-                                    child: IconButton(
-                                      icon:
-                                          Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () {
-                                        _deleteAmplifier(amplifier.id!);
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+  children: [
+    AspectRatio(
+      aspectRatio: 4 / 3,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 255, 255, 255),
+          image: imageBytes != null
+              ? DecorationImage(
+                  image: MemoryImage(Uint8List.fromList(imageBytes)),
+                  fit: BoxFit.contain,
+                )
+              : null,
+        ),
+        child: imageBytes == null
+            ? Center(child: Text('No Image'))
+            : null,
+      ),
+    ),
+    Positioned(
+      top: 8,
+      right: 8,
+      child: IconButton(
+        icon: Icon(Icons.delete, color: Colors.red),
+        onPressed: () {
+          _deleteAmplifier(amplifier.id!);
+        },
+      ),
+    ),
+  ],
+),
+
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(

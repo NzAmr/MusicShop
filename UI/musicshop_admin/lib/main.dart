@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:musicshop_admin/pages/my_home_page.dart';
 import 'package:musicshop_admin/pages/auth/login_page.dart';
 import 'package:musicshop_admin/providers/api_provider.dart';
+import 'package:window_size/window_size.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  setWindowMinSize(
+      const Size(1280 , 720));
   runApp(
     const ApiProvider(
       child: MyApp(),
@@ -31,7 +36,7 @@ class MyApp extends StatelessWidget {
           error: Colors.red,
           onError: Colors.white,
         ),
-        dialogTheme: DialogTheme(
+        dialogTheme: DialogThemeData(
           backgroundColor: _darkGray,
           titleTextStyle: const TextStyle(
             color: _lightGray,

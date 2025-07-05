@@ -12,6 +12,7 @@ import 'package:musicshop_admin/models/brand/brand.dart';
 import 'package:musicshop_admin/models/synthesizer/synthesizer.dart';
 import 'package:musicshop_admin/models/synthesizer/synthesizer_update_request.dart';
 
+
 class SynthesizerDetailsPage extends StatefulWidget {
   final Synthesizer synthesizer;
 
@@ -198,7 +199,7 @@ class _SynthesizerDetailsPageState extends State<SynthesizerDetailsPage> {
     product.brand?.name = widget.synthesizer.brand?.name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderPage(product: product),
+        builder: (context) => OrderPage(product: product, sourcePage:'synthesizer'),
       ),
     );
   }

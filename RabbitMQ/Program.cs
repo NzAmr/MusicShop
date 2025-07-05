@@ -81,11 +81,34 @@ namespace RabbitMQ
             {
                 HostName = hostname,
                 UserName = username,
-                Password = password
+                Password = password,
+                Port = 5672
             };
 
-            using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
+            IConnection? connection = null;
+            IModel? channel = null;
+
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    connection = factory.CreateConnection();
+                    channel = connection.CreateModel();
+                    Console.WriteLine("✅ Connected to RabbitMQ.");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Connection attempt {i + 1} failed: {ex.Message}");
+                    Thread.Sleep(3000);
+                }
+            }
+
+            if (connection == null || channel == null)
+            {
+                Console.WriteLine("❌ Failed to connect to RabbitMQ after retries. Exiting.");
+                return;
+            }
 
             channel.QueueDeclare(
                 queue: "email.create",
@@ -95,7 +118,7 @@ namespace RabbitMQ
                 arguments: null
             );
 
-            Console.WriteLine("Waiting for messages...");
+            Console.WriteLine("📩 Waiting for messages...");
 
             var consumer = new EventingBasicConsumer(channel);
 
@@ -119,6 +142,7 @@ namespace RabbitMQ
 
             Task.Delay(-1).Wait();
         }
+
     }
 
     class EntryPoint

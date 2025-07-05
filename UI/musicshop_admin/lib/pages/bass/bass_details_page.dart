@@ -201,7 +201,7 @@ class _BassDetailsPageState extends State<BassDetailsPage> {
         _brands.firstWhere((b) => b.id == widget.bass.brand?.id).name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderPage(product: product),
+        builder: (context) => OrderPage(product: product, sourcePage:'bass'),
       ),
     );
   }

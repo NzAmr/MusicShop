@@ -172,8 +172,8 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
 }
 
 
-  Future<void> _updateOrderStatus(int orderId) async {
-    String? selectedStatus;
+  Future<void> _updateOrderStatus(int orderId, [String? currentStatus]) async {
+  String? selectedStatus = currentStatus;
     final statusOptions = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
 
     await showDialog(
@@ -368,7 +368,7 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          onPressed: () => _updateOrderStatus(order.id!),
+          onPressed: () => _updateOrderStatus(order.id!, order.shippingStatus),
           child: Text('Update Status'),
         ),
       ],

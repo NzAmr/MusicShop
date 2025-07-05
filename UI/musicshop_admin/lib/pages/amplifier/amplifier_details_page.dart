@@ -197,7 +197,7 @@ class _AmplifierDetailsPageState extends State<AmplifierDetailsPage> {
     product.brand?.name = widget.amplifier.brand?.name;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OrderPage(product: product),
+        builder: (context) => OrderPage(product: product, sourcePage: 'amplifier'),
       ),
     );
   }

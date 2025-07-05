@@ -259,24 +259,23 @@ class _GearSearchPageState extends State<GearSearchPage> {
                             children: [
                               Stack(
                                 children: [
-                                  Container(
-                                    width: double.infinity,
-                                    height: 250,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                      image: imageBytes != null
-                                          ? DecorationImage(
-                                              image: MemoryImage(
-                                                  Uint8List.fromList(
-                                                      imageBytes)),
-                                              fit: BoxFit.contain,
-                                            )
+                                    AspectRatio(
+                                    aspectRatio: 4 / 3,  
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        image: imageBytes != null
+                                            ? DecorationImage(
+                                                image: MemoryImage(Uint8List.fromList(imageBytes)),
+                                                fit: BoxFit.contain,
+                                              )
+                                            : null,
+                                      ),
+                                      child: imageBytes == null
+                                          ? Center(child: Text('No Image'))
                                           : null,
                                     ),
-                                    child: imageBytes == null
-                                        ? Center(child: Text('No Image'))
-                                        : null,
                                   ),
                                   Positioned(
                                     top: 8,

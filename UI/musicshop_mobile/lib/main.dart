@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           error: Colors.red,
           onError: Colors.white,
         ),
-        dialogTheme: DialogTheme(
+        dialogTheme: DialogThemeData(
           backgroundColor: _darkGray,
           titleTextStyle: const TextStyle(
             color: _lightGray,

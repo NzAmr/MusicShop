@@ -9,13 +9,19 @@ import 'package:musicshop_admin/providers/customer/customer_provider.dart';
 import 'package:musicshop_admin/providers/employee/employee_provider.dart';
 import 'package:musicshop_admin/providers/order_provider/order_provider.dart';
 import 'package:musicshop_admin/providers/shipping_info/shipping_info_provider.dart';
+import 'package:musicshop_admin/pages/synthesizer/synthesizer_search_page.dart';
+import 'package:musicshop_admin/pages/amplifier/amplifier_search_page.dart';
+import 'package:musicshop_admin/pages/guitar/guitar_search_page.dart';
+import 'package:musicshop_admin/pages/gear/gear_search_page.dart';
+import 'package:musicshop_admin/pages/bass/bass_search_page.dart';
 import 'package:musicshop_admin/utils/util.dart';
 import 'package:provider/provider.dart';
 
 class OrderPage extends StatefulWidget {
   final Product product;
+  final String sourcePage;
 
-  OrderPage({Key? key, required this.product}) : super(key: key);
+   OrderPage({Key? key, required this.product, required this.sourcePage}) : super(key: key);
 
   @override
   _OrderPageState createState() => _OrderPageState();
@@ -135,47 +141,77 @@ class _OrderPageState extends State<OrderPage> {
     }
   }
 
-  Future<void> _submitOrder() async {
-    if (_selectedCustomerId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a customer.')),
-      );
-      return;
-    }
-
-    if (_selectedShippingInfo == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No shipping info available.')),
-      );
-      return;
-    }
-
-    try {
-      final employeeProvider =
-          Provider.of<EmployeeProvider>(context, listen: false);
-      final employee = await employeeProvider.getLoggedInEmployee();
-      final employeeId = employee.id;
-
-      print("employeeId: "+ employeeId.toString());
-
-      final orderRequest = OrderInsertRequest()
-        ..productId = widget.product.id
-        ..shippingInfoId = _selectedShippingInfo!.id
-        ..employeeId = employeeId;
-
-      final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-      await orderProvider.insert(orderRequest);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Order submitted successfully!')),
-      );
-    } catch (e) {
-      print('Error submitting order: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to submit order.')),
-      );
-    }
+ Future<void> _submitOrder() async {
+  if (_selectedCustomerId == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Please select a customer.')),
+    );
+    return;
   }
+
+  if (_selectedShippingInfo == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('No shipping info available.')),
+    );
+    return;
+  }
+
+  try {
+    final employeeProvider =
+        Provider.of<EmployeeProvider>(context, listen: false);
+    final employee = await employeeProvider.getLoggedInEmployee();
+    final employeeId = employee.id;
+
+    final orderRequest = OrderInsertRequest()
+      ..productId = widget.product.id
+      ..shippingInfoId = _selectedShippingInfo!.id
+      ..employeeId = employeeId;
+
+    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+    await orderProvider.insert(orderRequest);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Order submitted successfully!')),
+    );
+
+    switch (widget.sourcePage) {
+  case 'amplifier':
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => AmplifierSearchPage()),
+    );
+    break;
+  case 'guitar':
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => GuitarSearchPage()),
+    );
+    break;
+  case 'bass':
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => BassSearchPage()),
+    );
+    break;
+  case 'gear':
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => GearSearchPage()),
+    );
+    break;
+  default:
+    Navigator.of(context).pop();
+    break;
+}
+
+  } catch (e) {
+    print('Error submitting order: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to submit order.')),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
