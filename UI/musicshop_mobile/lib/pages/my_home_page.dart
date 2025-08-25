@@ -162,7 +162,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 12, 9, 163),
+               backgroundColor: Color(0xFF272323), 
+  surfaceTintColor: Color(0xFF272323), 
+  elevation: 0,
         title: Text(widget.title),
         actions: [
           IconButton(
@@ -173,13 +175,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: Drawer(
         child: Container(
-          color: colorScheme.surface,
+          color: Color(0xFF272323),
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
                 decoration: BoxDecoration(
-                  color: colorScheme.primary,
+                  color: Color(0xFF272323),
                 ),
                 child: Text(
                   'Menu',

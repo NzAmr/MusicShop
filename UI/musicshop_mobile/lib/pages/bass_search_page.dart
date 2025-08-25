@@ -74,6 +74,9 @@ class _BassSearchPageState extends State<BassSearchPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Bass Search'),
+                backgroundColor: Color(0xFF272323), 
+  surfaceTintColor: Color(0xFF272323), 
+  elevation: 0,
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),

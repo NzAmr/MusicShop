@@ -47,7 +47,7 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
               _buildDetailRow(Icons.attach_money, 'Price', '\$${order.product?.price?.toStringAsFixed(2) ?? 'N/A'}'),
               _buildDetailRow(Icons.person, 'Customer', '${order.shippingInfo?.customer?.firstName ?? 'N/A'} ${order.shippingInfo?.customer?.lastName ?? ''}'),
               _buildDetailRow(Icons.date_range, 'Order Date', order.orderDate?.toLocal().toString().split(" ")[0] ?? 'N/A'),
-              _buildDetailRow(Icons.local_shipping, 'Shipping Status', order.shippingStatus ?? 'N/A'),
+              _buildDetailRow(Icons.local_shipping, 'Status', order.shippingStatus ?? 'Unknown', valueColor: _statusColor(order.shippingStatus), isStatus: true),
               SizedBox(height: 20),
               Align(
                 alignment: Alignment.centerRight,
@@ -67,45 +67,67 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 20, color: Colors.grey[400]),
-        SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Transform.translate(
-              offset: Offset(0, -6),
-              child: Text(
-                label.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[500],
-                  letterSpacing: 1,
-                ),
-              ),
-            ),
-            SizedBox(height: 2),
-            Text(
-              value,
+  Widget _buildDetailRow(IconData icon, String label, String value, {Color? valueColor, bool isStatus = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, size: 20, color: Colors.grey[400]),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
               style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[500],
+                letterSpacing: 0.5,
               ),
             ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
+          ),
+          isStatus
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: valueColor ?? Colors.grey,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: valueColor ?? Colors.white70,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
 
+  Color _statusColor(String? status) {
+    switch (status) {
+      case 'Pending':
+        return Colors.orange;
+      case 'Shipped':
+        return Colors.blue;
+      case 'Delivered':
+        return Colors.green;
+      case 'Cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +135,8 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
       backgroundColor: Color(0xFF121212),
       appBar: AppBar(
         title: Text('Orders'),
-        backgroundColor: Color(0xFF1F1F1F),
+        backgroundColor: Color(0xFF272323),
+        surfaceTintColor: Color(0xFF272323),
         elevation: 0,
       ),
       body: Padding(
@@ -153,11 +176,17 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildDetailRow(Icons.confirmation_number, 'Order Number', order.orderNumber ?? 'N/A'),
+                          _buildDetailRow(Icons.confirmation_number, 'Order #', order.orderNumber ?? 'N/A'),
                           _buildDetailRow(Icons.person, 'Customer', customerName),
                           _buildDetailRow(Icons.branding_watermark, 'Brand', order.product?.brand?.name ?? 'N/A'),
                           _buildDetailRow(Icons.devices, 'Model', order.product?.model ?? 'N/A'),
-                          _buildDetailRow(Icons.local_shipping, 'Status', order.shippingStatus ?? 'N/A'),
+                          _buildDetailRow(
+                            Icons.local_shipping,
+                            'Status',
+                            order.shippingStatus ?? 'Unknown',
+                            valueColor: _statusColor(order.shippingStatus),
+                            isStatus: true,
+                          ),
                         ],
                       ),
                     ),

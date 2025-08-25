@@ -73,6 +73,9 @@ class _SynthesizerSearchPageState extends State<SynthesizerSearchPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Synthesizer Search'),
+                backgroundColor: Color(0xFF272323), 
+  surfaceTintColor: Color(0xFF272323), 
+  elevation: 0,
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),

@@ -45,6 +45,9 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Account Details'),
+                        backgroundColor: Color(0xFF272323), 
+  surfaceTintColor: Color(0xFF272323), 
+  elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -102,10 +105,28 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
         _buildReadOnlyTextField('Email', customer.email),
         _buildReadOnlyTextField('Phone Number', customer.phoneNumber),
         const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () => _showUpdatePersonalInfoDialog(context),
-          child: const Text('Update Personal Info'),
-        ),
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: () => _showUpdatePersonalInfoDialog(context),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.amber[700],
+      padding: EdgeInsets.symmetric(vertical: 14),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+    child: Text(
+      'Update Personal Info',
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+),
+
       ],
     );
   }
@@ -121,10 +142,28 @@ class _AccountDetailsPageState extends State<AccountDetailsPage> {
         _buildReadOnlyTextField('Zip Code', shippingInfo?.zipCode),
         _buildReadOnlyTextField('Street Address', shippingInfo?.streetAddress),
         const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () => _showUpdateShippingInfoDialog(context),
-          child: const Text('Update Shipping Info'),
-        ),
+
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: () => _showUpdateShippingInfoDialog(context),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.amber[700],
+      padding: EdgeInsets.symmetric(vertical: 14),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+    child: Text(
+      'Update Shipping Info',
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+  ),
+),
       ],
     );
   }

@@ -77,6 +77,9 @@ class _GuitarSearchPageState extends State<GuitarSearchPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Guitar Search'),
+        backgroundColor: Color(0xFF272323),
+  surfaceTintColor: Color(0xFF272323), 
+  elevation: 0,
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list),

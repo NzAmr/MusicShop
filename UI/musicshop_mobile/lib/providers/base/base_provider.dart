@@ -92,7 +92,6 @@ abstract class BaseProvider<T> with ChangeNotifier {
     var jsonRequest = jsonEncode(request);
     print(jsonRequest);
     var response = await http!.put(uri, headers: headers, body: jsonRequest);
-    print(response);
     if (isValidResponseCode(response)) {
       var data = jsonDecode(response.body);
       return fromJson(data);

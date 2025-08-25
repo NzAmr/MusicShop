@@ -30,7 +30,6 @@ class ShippingInfoProvider extends BaseProvider<ShippingInfo> {
 
       if (isValidResponseCode(response)) {
         final data = jsonDecode(response.body);
-        print('Response data: $data');
         return fromJson(data);
       } else {
         throw Exception("Unknown error: ${response.statusCode}");
