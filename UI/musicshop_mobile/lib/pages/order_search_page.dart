@@ -42,11 +42,10 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
               Text('Order Details', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
               SizedBox(height: 16),
               _buildDetailRow(Icons.confirmation_number, 'Order Number', order.orderNumber ?? 'N/A'),
+              _buildDetailRow(Icons.date_range, 'Order Date', order.orderDate?.toLocal().toString().split(" ")[0] ?? 'N/A'),
               _buildDetailRow(Icons.branding_watermark, 'Brand', order.product?.brand?.name ?? 'N/A'),
               _buildDetailRow(Icons.devices, 'Model', order.product?.model ?? 'N/A'),
               _buildDetailRow(Icons.attach_money, 'Price', '\$${order.product?.price?.toStringAsFixed(2) ?? 'N/A'}'),
-              _buildDetailRow(Icons.person, 'Customer', '${order.shippingInfo?.customer?.firstName ?? 'N/A'} ${order.shippingInfo?.customer?.lastName ?? ''}'),
-              _buildDetailRow(Icons.date_range, 'Order Date', order.orderDate?.toLocal().toString().split(" ")[0] ?? 'N/A'),
               _buildDetailRow(Icons.local_shipping, 'Status', order.shippingStatus ?? 'Unknown', valueColor: _statusColor(order.shippingStatus), isStatus: true),
               SizedBox(height: 20),
               Align(
@@ -157,13 +156,12 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
             }
 
             final orders = snapshot.data!;
+            orders.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
 
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
-                final customerName = '${order.shippingInfo?.customer?.firstName ?? 'N/A'} ${order.shippingInfo?.customer?.lastName ?? ''}';
-
                 return Card(
                   color: Color(0xFF1F1F1F),
                   margin: EdgeInsets.symmetric(vertical: 10),
@@ -176,10 +174,9 @@ class _OrdersSearchPageState extends State<OrdersSearchPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildDetailRow(Icons.confirmation_number, 'Order #', order.orderNumber ?? 'N/A'),
-                          _buildDetailRow(Icons.person, 'Customer', customerName),
-                          _buildDetailRow(Icons.branding_watermark, 'Brand', order.product?.brand?.name ?? 'N/A'),
                           _buildDetailRow(Icons.devices, 'Model', order.product?.model ?? 'N/A'),
+                          _buildDetailRow(Icons.branding_watermark, 'Brand', order.product?.brand?.name ?? 'N/A'),
+                          _buildDetailRow(Icons.date_range, 'Order Date', order.orderDate?.toLocal().toString().split(" ")[0] ?? 'N/A'),
                           _buildDetailRow(
                             Icons.local_shipping,
                             'Status',

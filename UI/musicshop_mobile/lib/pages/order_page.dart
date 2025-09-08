@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 
 class OrderPage extends StatefulWidget {
   final Product product;
-
   OrderPage({Key? key, required this.product}) : super(key: key);
 
   @override
@@ -20,6 +19,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
+  final ScrollController _scrollController = ScrollController();
   ShippingInfo? _shippingInfo;
   bool _isLoading = true;
   final _streetController = TextEditingController();
@@ -27,6 +27,7 @@ class _OrderPageState extends State<OrderPage> {
   final _stateController = TextEditingController();
   final _zipController = TextEditingController();
   String _selectedCountry = 'US';
+  String? _streetError, _cityError, _stateError, _zipError, _countryError;
 
   final List<Map<String, String>> countryCodes = [
     {'code': 'US', 'name': 'United States'},
@@ -55,7 +56,7 @@ class _OrderPageState extends State<OrderPage> {
     _fetchShippingInfo();
   }
 
-  bool _isShippingInfoCompleteFromControllers() {
+  bool _isShippingInfoComplete() {
     return _streetController.text.isNotEmpty &&
         _cityController.text.isNotEmpty &&
         _stateController.text.isNotEmpty &&
@@ -63,12 +64,9 @@ class _OrderPageState extends State<OrderPage> {
         _selectedCountry.isNotEmpty;
   }
 
-  void _updateShippingInfoFromControllers() {
-    if (_shippingInfo == null) {
-      _shippingInfo = ShippingInfo();
-    }
+  void _updateShippingInfo() {
+    _shippingInfo ??= ShippingInfo();
     final _customer = _shippingInfo?.customer;
-
     _shippingInfo!
       ..streetAddress = _streetController.text
       ..city = _cityController.text
@@ -79,86 +77,83 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<void> _fetchShippingInfo() async {
-    final shippingInfoProvider =
-        Provider.of<ShippingInfoProvider>(context, listen: false);
+    final provider = Provider.of<ShippingInfoProvider>(context, listen: false);
     try {
-      final shippingInfo = await shippingInfoProvider.getByCustomerId();
+      final info = await provider.getByCustomerId();
       setState(() {
-        if (shippingInfo != null) {
-          _streetController.text = shippingInfo.streetAddress ?? '';
-          _cityController.text = shippingInfo.city ?? '';
-          _stateController.text = shippingInfo.stateOrProvince ?? '';
-          _zipController.text = shippingInfo.zipCode ?? '';
-          _selectedCountry = shippingInfo.country ?? 'US';
+        if (info != null) {
+          _streetController.text = info.streetAddress ?? '';
+          _cityController.text = info.city ?? '';
+          _stateController.text = info.stateOrProvince ?? '';
+          _zipController.text = info.zipCode ?? '';
+          _selectedCountry = info.country ?? 'US';
+          _shippingInfo = info;
         }
         _isLoading = false;
       });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+    } catch (_) {
+      setState(() => _isLoading = false);
     }
   }
 
-  Future<void> _submitOrder(String paymentId, BuildContext context) async {
-  if (_shippingInfo == null) return;
-
-  final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-  final orderRequest = OrderInsertRequest()
-    ..shippingInfoId = _shippingInfo!.id
-    ..productId = widget.product.id
-    ..paymentId = paymentId;
-
-  try {
-    await orderProvider.insert(orderRequest);
-    Navigator.pop(context);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => OrdersSearchPage()),
-    );
-  } catch (e) {
-  }
-}
-
-
-  void openPaypalCheckout(BuildContext context1) async {
+  Future<void> _submitOrder(String paymentId) async {
     if (_shippingInfo == null) return;
+    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+    final request = OrderInsertRequest()
+      ..shippingInfoId = _shippingInfo!.id
+      ..productId = widget.product.id
+      ..paymentId = paymentId;
 
-    _updateShippingInfoFromControllers();
+    try {
+      await orderProvider.insert(request);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Order placed successfully!'),
+          backgroundColor: Colors.green[700],
+          duration: Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.pop(context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => OrdersSearchPage()),
+        );
+      });
+    } catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to place order. Please try again.'),
+          backgroundColor: Colors.red[700],
+          duration: Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
 
+  void openPaypalCheckout() {
+    if (_shippingInfo == null) return;
+    _updateShippingInfo();
     final product = widget.product;
     final shippingInfo = _shippingInfo!;
-
     final recipientName =
         '${shippingInfo.customer?.firstName ?? ''} ${shippingInfo.customer?.lastName ?? ''}'.trim();
     final safeRecipient = recipientName.isEmpty ? 'Customer' : recipientName;
-
-    final safeCountry = ['US', 'GB', 'DE', 'FR', 'IT', 'ES']
-            .contains(shippingInfo.country)
+    final safeCountry = ['US', 'GB', 'DE', 'FR', 'IT', 'ES'].contains(shippingInfo.country)
         ? shippingInfo.country!
         : 'US';
-
     final safePhone = shippingInfo.customer?.phoneNumber?.isNotEmpty == true
         ? shippingInfo.customer!.phoneNumber!
         : '0000000000';
 
-    print('Shipping Info before PayPal:');
-    print('Street: ${shippingInfo.streetAddress}');
-    print('City: ${shippingInfo.city}');
-    print('State/Province: ${shippingInfo.stateOrProvince}');
-    print('ZIP: ${shippingInfo.zipCode}');
-    print('Country: $safeCountry');
-    print('Recipient: $safeRecipient');
-    print('Phone: $safePhone');
-
-    Navigator.of(context1).push(
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (BuildContext context) => UsePaypal(
+        builder: (_) => UsePaypal(
           sandboxMode: true,
-          clientId:
-              "AcBfWwnXZ0jMKDxDJt_gqDp2XzBt9N1_YjqnYlBm35NeryUJWjuWGeswYgXlepmYZLcPFRnj9aZVFMzm",
-          secretKey:
-              "EIuUXSQNklabUxNwfGhPrfWZ87_pUNqTwqjqSINjg6ld7hpjAqjVhPQoUZJ7moSgnug31Ub_6mjoXP6m",
+          clientId: "AcBfWwnXZ0jMKDxDJt_gqDp2XzBt9N1_YjqnYlBm35NeryUJWjuWGeswYgXlepmYZLcPFRnj9aZVFMzm",
+          secretKey: "EIuUXSQNklabUxNwfGhPrfWZ87_pUNqTwqjqSINjg6ld7hpjAqjVhPQoUZJ7moSgnug31Ub_6mjoXP6m",
           returnURL: "https://samplesite.com/return",
           cancelURL: "https://samplesite.com/cancel",
           transactions: [
@@ -173,9 +168,7 @@ class _OrderPageState extends State<OrderPage> {
                 }
               },
               "description": product.description ?? "Product Purchase",
-              "payment_options": {
-                "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
-              },
+              "payment_options": {"allowed_payment_method": "INSTANT_FUNDING_SOURCE"},
               "item_list": {
                 "items": [
                   {
@@ -199,12 +192,9 @@ class _OrderPageState extends State<OrderPage> {
             }
           ],
           note: "Contact us for any questions on your order.",
-          onSuccess: (Map params) async {
-            var paymentId = params["paymentId"];
-            _submitOrder(paymentId, context1);
-          },
-          onError: (error) {},
-          onCancel: (params) {},
+          onSuccess: (params) => _submitOrder(params["paymentId"]),
+          onError: (_) {},
+          onCancel: (_) {},
         ),
       ),
     );
@@ -221,60 +211,58 @@ class _OrderPageState extends State<OrderPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildImageSection(),
-                SizedBox(height: 24),
-                _buildProductInfo(),
-                SizedBox(height: 24),
-                _isLoading
-                    ? CircularProgressIndicator(color: Colors.amber[700])
-                    : _buildEditableShippingInfo(),
-                SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _updateShippingInfoFromControllers();
-                      if (!_isShippingInfoCompleteFromControllers()) return;
-                      openPaypalCheckout(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber[700],
-                      padding: EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      'Submit Order',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+        child: ListView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          children: [
+            _buildImageSection(),
+            SizedBox(height: 24),
+            _buildProductInfo(),
+            SizedBox(height: 24),
+            _isLoading
+                ? Center(child: CircularProgressIndicator(color: Colors.amber[700]))
+                : _buildEditableShippingInfo(),
+            SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  _updateShippingInfo();
+                  setState(() {
+                    _streetError = _streetController.text.isEmpty ? 'Street is required' : null;
+                    _cityError = _cityController.text.isEmpty ? 'City is required' : null;
+                    _stateError = _stateController.text.isEmpty ? 'State/Province is required' : null;
+                    _zipError = _zipController.text.isEmpty ? 'Zip Code is required' : null;
+                    _countryError = _selectedCountry.isEmpty ? 'Country is required' : null;
+                  });
+                  if (_streetError != null ||
+                      _cityError != null ||
+                      _stateError != null ||
+                      _zipError != null ||
+                      _countryError != null) return;
+                  openPaypalCheckout();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber[700],
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-              ],
+                child: Text('Submit Order', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildImageSection() {
-    Uint8List? _imageBytes;
+    Uint8List? bytes;
     if (widget.product.productImage != null) {
       try {
-        _imageBytes = base64Decode(widget.product.productImage!);
-      } catch (e) {}
+        bytes = base64Decode(widget.product.productImage!);
+      } catch (_) {}
     }
-
     return Container(
       constraints: BoxConstraints(maxWidth: 400, maxHeight: 400),
       decoration: BoxDecoration(
@@ -282,18 +270,12 @@ class _OrderPageState extends State<OrderPage> {
         border: Border.all(color: Colors.grey[700]!),
       ),
       clipBehavior: Clip.antiAlias,
-      child: _imageBytes != null
-          ? Image.memory(_imageBytes, fit: BoxFit.cover)
+      child: bytes != null
+          ? Image.memory(bytes, fit: BoxFit.cover)
           : Container(
               height: 200,
               color: Color(0xFF1F1F1F),
-              child: Center(
-                child: Icon(
-                  Icons.image_not_supported,
-                  size: 60,
-                  color: Colors.grey[700],
-                ),
-              ),
+              child: Center(child: Icon(Icons.image_not_supported, size: 60, color: Colors.grey[700])),
             ),
     );
   }
@@ -303,11 +285,7 @@ class _OrderPageState extends State<OrderPage> {
       children: [
         _buildDetailRow('Model', widget.product.model ?? 'N/A'),
         _buildDetailRow('Brand', widget.product.brand?.name ?? 'Unknown Brand'),
-        _buildDetailRow(
-            'Price',
-            widget.product.price != null
-                ? '\$${widget.product.price!.toStringAsFixed(2)}'
-                : 'N/A'),
+        _buildDetailRow('Price', widget.product.price != null ? '\$${widget.product.price!.toStringAsFixed(2)}' : 'N/A'),
       ],
     );
   }
@@ -316,52 +294,39 @@ class _OrderPageState extends State<OrderPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildEditableField('Street Address', _streetController),
-        _buildEditableField('City', _cityController),
-        _buildEditableField('State/Province', _stateController),
-        _buildEditableField('Zip Code', _zipController),
+        _buildTextField('Street Address', _streetController, _streetError),
+        _buildTextField('City', _cityController, _cityError),
+        _buildTextField('State/Province', _stateController, _stateError),
+        _buildTextField('Zip Code', _zipController, _zipError),
         Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
           child: DropdownButtonFormField<String>(
             value: _selectedCountry,
-            items: countryCodes.map((country) {
-              return DropdownMenuItem<String>(
-                value: country['code'],
-                child: Text(
-                  '${country['name']} (${country['code']})',
-                  style: TextStyle(color: Colors.white70),
-                ),
-              );
-            }).toList(),
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  _selectedCountry = value;
-                });
-              }
-            },
+            items: countryCodes.map((c) => DropdownMenuItem(
+              value: c['code'],
+              child: Text('${c['name']} (${c['code']})', style: TextStyle(color: Colors.white70)),
+            )).toList(),
+            onChanged: (value) => setState(() { if (value != null) { _selectedCountry = value; _countryError = null; }}),
             decoration: InputDecoration(
               labelText: 'Country',
               labelStyle: TextStyle(color: Colors.grey[500]),
               border: OutlineInputBorder(),
+              errorText: _countryError,
+              errorStyle: TextStyle(color: Colors.redAccent),
             ),
             dropdownColor: Color(0xFF1F1F1F),
           ),
         ),
-        if (!_isShippingInfoCompleteFromControllers())
+        if (!_isShippingInfoComplete())
           Padding(
             padding: const EdgeInsets.only(top: 12.0),
-            child: Text(
-              'Please fill out all shipping info to proceed.',
-              style: TextStyle(color: Colors.red),
-              textAlign: TextAlign.center,
-            ),
+            child: Text('Please fill out all shipping info to proceed.', style: TextStyle(color: Colors.red), textAlign: TextAlign.center),
           ),
       ],
     );
   }
 
-  Widget _buildEditableField(String label, TextEditingController controller) {
+  Widget _buildTextField(String label, TextEditingController controller, String? errorText) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextField(
@@ -373,6 +338,8 @@ class _OrderPageState extends State<OrderPage> {
           border: OutlineInputBorder(),
           filled: true,
           fillColor: Color(0xFF1F1F1F),
+          errorText: errorText,
+          errorStyle: TextStyle(color: Colors.redAccent),
         ),
       ),
     );
@@ -394,23 +361,11 @@ class _OrderPageState extends State<OrderPage> {
                   offset: Offset(0, -6),
                   child: Text(
                     label.toUpperCase(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[500],
-                      letterSpacing: 1,
-                    ),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.grey[500], letterSpacing: 1),
                   ),
                 ),
                 SizedBox(height: 4),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                Text(value, style: TextStyle(fontSize: 16, color: Colors.white70, fontWeight: FontWeight.w400)),
               ],
             ),
           ),
